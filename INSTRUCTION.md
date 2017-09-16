@@ -59,6 +59,16 @@ How to work?
 	3. `git merge your_branch`
 
 	4. `git push`. If conflict happen, solve conflict and commit, then do `git push`
+	
+- You can update your branch to match develop branch anytime
+
+	1. `git checkout develop`
+	
+	2. `git pull`
+	
+	3. `git checkout your_branch`
+	
+	4. `git merge develop`
 
 ## Version control
 
