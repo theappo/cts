@@ -26,7 +26,7 @@ Setup:
 
 	`git branch -r`
 
-4. then fetch the `develop` branch and your own branch:
+4. then fetch the develop branch and your own branch:
 
 	`git fetch origin develop:develop`
 
