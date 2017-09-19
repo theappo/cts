@@ -18,7 +18,7 @@ Setup:
 
 	`git clone https://github.com/whuang001/coding-turk-system.git`
 
-2. then use the following command to see local branch:
+2. change directory to `cts` or `coding-turk-system`then use the following command to see local branch:
 
 	`git branch`
 
@@ -90,7 +90,7 @@ Reset local repository branch to be just like remote repository HEAD:
 
 ## Database
 
-To be determined.
+I decide to use MariaDB as out relational database management system. I will tech you how to install MariaDB when we need it.
 
 ## Mark down
 
