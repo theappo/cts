@@ -16,7 +16,7 @@ Setup:
 
 1. In the terminal/Shell, go to the directory where you want to place the team project, then use the following command to clone our project:
 
-	`git clone https://github.com/whuang001/coding-turk-system.git`
+	`git clone https://github.com/whuang001/cts.git`
 
 2. change directory to `cts` or `coding-turk-system`then use the following command to see local branch:
 
