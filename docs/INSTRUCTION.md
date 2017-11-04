@@ -92,6 +92,59 @@ Reset local repository branch to be just like remote repository HEAD:
 
 I decide to use MariaDB as out relational database management system. I will tech you how to install MariaDB when we need it.
 
+**GateWay.py** require `MariaDB` and `Python` installed in your computer.
+Additionally, you need to install a pure-Python MySQL client library, `PyMySQL`.
+
+To avoid setting environment variable manually, I suggest that using `pip3` to install `PyMySQL`:
+
+1. If you installed python via brew, go to step 3.
+
+2. If you installed python via official website, and you don't have `pip3` installed, run below command to install `pip3`:
+
+	`sudo easy_install pip3`(mac)
+	`sudo apt-get install pip3`(linux)
+
+pip `MAY` installed in path /Library/Python/2.7/site-packages/pip-9.0.1-py2.7.egg, since this is the default python path for MACOX.
+
+3. Install `PyMySQL` via `pip3`:
+
+	`sudo pip3 install PyMySQL`
+
+4. Test `PyMySQL` install correctly:
+
+- int terminal/shell, run:
+
+	`python 3`
+
+- then run:
+
+	`import pymysql`
+
+**YOU SHOULD RECEIVE NO ERROR.**
+
+==========================================================================================
+
+For brewed Python, modules installed with pip or python setup.py install will be installed to the (brew --prefix)/lib/pythonX.Y/site-packages directory (explained above). Executable Python scripts will be in $(brew --prefix)/bin.
+
+The system Python may not know which compiler flags to set in order to build bindings for software installed in Homebrew so you may need to run:
+
+	CFLAGS=-I$(brew --prefix)/include LDFLAGS=-L$(brew --prefix)/lib pip install <package>
+
+===========================================================================================
+
+**You have to manually restore the cts database by doing follow:**
+
+	mysql -u root cts < backup-file.sql
+
+**You can back up cts by command**
+
+	mysqldump -u root cts > backup-file.sql
+
+==========================================================================================
+
+**every one should have a root user with an empty password**
+
+
 ## Mark down
 
 - Our documents are written in [Markdown][Markdown]. You can learn mark down [here][here].
