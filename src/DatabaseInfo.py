@@ -1,4 +1,4 @@
-### database connection information
+"""database connection information"""
 
 db_name = 'cts'
 db_user = 'root'
