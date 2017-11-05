@@ -1,14 +1,15 @@
-#!/usr/bin/python3
-import os
+import sys
+sys.path.insert(0, '../src')
 
 from GateWay import *
+from testAndPrint import *
 
 def main():
 
 	Manager = GateWay()
 
-	print(Manager.vaild_user('if'))
+	testAndPrint(Manager.vaild_user('if'), False)
 
-	print(Manager.vaild_user('testuser2'))
+	testAndPrint(Manager.vaild_user('testuser2'), True)
 
 main()
