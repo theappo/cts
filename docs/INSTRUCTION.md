@@ -144,6 +144,22 @@ The system Python may not know which compiler flags to set in order to build bin
 
 **every one should have a root user with an empty password**
 
+## Setting your git username and email address
+
+For peoper who not yet set a global git username and a email address for their computer, run:
+
+- Set a Git username:
+
+	git config --global user.name your_name
+	
+- Set an email address in Git, please use your github email address:
+
+	git config --global user.email your_email
+	
+To check whether git username and email configuration, you can run:
+
+	git config --list
+
 
 ## Mark down
 
