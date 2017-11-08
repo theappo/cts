@@ -146,7 +146,7 @@ The system Python may not know which compiler flags to set in order to build bin
 
 ## Setting your git username and email address
 
-For peoper who not yet set a global git username and a email address for their computer, run:
+For peoper who not yet set a global git username and a email address for their computer, **go to your cts folder, then run:**
 
 - Set a Git username:
 
