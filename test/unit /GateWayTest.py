@@ -7,9 +7,13 @@ from testAndPrint import *
 def main():
 
 	Manager = GateWay()
-	#when no found
-	testAndPrint(Manager.vaild_user('if'), False)
-	#when found
-	testAndPrint(Manager.vaild_user('testuser2'), True)
+
+	# check_blacklist
+	testAndPrint(Manager.check_blacklist("testuser2"),False)
+
+	# verify_user
+	testAndPrint(Manager.verify_user('if','2'), False)
+	testAndPrint(Manager.verify_user('testuser2','test'),False)
+	testAndPrint(Manager.verify_user('testuser2','password2'),True)
 
 main()
