@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""GateWay.py: use to establish connection with mariadb server."""
+""" GateWay.py: use to establish connection with mariadb server. """
 
 import pymysql
 import traceback
@@ -23,16 +23,31 @@ class GateWay(object):
 		finally:
 			self.conn.close()
 			
-
-	def vaild_user(self, user_id):
+	def check_blacklist(self, user_id):
 		try:
 			self.conn.connect()
-			self.cursor.execute(vaild_user_id, user_id)
+			self.cursor.execute(search_blacklist, user_id)
 			self.conn.close()
 		except Exception as e:
 			traceback.print_exc(e)
-		#clone all row from cursor
+
 		data = self.cursor.fetchall()
+
+		if(len(data)):
+			return True
+		else:
+			return False
+
+	def verify_user(self, user_id, password):
+		try:
+			self.conn.connect()
+			self.cursor.execute(verify_user, (user_id, password))
+			self.conn.close()
+		except Exception as e:
+			traceback.print_exc(e)
+
+		data = self.cursor.fetchall()
+
 		if(len(data)):
 			return True
 		else:
