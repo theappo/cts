@@ -4,7 +4,6 @@ import sys
 import LeftPanel
 
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QApplication
-from PyQt5.QtGui import QPalette
 from LeftPanel import *
 
 
@@ -28,6 +27,8 @@ class MainWindow(QWidget):
 
         # add leftPanel to layout manager
         self.layout.addWidget(self.leftPanel)
+        # set leftPanel.controlPabel.index
+        self.leftPanel.setControlPanel(1)
 
 
 def main():
