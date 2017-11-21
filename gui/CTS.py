@@ -17,6 +17,7 @@ class MainWindow(QWidget):
         self.layout = QHBoxLayout()
         # declare leftPanel
         self.leftPanel = LeftPanel(self)
+
         # start initUI
         self.initUI()
 
@@ -24,6 +25,7 @@ class MainWindow(QWidget):
         # set title and size of MainWindow
         self.setWindowTitle('Coding Turk System')
         self.setGeometry(100, 80, 1024, 648)
+
         # add leftPanel to layout manager
         self.layout.addWidget(self.leftPanel)
 
