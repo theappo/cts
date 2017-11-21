@@ -5,7 +5,7 @@
 import pymysql
 import traceback
 
-from StoredProcedure import *
+from PrepareStatement import *
 from DatabaseInfo import *
 
 class GateWay(object):
