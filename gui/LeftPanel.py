@@ -1,30 +1,42 @@
 """ Left Panel for CTS """
 
-import sys
-
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
+from PyQt5.QtGui import QPixmap, QImage, QPalette
+from PyQt5.Qt import Qt
 
 
 class LeftPanel(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.buttonList = []
-        self.lay = QVBoxLayout()
-        self.button1 = QPushButton("Button 1")
-        self.buttonList = []
+    def __init__(self, parent):
+        super(LeftPanel, self).__init__(parent)
 
-    def leftPanelUI(self):
-        self.buttonList.append(self.button1)
-        for button in self.buttonList:
-            self.lay.addWidget(button)
+        # set layout manager to Vertical Box layout
+        self.layout = QVBoxLayout(self)
+        # declare user picture label
+        self.pic = QLabel(self)
+        # set width and hight
+        self.width = 85
+        self.hight = 648
+        # start initUI
+        self.initUI()
+
+    def initUI(self):
+        # set LeftPanel size
+        self.setFixedSize(self.width, self.hight)
+        # set background color
+        self.setAutoFillBackground(True)
+        palette = QPalette()
+        palette.setColor(self.backgroundRole(), Qt.darkGray)
+        self.setPalette(palette)
+        # set pic
+        self.setpic("../img/unknown-user.png")
+        # set pic size
+        self.pic.setFixedSize(60, 60)
+        # add pic to layout
 
 
-def main():
-    cts = QApplication(sys.argv)
-    mainWindow = LeftPanel()
-    mainWindow.show()
-    sys.exit(cts.exec_())
 
-
-main()
+    def setpic(self, path):
+        """ set pic to the path image"""
+        pixmap = QPixmap(path)
+        pixmap.scaled(64, 64)
+        self.pic.setPixmap(pixmap)
