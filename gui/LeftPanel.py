@@ -6,12 +6,12 @@ from PyQt5.QtCore import Qt, QSize, QObjectCleanupHandler
 
 
 class LeftPanel(QWidget):
-    def __init__(self, parent):
+    def __init__(self, width, hight, parent=None):
         super(LeftPanel, self).__init__(parent)
 
         # set width and hight
-        self.width = 140
-        self.hight = 648
+        self.width = width
+        self.hight = hight
 
         # declare path string
         self.unknownUser = "../img/unknown-user.png"
@@ -28,10 +28,10 @@ class LeftPanel(QWidget):
         self.searchB = QPushButton("Search")
         self.currentProjectB = QPushButton("Current Project")
         self.submitProjectB = QPushButton("Submit Project")
-        self.manageTeam = QPushButton("Team Manager")
         self.postProjectB = QPushButton("Post New Project")
         self.messageB = QPushButton("Message")
         self.historyB = QPushButton("History")
+        self.manageTeam = QPushButton("Team Manager")
         # TODO: super user buttons
         # declare button list
         self.vblist = [self.homeB, self.searchB]
@@ -60,7 +60,7 @@ class LeftPanel(QWidget):
         # set pic
         self.setpic(self.unknownUser)
         # set pic size
-        self.pic.setFixedSize(120, 120)
+        self.pic.setFixedSize(self.width - 20, self.width - 20)
         # add pic to LeftPanel
         self.pic.move(10, 10)
 
@@ -83,7 +83,7 @@ class LeftPanel(QWidget):
         self.funcbutt.setIconSize(QSize(60, 30))
         # add funcbutt to LeftPanel
         self.funcbutt.setFixedSize(61, 31)
-        self.funcbutt.move(39, 605)
+        self.funcbutt.move(39, self.hight - 43)
 
     def setpic(self, path):
         """ set pic to the path image"""
@@ -115,5 +115,3 @@ class LeftPanel(QWidget):
         # delete and add layout to controlPanel
         QObjectCleanupHandler().add(self.controlPanel.layout())
         self.controlPanel.setLayout(layout)
-
-    def ControlPanelSignal(self):
