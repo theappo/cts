@@ -43,6 +43,13 @@ class LeftPanel(QWidget):
 
         # declare function button
         self.funcbutt = QToolButton(self)
+        # declare function button menu
+        self.funcMenu1 = QMenu()
+        self.funcMenu1.addAction("Personal Information")
+        self.funcMenu1.addAction("Grand Statistic")
+        self.funcMenu1.addAction("Sign Out")
+        self.funcMenu2 = QMenu()
+        self.funcMenu2.addAction("Grand Statistic")
 
         # start initUI
         self.initUI()
@@ -70,13 +77,8 @@ class LeftPanel(QWidget):
         self.setControlPanel(0)
         self.controlPanel.move(0, 180)
 
-        # menu for funcbutt
-        funcmenu = QMenu()
-        funcmenu.addAction("Personal Information")
-        funcmenu.addAction("System Statistic")
-        funcmenu.addAction("Sign Out")
         # set funcbutt menu
-        self.funcbutt.setMenu(funcmenu)
+        self.setFuncMenu(False)
         self.funcbutt.setPopupMode(QToolButton.InstantPopup)
         # set image for funcbutt
         self.funcbutt.setIcon(QIcon(self.menuIcon))
@@ -115,3 +117,9 @@ class LeftPanel(QWidget):
         # delete and add layout to controlPanel
         QObjectCleanupHandler().add(self.controlPanel.layout())
         self.controlPanel.setLayout(layout)
+
+    def setFuncMenu(self, login):
+        if (login):
+            self.funcbutt.setMenu(self.funcMenu1)
+        else:
+            self.funcbutt.setMenu(self.funcMenu2)

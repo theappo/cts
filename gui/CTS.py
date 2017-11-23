@@ -44,10 +44,6 @@ class MainWindow(QWidget):
         self.leftPanel.historyB.clicked.connect(lambda: self.rightPanel.setCurrentIndex(6))
         self.leftPanel.manageTeam.clicked.connect(lambda: self.rightPanel.setCurrentIndex(7))
 
-    def setControlIndex(self, i):
-        """ set LeftPanel.controlPabel.index """
-        self.leftPanel.setControlPanel(i)
-
 
 def main():
     cts = QApplication(sys.argv)
