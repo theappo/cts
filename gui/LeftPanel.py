@@ -6,12 +6,12 @@ from PyQt5.QtCore import Qt, QSize, QObjectCleanupHandler
 
 
 class LeftPanel(QWidget):
-    def __init__(self, parent):
+    def __init__(self, width, hight, parent=None):
         super(LeftPanel, self).__init__(parent)
 
         # set width and hight
-        self.width = 140
-        self.hight = 648
+        self.width = width
+        self.hight = hight
 
         # declare path string
         self.unknownUser = "../img/unknown-user.png"
@@ -28,10 +28,10 @@ class LeftPanel(QWidget):
         self.searchB = QPushButton("Search")
         self.currentProjectB = QPushButton("Current Project")
         self.submitProjectB = QPushButton("Submit Project")
-        self.manageTeam = QPushButton("Team Manager")
         self.postProjectB = QPushButton("Post New Project")
         self.messageB = QPushButton("Message")
         self.historyB = QPushButton("History")
+        self.manageTeam = QPushButton("Team Manager")
         # TODO: super user buttons
         # declare button list
         self.vblist = [self.homeB, self.searchB]
@@ -43,6 +43,13 @@ class LeftPanel(QWidget):
 
         # declare function button
         self.funcbutt = QToolButton(self)
+        # declare function button menu
+        self.funcMenu1 = QMenu()
+        self.funcMenu1.addAction("Personal Information")
+        self.funcMenu1.addAction("Grand Statistic")
+        self.funcMenu1.addAction("Sign Out")
+        self.funcMenu2 = QMenu()
+        self.funcMenu2.addAction("Grand Statistic")
 
         # start initUI
         self.initUI()
@@ -60,7 +67,7 @@ class LeftPanel(QWidget):
         # set pic
         self.setpic(self.unknownUser)
         # set pic size
-        self.pic.setFixedSize(120, 120)
+        self.pic.setFixedSize(self.width - 20, self.width - 20)
         # add pic to LeftPanel
         self.pic.move(10, 10)
 
@@ -70,20 +77,15 @@ class LeftPanel(QWidget):
         self.setControlPanel(0)
         self.controlPanel.move(0, 180)
 
-        # menu for funcbutt
-        funcmenu = QMenu()
-        funcmenu.addAction("Personal Information")
-        funcmenu.addAction("System Statistic")
-        funcmenu.addAction("Sign Out")
         # set funcbutt menu
-        self.funcbutt.setMenu(funcmenu)
+        self.setFuncMenu(False)
         self.funcbutt.setPopupMode(QToolButton.InstantPopup)
         # set image for funcbutt
         self.funcbutt.setIcon(QIcon(self.menuIcon))
         self.funcbutt.setIconSize(QSize(60, 30))
         # add funcbutt to LeftPanel
         self.funcbutt.setFixedSize(61, 31)
-        self.funcbutt.move(39, 605)
+        self.funcbutt.move(39, self.hight - 43)
 
     def setpic(self, path):
         """ set pic to the path image"""
@@ -116,4 +118,8 @@ class LeftPanel(QWidget):
         QObjectCleanupHandler().add(self.controlPanel.layout())
         self.controlPanel.setLayout(layout)
 
-    def ControlPanelSignal(self):
+    def setFuncMenu(self, login):
+        if (login):
+            self.funcbutt.setMenu(self.funcMenu1)
+        else:
+            self.funcbutt.setMenu(self.funcMenu2)
