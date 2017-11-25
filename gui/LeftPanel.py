@@ -1,6 +1,6 @@
 """ Left Panel for CTS """
 
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QToolButton, QMenu, QFormLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QToolButton, QMenu, QFormLayout, QAction
 from PyQt5.QtGui import QPixmap, QPalette, QIcon, QColor
 from PyQt5.QtCore import Qt, QSize, QObjectCleanupHandler
 
@@ -43,13 +43,10 @@ class LeftPanel(QWidget):
 
         # declare function button
         self.funcbutt = QToolButton(self)
-        # declare function button menu
-        self.funcMenu1 = QMenu()
-        self.funcMenu1.addAction("Personal Information")
-        self.funcMenu1.addAction("Grand Statistic")
-        self.funcMenu1.addAction("Sign Out")
-        self.funcMenu2 = QMenu()
-        self.funcMenu2.addAction("Grand Statistic")
+        # declare action
+        self.personalInfo = QAction("Personal Information")
+        self.grandStat = QAction("Grand Statistic")
+        self.out = QAction("Sign Out")
 
         # start initUI
         self.initUI()
@@ -86,6 +83,8 @@ class LeftPanel(QWidget):
         # add funcbutt to LeftPanel
         self.funcbutt.setFixedSize(61, 31)
         self.funcbutt.move(39, self.hight - 43)
+        # connect menu event
+
 
     def setpic(self, path):
         """ set pic to the path image"""
@@ -120,6 +119,12 @@ class LeftPanel(QWidget):
 
     def setFuncMenu(self, login):
         if (login):
-            self.funcbutt.setMenu(self.funcMenu1)
+            mu = QMenu()
+            mu.addAction(self.personalInfo)
+            mu.addAction(self.grandStat)
+            mu.addAction(self.out)
+            self.funcbutt.setMenu(mu)
         else:
-            self.funcbutt.setMenu(self.funcMenu2)
+            mu = QMenu()
+            mu.addAction(self.grandStat)
+            self.funcbutt.setMenu(mu)

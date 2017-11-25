@@ -9,6 +9,11 @@ class SystemInfo(QTabWidget):
     def __init__(self, parent=None):
         super(SystemInfo, self).__init__(parent)
 
+        # self.lcdNumber (developer numbers)
+        # self.lcdNumber_2 (client numbers)
+
+        #
+
         self.setupUi(self)
 
     def setupUi(self, TabWidget):
@@ -121,6 +126,7 @@ class SystemInfo(QTabWidget):
 def main():
     cts = QApplication(sys.argv)
     mainWindow = SystemInfo()
+    mainWindow.lcdNumber.display(89002)
     mainWindow.show()
     sys.exit(cts.exec_())
 
