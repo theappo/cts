@@ -1,6 +1,5 @@
 """ MainWinow for cts """
 
-import sys
 import LeftPanel
 import RightPanel
 
@@ -43,15 +42,3 @@ class MainWindow(QWidget):
         self.leftPanel.messageB.clicked.connect(lambda: self.rightPanel.setCurrentIndex(5))
         self.leftPanel.historyB.clicked.connect(lambda: self.rightPanel.setCurrentIndex(6))
         self.leftPanel.manageTeam.clicked.connect(lambda: self.rightPanel.setCurrentIndex(7))
-
-
-def main():
-    cts = QApplication(sys.argv)
-    mainWindow = MainWindow()
-    mainWindow.show()
-    # disable resize
-    mainWindow.setFixedSize(1024, 648)
-    sys.exit(cts.exec_())
-
-
-main()
