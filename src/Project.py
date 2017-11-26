@@ -1,19 +1,12 @@
 class Project():
 	def __init__(self, project_id,client_id,description):
 
-		self._project_id=project_id
-		self._client_id=client_id
-		self._description=description
+		self.project_id=project_id
+		self.client_id=client_id
+		self.description=description
 
 	
-	def get_project_id(self):
-		return self._project_id
 
-	def get_client_id(self):
-		return self._client_id
-
-	def get_description(self):
-		return self._description
 
 	# def get_project_status():
 	# 	db=GateWay()
