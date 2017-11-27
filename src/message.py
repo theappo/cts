@@ -4,5 +4,5 @@ class Message():
 		self.message_id=message_id
 		self.sender=sender
 		self.receiver=receiver
-        self.time= time
+                self.time= time
         
