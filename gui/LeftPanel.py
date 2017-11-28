@@ -1,6 +1,6 @@
 """ Left Panel for CTS """
-
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QToolButton, QMenu, QFormLayout, QAction
+import sys
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QToolButton, QMenu, QFormLayout, QAction, QStackedWidget
 from PyQt5.QtGui import QPixmap, QPalette, QIcon, QColor
 from PyQt5.QtCore import Qt, QSize, QObjectCleanupHandler
 
@@ -22,33 +22,46 @@ class LeftPanel(QWidget):
         self.pic.setScaledContents(True)
 
         # declare control panel
-        self.controlPanel = QWidget(self)
+        self.controlPanel = QStackedWidget(self)
         # declare control button
+        # for visitor and temp user
         self.homeB0 = QPushButton("Home")
+        self.searchB0 = QPushButton("Search")
+        # for develop has no transaction history
         self.homeB1 = QPushButton("Home")
+        self.searchB1 = QPushButton("Search")
+        self.currentProjectB1 = QPushButton("Current Project")
+        self.submitProjectB1 = QPushButton("Submit Project")
+        self.messageB1 = QPushButton("Message")
+        self.historyB1 = QPushButton("History")
+        self.manageTeam1 = QPushButton("Team Manager")
+        # for develop has transaction history
         self.homeB2 = QPushButton("Home")
-        self.searchB = QPushButton("Search")
-        self.currentProjectB = QPushButton("Current Project")
-        self.submitProjectB = QPushButton("Submit Project")
-        self.postProjectB = QPushButton("Post New Project")
-        self.messageB = QPushButton("Message")
-        self.historyB = QPushButton("History")
-        self.manageTeam = QPushButton("Team Manager")
+        self.searchB2 = QPushButton("Search")
+        self.currentProjectB2 = QPushButton("Current Project")
+        self.submitProjectB2 = QPushButton("Submit Project")
+        self.messageB2 = QPushButton("Message")
+        self.historyB2 = QPushButton("History")
+        self.manageTeam2 = QPushButton("Team Manager")
+        # for client has no transaction history
+        self.homeB3 = QPushButton("Home")
+        self.searchB3 = QPushButton("Search")
+        self.currentProjectB3 = QPushButton("Current Project")
+        self.postProjectB3 = QPushButton("Post New Project")
+        self.messageB3 = QPushButton("Message")
+        self.historyB3 = QPushButton("History")
+        # for client has transaction history
+        self.homeB4 = QPushButton("Home")
+        self.searchB4 = QPushButton("Search")
+        self.currentProjectB4 = QPushButton("Current Project")
+        self.postProjectB4 = QPushButton("Post New Project")
+        self.messageB4 = QPushButton("Message")
+        self.historyB4 = QPushButton("History")
         # TODO: super user buttons
-        # declare button list
-        self.vblist = [self.homeB0, self.searchB]
-        self.dblistNoTranaction = [self.homeB1, self.searchB, self.currentProjectB, self.submitProjectB, self.messageB,
-                       self.historyB, self.manageTeam]
-        self.dblistHasTranaction = [self.homeB2, self.searchB, self.currentProjectB, self.submitProjectB, self.messageB,
-                       self.historyB, self.manageTeam]
-        self.cblistNoTranaction = [self.homeB1, self.searchB, self.currentProjectB, self.postProjectB, self.messageB,
-                       self.historyB]
-        self.cblistHasTranaction = [self.homeB2, self.searchB, self.currentProjectB, self.postProjectB, self.messageB,
-                       self.historyB]
-        self.sublist = []
 
         # declare function button
         self.funcbutt = QToolButton(self)
+        self.mu = QMenu()
         # declare action
         self.personalInfo = QAction("Personal Information")
         self.grandStat = QAction("Grand Statistic")
@@ -76,13 +89,68 @@ class LeftPanel(QWidget):
 
         # set stackWidget size
         self.controlPanel.setFixedSize(self.width, self.hight - 250)
+        # add visitor page to controlPanel
+        v = QWidget()
+        vly = QFormLayout()
+        vly.addRow(self.homeB0)
+        vly.addRow(self.searchB0)
+        v.setLayout(vly)
+        self.controlPanel.addWidget(v)
+        # add dev has no transaction to controlpanel
+        dnt = QWidget()
+        dntly = QFormLayout()
+        dntly.addRow(self.homeB1)
+        dntly.addRow(self.searchB1)
+        dntly.addRow(self.currentProjectB1)
+        dntly.addRow(self.submitProjectB1)
+        dntly.addRow(self.messageB1)
+        dntly.addRow(self.historyB1)
+        dntly.addRow(self.manageTeam1)
+        dnt.setLayout(dntly)
+        self.controlPanel.addWidget(dnt)
+        # add dev has transaction to controlPanel
+        dt = QWidget()
+        dtly = QFormLayout()
+        dtly.addRow(self.homeB2)
+        dtly.addRow(self.searchB2)
+        dtly.addRow(self.currentProjectB2)
+        dtly.addRow(self.submitProjectB2)
+        dtly.addRow(self.messageB2)
+        dtly.addRow(self.historyB2)
+        dtly.addRow(self.manageTeam2)
+        dt.setLayout(dtly)
+        self.controlPanel.addWidget(dt)
+        # add client has no transaction
+        cnt = QWidget()
+        cntly = QFormLayout()
+        cntly.addRow(self.homeB3)
+        cntly.addRow(self.searchB3)
+        cntly.addRow(self.currentProjectB3)
+        cntly.addRow(self.postProjectB3)
+        cntly.addRow(self.messageB3)
+        cntly.addRow(self.historyB3)
+        cnt.setLayout(cntly)
+        self.controlPanel.addWidget(cnt)
+        # add client has transaction
+        ct = QWidget()
+        ctly = QFormLayout()
+        ctly.addRow(self.homeB4)
+        ctly.addRow(self.searchB4)
+        ctly.addRow(self.currentProjectB4)
+        ctly.addRow(self.postProjectB4)
+        ctly.addRow(self.messageB4)
+        ctly.addRow(self.historyB4)
+        ct.setLayout(ctly)
+        self.controlPanel.addWidget(ct)
+        # TODO: add superUser
         # add controlPanel to LeftPanel
-        self.setControlPanel(0)
+        self.controlPanel.setCurrentIndex(0)
         self.controlPanel.move(0, 180)
 
         # set funcbutt menu
         self.setFuncMenu(False)
         self.funcbutt.setPopupMode(QToolButton.InstantPopup)
+        self.funcbutt.setMenu(self.mu)
         # set image for funcbutt
         self.funcbutt.setIcon(QIcon(self.menuIcon))
         self.funcbutt.setIconSize(QSize(60, 30))
@@ -90,7 +158,6 @@ class LeftPanel(QWidget):
         self.funcbutt.setFixedSize(61, 31)
         self.funcbutt.move(39, self.hight - 43)
         # connect menu event
-
 
     def setpic(self, path):
         """ set pic to the path image"""
@@ -102,41 +169,12 @@ class LeftPanel(QWidget):
         pixmap.scaled(60, 60, Qt.KeepAspectRatio)
         self.pic.setPixmap(pixmap)
 
-    def setControlPanel(self, i):
-        """set controlPanle widget index"""
-        layout = QFormLayout()
-
-        if (i == 0):
-            for button in self.vblist:
-                layout.addRow(button)
-        if (i == 1):
-            for button in self.dblistNoTranaction:
-                layout.addRow(button)
-        if (i == 2):
-            for button in self.dblistHasTranaction:
-                layout.addRow(button)
-        if (i == 3):
-            for button in self.cblistNoTranaction:
-                layout.addRow(button)
-        if (i == 4):
-            for button in self.cblistHasTranaction:
-                layout.addRow(button)
-        if (i == 5):
-            for button in self.sublist:
-                layout.addRow(button)
-
-        # delete and add layout to controlPanel
-        QObjectCleanupHandler().add(self.controlPanel.layout())
-        self.controlPanel.setLayout(layout)
-
     def setFuncMenu(self, login):
-        if (login):
-            mu = QMenu()
-            mu.addAction(self.personalInfo)
-            mu.addAction(self.grandStat)
-            mu.addAction(self.out)
-            self.funcbutt.setMenu(mu)
+        if login:
+            self.mu.clear()
+            self.mu.addAction(self.grandStat)
+            self.mu.addAction(self.personalInfo)
+            self.mu.addAction(self.out)
         else:
-            mu = QMenu()
-            mu.addAction(self.grandStat)
-            self.funcbutt.setMenu(mu)
+            self.mu.clear()
+            self.mu.addAction(self.grandStat)

@@ -9,8 +9,12 @@ from LoginManager import *
 from User import *
 from Developer import *
 from Client import *
+from GateWay import *
+
+from SystemInfo import *
 
 from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5 import QtCore
 
 
 class Core():
@@ -28,30 +32,38 @@ class Core():
 
         # connect login button
         self.mainWindow.rightPanel.page0.loginB.clicked.connect(self.login)
+        # connect logout button
+        self.mainWindow.leftPanel.out.triggered.connect(self.logout)
+        # connect grand statistic button
+        self.mainWindow.leftPanel.grandStat.triggered.connect(self.systemInfo)
 
     def setLeftPanel(self):
         if self.loginManager.currentUser == None:
-            self.mainWindow.leftPanel.setControlPanel(0)
-        elif type(self.loginManager.currentUser) is Developer:
-            if self.loginManager.currentUser.get_transaction_history == ():
-                self.mainWindow.leftPanel.setControlPanel(1)
-            else:
-                self.mainWindow.leftPanel.setControlPanel(2)
-        elif type(self.loginManager.currentUser) is Client:
-            if self.loginManager.currentUser.get_transaction_history == ():
-                self.mainWindow.leftPanel.setControlPanel(3)
-            else:
-                self.mainWindow.leftPanel.setControlPanel(4)
+            self.mainWindow.leftPanel.setpic("")
+            self.mainWindow.leftPanel.controlPanel.setCurrentIndex(0)
+            self.mainWindow.leftPanel.setFuncMenu(False)
         else:
-            self.mainWindow.leftPanel.setControlPanel(5)
+            if type(self.loginManager.currentUser) is Developer:
+                if self.loginManager.currentUser.get_transaction_history == ():
+                    self.mainWindow.leftPanel.controlPanel.setCurrentIndex(1)
+                else:
+                    self.mainWindow.leftPanel.controlPanel.setCurrentIndex(2)
+            elif type(self.loginManager.currentUser) is Client:
+                if self.loginManager.currentUser.get_transaction_history == ():
+                    self.mainWindow.leftPanel.controlPanel.setCurrentIndex(3)
+                else:
+                    self.mainWindow.leftPanel.controlPanel.setCurrentIndex(4)
+            else:
+                self.mainWindow.leftPanel.controlPanel.setCurrentIndex(5)
+
+            self.mainWindow.leftPanel.setpic("../resources/pictures/" + self.loginManager.currentUser.user_id)
+            self.mainWindow.leftPanel.setFuncMenu(True)
 
     def login(self):
         msg = self.loginManager.login(self.mainWindow.rightPanel.page0.loginID.text(),
                                       self.mainWindow.rightPanel.page0.loginPW.text())
         # set GUI
         if self.loginManager.currentUser != None:
-
-            self.mainWindow.leftPanel.setpic("../resources/pictures/" + self.loginManager.currentUser.user_id)
 
             self.setLeftPanel()
 
@@ -61,6 +73,26 @@ class Core():
                 self.mainWindow.rightPanel.setCurrentIndex(2)
         # show message
         QMessageBox.about(self.mainWindow, "Message", msg)
+
+    def logout(self):
+        self.loginManager.log_out()
+
+        self.setLeftPanel()
+
+        self.mainWindow.rightPanel.setCurrentIndex(0)
+
+        # show message
+        QMessageBox.about(self.mainWindow, "Message", "You have successfully logged out!")
+
+    def systemInfo(self):
+        db = GateWay()
+
+        info = SystemInfo(self.mainWindow)
+        info.lcdNumber.display(db.get_dev_num())
+        info.lcdNumber_2.display(db.get_client_num())
+
+        info.setWindowFlags(QtCore.Qt.Window)
+        info.show()
 
 
 def main():

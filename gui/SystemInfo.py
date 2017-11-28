@@ -121,14 +121,3 @@ class SystemInfo(QTabWidget):
         self.label_8.setText(_translate("TabWidget", "TextLabel"))
         self.label_7.setText(_translate("TabWidget", "TextLabel"))
         TabWidget.setTabText(TabWidget.indexOf(self.tab1), _translate("TabWidget", "User Rank"))
-
-
-def main():
-    cts = QApplication(sys.argv)
-    mainWindow = SystemInfo()
-    mainWindow.lcdNumber.display(89002)
-    mainWindow.show()
-    sys.exit(cts.exec_())
-
-
-main()
