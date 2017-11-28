@@ -24,7 +24,9 @@ class LeftPanel(QWidget):
         # declare control panel
         self.controlPanel = QWidget(self)
         # declare control button
-        self.homeB = QPushButton("Home")
+        self.homeB0 = QPushButton("Home")
+        self.homeB1 = QPushButton("Home")
+        self.homeB2 = QPushButton("Home")
         self.searchB = QPushButton("Search")
         self.currentProjectB = QPushButton("Current Project")
         self.submitProjectB = QPushButton("Submit Project")
@@ -34,10 +36,14 @@ class LeftPanel(QWidget):
         self.manageTeam = QPushButton("Team Manager")
         # TODO: super user buttons
         # declare button list
-        self.vblist = [self.homeB, self.searchB]
-        self.dblist = [self.homeB, self.searchB, self.currentProjectB, self.submitProjectB, self.messageB,
+        self.vblist = [self.homeB0, self.searchB]
+        self.dblistNoTranaction = [self.homeB1, self.searchB, self.currentProjectB, self.submitProjectB, self.messageB,
                        self.historyB, self.manageTeam]
-        self.cblist = [self.homeB, self.searchB, self.currentProjectB, self.postProjectB, self.messageB,
+        self.dblistHasTranaction = [self.homeB2, self.searchB, self.currentProjectB, self.submitProjectB, self.messageB,
+                       self.historyB, self.manageTeam]
+        self.cblistNoTranaction = [self.homeB1, self.searchB, self.currentProjectB, self.postProjectB, self.messageB,
+                       self.historyB]
+        self.cblistHasTranaction = [self.homeB2, self.searchB, self.currentProjectB, self.postProjectB, self.messageB,
                        self.historyB]
         self.sublist = []
 
@@ -91,7 +97,7 @@ class LeftPanel(QWidget):
         pixmap = QPixmap(path)
         # when path not found
         if (pixmap.isNull()):
-            pixmap = QPixmap(self.unknowUser)
+            pixmap = QPixmap(self.unknownUser)
         # scaled and set
         pixmap.scaled(60, 60, Qt.KeepAspectRatio)
         self.pic.setPixmap(pixmap)
@@ -104,12 +110,18 @@ class LeftPanel(QWidget):
             for button in self.vblist:
                 layout.addRow(button)
         if (i == 1):
-            for button in self.dblist:
+            for button in self.dblistNoTranaction:
                 layout.addRow(button)
         if (i == 2):
-            for button in self.cblist:
+            for button in self.dblistHasTranaction:
                 layout.addRow(button)
         if (i == 3):
+            for button in self.cblistNoTranaction:
+                layout.addRow(button)
+        if (i == 4):
+            for button in self.cblistHasTranaction:
+                layout.addRow(button)
+        if (i == 5):
             for button in self.sublist:
                 layout.addRow(button)
 

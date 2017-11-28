@@ -1,6 +1,6 @@
 """ a login and sign up tab widget"""
 
-from PyQt5.QtWidgets import QTabWidget, QFormLayout, QLineEdit, QPushButton, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QTabWidget, QFormLayout, QLineEdit, QPushButton, QWidget
 
 
 class LoginSignup(QTabWidget):
@@ -19,8 +19,10 @@ class LoginSignup(QTabWidget):
         # declare LineEdit
         self.signUpID = QLineEdit()
         self.signUpPW = QLineEdit()
+        self.signUpPW.setEchoMode(QLineEdit.Password)
         self.loginID = QLineEdit()
         self.loginPW = QLineEdit()
+        self.loginPW.setEchoMode(QLineEdit.Password)
 
         # declare check button
         self.signUPB = QPushButton("Sign Up", self.signUpPage)
@@ -53,6 +55,3 @@ class LoginSignup(QTabWidget):
         # add tabs
         self.addTab(self.signUpPage, "Sign Up")
         self.addTab(self.loginPage, "Login")
-
-    def changePage(self, i):
-        self.setCurrentIndex(i)

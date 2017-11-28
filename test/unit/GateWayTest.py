@@ -20,6 +20,8 @@ def main():
 	testAndPrint(Manager.add_blacklist('testuser4'), True)
 	testAndPrint(Manager.clear_blacklist(), True)
 
+	# check user_type
+	testAndPrint(Manager.user_type('testuser2'), 1)
 
 	# update test user balance and check if update successful
 	testAndPrint(Manager.update_user_balance('testuser3', 2000.00), True)

@@ -26,6 +26,9 @@ add_to_blacklist = "INSERT INTO Blacklist VALUES (%s, UTC_DATE())"
 # search user_id and user_password in user table
 verify_user = "SELECT user_type FROM users WHERE user_id = %s AND password = %s"
 
+# get user_type
+get_user_type = "SELECT user_type FROM users WHERE user_id = %s"
+
 # test if username is taken
 user_exists = "SELECT user_id FROM users WHERE user_id = %s"
 # return user balance
@@ -48,4 +51,7 @@ count_devs = "SELECT count(*) from Developers"
 count_clients = "SELECT count(*) from Clients"
 # get client with most projects
 active_client = "SELECT client_id from Projects group by client_id order by count(*) desc limit 1"
+
+# get user transaction history
+get_transaction_history = "SELECT * FROM TransactionHistory WHERE sender = %s OR receiver = %s"
 

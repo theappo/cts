@@ -1,8 +1,7 @@
 """ Left Panel for CTS """
 
-import LoginSignup
-
 from PyQt5.QtWidgets import QStackedWidget, QHBoxLayout, QWidget
+
 from LoginSignup import *
 
 
@@ -15,7 +14,7 @@ class RightPanel(QStackedWidget):
         self.hight = hight
 
         # declare page
-        self.login = LoginSignup(300, 170)
+        self.page0 = LoginSignup(300, 170)
 
         self.initUI()
 
@@ -26,7 +25,6 @@ class RightPanel(QStackedWidget):
         # add login page
         loginPage = QWidget()
         loginlayout = QHBoxLayout()
-        loginlayout.addWidget(self.login)
+        loginlayout.addWidget(self.page0)
         loginPage.setLayout(loginlayout)
         self.addWidget(loginPage)
-
