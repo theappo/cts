@@ -51,7 +51,7 @@ class Core():
         # set GUI
         if self.loginManager.currentUser != None:
 
-            self.mainWindow.leftPanel.setpic("../resources/pictures/" + self.loginManager.currentUser.user_id + ".png")
+            self.mainWindow.leftPanel.setpic("../resources/pictures/" + self.loginManager.currentUser.user_id)
 
             self.setLeftPanel()
 
