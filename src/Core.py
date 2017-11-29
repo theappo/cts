@@ -81,6 +81,9 @@ class Core():
 
         self.mainWindow.rightPanel.setCurrentIndex(0)
 
+        self.mainWindow.rightPanel.page0.loginID.clear()
+        self.mainWindow.rightPanel.page0.loginPW.clear()
+
         # show message
         QMessageBox.about(self.mainWindow, "Message", "You have successfully logged out!")
 
