@@ -1,14 +1,14 @@
 # check is user_id exists
-user_id_exists = "SELECT user_id from users where user_id = %s"
+user_id_exists = "SELECT user_id FROM users WHERE user_id = %s"
 
 # insert new user
 insert_user = "INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s)"
 
 # remove user from application table
-approve_user = "DELETE from application where user_id = %s"
+approve_user = "DELETE FROM application WHERE user_id = %s"
 
 # remove user from system (foreign keys will cascade)
-remove_user = "DELETE from users where user_id = %s"
+remove_user = "DELETE FROM users WHERE user_id = %s"
 
 # insert new user into applications too
 insert_applications = "INSERT INTO application VALUES (%s)"
@@ -29,41 +29,73 @@ verify_user = "SELECT user_type FROM users WHERE user_id = %s AND password = %s"
 user_exists = "SELECT user_id FROM users WHERE user_id = %s"
 
 # return user balance
-user_balance = "SELECT balance FROM users where user_id = %s"
+user_balance = "SELECT balance FROM users WHERE user_id = %s"
 
 # set user balance
-update_balance = "UPDATE users set balance = %s where user_id = %s"
+update_balance = "UPDATE users SET balance = %s WHERE user_id = %s"
 
 # return user address
-get_address = "SELECT address FROM users where user_id = %s"
+get_address = "SELECT address FROM users WHERE user_id = %s"
 
 # set user address
-update_address = "UPDATE users set address = %s where user_id = %s"
+update_address = "UPDATE users SET address = %s WHERE user_id = %s"
 
 # set user password
-update_password = "UPDATE users set password = %s where user_id = %s"
+update_password = "UPDATE users SET password = %s WHERE user_id = %s"
 
 # get user email
-get_email = "SELECT email from users where user_id = %s"
+get_email = "SELECT email FROM users WHERE user_id = %s"
 
 # set user email
-update_email = "UPDATE users set email = %s where user_id = %s"
+update_email = "UPDATE users SET email = %s WHERE user_id = %s"
 
 # count number of devs
-count_devs = "SELECT count(*) from Developers"
+count_devs = "SELECT count(*) FROM Developers"
 
 # count number of clients
-count_clients = "SELECT count(*) from Clients"
+count_clients = "SELECT count(*) FROM Clients"
 
 # get client with most projects
-active_client = "SELECT client_id from Projects group by client_id order by count(*) desc limit %s"
+active_client = "SELECT client_id FROM Projects GROUP BY client_id ORDER BY count(*) DESC LIMIT %s"
 
 # gets the dev with most income in transaction history (iterating through projects would take longer / more work)
-active_dev = "SELECT receiver from transactionhistory where receiver in (SELECT user_id from users where user_type = 2) group by receiver order by SUM(amount) desc limit %s"
+active_dev = "SELECT receiver FROM transactionhistory WHERE receiver IN (SELECT user_id FROM users WHERE user_type = 2) GROUP BY receiver ORDER BY SUM(amount) DESC LIMIT %s"
 
 # Create a project (must insert to projects and pendingprojects)
 new_project = "INSERT Projects VALUES (%s, %s, %s, %s, NULL, %s)"
 add_pending_project = "INSERT PendingProjects VALUES (%s, %s, %s)"
 
+# remove project for testing purposes
+remove_project = "DELETE FROM Projects WHERE project_id = %s"
+
+# get project status
+project_status = "SELECT project_status FROM Projects WHERE project_id = %s"
+
+# get project type
+project_type = "SELECT project_type FROM Projects WHERE project_id = %s"
+
 #check if project name taken
-project_exists = "SELECT project_id from Projects where project_id = %s"
+project_exists = "SELECT project_id FROM Projects WHERE project_id = %s"
+
+#place the team or individual bids
+place_teambid = "INSERT Team_Bid_Project VALUES (%s, %s, %s)"
+place_indivbid = "INSERT Individual_Bid_Project VALUES (%s, %s, %s)"
+
+# get the project bids
+individual_bids = "SELECT user_id, bid FROM Individual_Bid_Project WHERE project_id = %s ORDER BY bid ASC"
+team_bids = "SELECT team_id, bid FROM Team_Bid_Project WHERE project_id = %s ORDER BY bid ASC"
+
+# puts bid into current project table, also clears bid table of the project, same for individual chosen
+choose_team_bid = "INSERT INTO Current_Team_Project VALUES (%s, %s, %s)"
+choose_indiv_bid = "INSERT INTO Current_Individual_Project VALUES (%s, %s, %s)"
+
+# gets all from current project record
+get_current_team_project_info = "SELECT * FROM Current_Team_Project WHERE project_id = %s"
+get_current_indiv_project_info = "SELECT * FROM Current_Individual_Project WHERE project_id = %s"
+
+# puts current project into finished table
+team_finished = "INSERT INTO Finished_Team_Project VALUES (%s, NULL, %s, NULL, %s)"
+indiv_finished = "INSERT INTO Finished_Individual_Project VALUES (%s, %s, %s)"
+
+# enters a review
+make_project_review = "INSERT INTO TeamReviews VALUES (%s, %s, %s, %s, %s)"
