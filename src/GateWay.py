@@ -124,7 +124,7 @@ class GateWay(object):
     def user_type(self, user_id):
         try:
             self.conn.connect()
-            self.cursor.execute(get_user_type, user_id)
+            self.cursor.execute(get_type, user_id)
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)

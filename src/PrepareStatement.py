@@ -25,9 +25,6 @@ add_to_blacklist = "INSERT INTO Blacklist VALUES (%s, UTC_DATE())"
 # search user_id and user_password in user table
 verify_user = "SELECT user_type FROM users WHERE user_id = %s AND password = %s"
 
-# get user_type
-get_user_type = "SELECT user_type FROM users WHERE user_id = %s"
-
 # test if username is taken
 user_exists = "SELECT user_id FROM users WHERE user_id = %s"
 

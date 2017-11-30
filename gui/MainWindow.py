@@ -33,6 +33,7 @@ class MainWindow(QWidget):
 
         # connect signal
         self.leftPanel.homeB0.clicked.connect(lambda: self.rightPanel.setCurrentIndex(0))
-        self.leftPanel.searchB0.clicked.connect(lambda: self.rightPanel.setCurrentIndex(1))
-
-        #self.leftPanel.homeB1.clicked.connect(lambda: self.rightPanel.setCurrentIndex(0))
+        self.leftPanel.homeB1.clicked.connect(lambda: self.rightPanel.setCurrentIndex(1))
+        self.leftPanel.homeB2.clicked.connect(lambda: self.rightPanel.setCurrentIndex(2))
+        self.leftPanel.homeB3.clicked.connect(lambda: self.rightPanel.setCurrentIndex(1))
+        self.leftPanel.homeB4.clicked.connect(lambda: self.rightPanel.setCurrentIndex(2))

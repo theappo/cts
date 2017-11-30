@@ -1,7 +1,6 @@
 """ panel for system information """
-import sys
 
-from PyQt5.QtWidgets import QTabWidget, QApplication
+from PyQt5.QtWidgets import QTabWidget
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 

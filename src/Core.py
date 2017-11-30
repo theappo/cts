@@ -66,11 +66,13 @@ class Core():
         if self.loginManager.currentUser != None:
 
             self.setLeftPanel()
-
+            # TODO: login error, check ==
             if self.loginManager.currentUser.get_transaction_history == ():
                 self.mainWindow.rightPanel.setCurrentIndex(1)
+                print(1)
             else:
                 self.mainWindow.rightPanel.setCurrentIndex(2)
+                print(self.loginManager.currentUser.get_transaction_history())
         # show message
         QMessageBox.about(self.mainWindow, "Message", msg)
 
@@ -81,6 +83,9 @@ class Core():
 
         self.mainWindow.rightPanel.setCurrentIndex(0)
 
+        self.mainWindow.rightPanel.page0.loginID.clear()
+        self.mainWindow.rightPanel.page0.loginPW.clear()
+
         # show message
         QMessageBox.about(self.mainWindow, "Message", "You have successfully logged out!")
 
@@ -90,6 +95,7 @@ class Core():
         info = SystemInfo(self.mainWindow)
         info.lcdNumber.display(db.get_dev_num())
         info.lcdNumber_2.display(db.get_client_num())
+
 
         info.setWindowFlags(QtCore.Qt.Window)
         info.show()
