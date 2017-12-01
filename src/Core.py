@@ -56,7 +56,7 @@ class Core():
             else:
                 self.mainWindow.leftPanel.controlPanel.setCurrentIndex(5)
 
-            self.mainWindow.leftPanel.setpic("../resources/pictures/" + self.loginManager.currentUser.user_id)
+            self.mainWindow.leftPanel.setpic(self.loginManager.currentUser.user_id)
             self.mainWindow.leftPanel.setFuncMenu(True)
 
     def login(self):
