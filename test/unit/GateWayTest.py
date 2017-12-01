@@ -46,12 +46,25 @@ def main():
 	testAndPrint(Manager.get_dev_num(), 2)
 	testAndPrint(Manager.get_client_num(), 3)
 
-	# test most active client and dev with most income (will fail test, returns list)
-	testAndPrint(Manager.get_active_clients(3), "list of clients")
-	testAndPrint(Manager.get_active_devs(3), "list of devs")
+	# test most active client and dev with most income, may fail when i edit tables more
+	testAndPrint(Manager.get_active_clients(3), (('testuser2',), ('testuser5',)))
+	testAndPrint(Manager.get_active_devs(3), (('testuser6',), ('testuser4',)))
 
-	# test adding a new project
+	# test adding a new project, insert team bids, individual bids, and then choose one bid, then finish the project and delete record.
 	testAndPrint(Manager.create_new_project('testproject', 'testuser2', 'testproject', '2017-12-30', 1000, '2017-12-01'), True)
+	testAndPrint(Manager.place_team_bid('testproject', 'testteam1', 500), True)
+	testAndPrint(Manager.place_team_bid('testproject', 'testteam2', 250), True)
+	testAndPrint(Manager.place_team_bid('testproject', 'testteam3', 600), True)
+	testAndPrint(Manager.place_individual_bid('testproject', 'testuser4', 700), True)
+	testAndPrint(Manager.place_individual_bid('testproject', 'testuser6', 600), True)
+	testAndPrint(Manager.get_individual_project_bids('testproject'), (('testuser6', 600.00), ('testuser4', 700.00)))
+	testAndPrint(Manager.get_team_project_bids('testproject'), (('testteam2', 250.00), ('testteam1', 500.00), ('testteam3', 600.00)))
+	testAndPrint(Manager.choose_team('testproject', 'testteam2', 250), True)
+	testAndPrint(Manager.get_project_status('testproject'), 'Current')
+	testAndPrint(Manager.get_project_type('testproject'), 'Team')
+	testAndPrint(Manager.finish_team_project('testproject'), True)
+	testAndPrint(Manager.delete_project('testproject'), True)
+
 
 
 
