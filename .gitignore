@@ -6,3 +6,10 @@
 # Python cache
 __pycache__/
 .pyc
+
+# PyCharm
+.idea
+
+# Qt Designer
+pyqtui/
+.ui
