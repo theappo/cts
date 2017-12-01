@@ -44,12 +44,12 @@ class Core():
             self.mainWindow.leftPanel.setFuncMenu(False)
         else:
             if type(self.loginManager.currentUser) is Developer:
-                if self.loginManager.currentUser.get_transaction_history == ():
+                if self.loginManager.currentUser.get_transaction_history() == ():
                     self.mainWindow.leftPanel.controlPanel.setCurrentIndex(1)
                 else:
                     self.mainWindow.leftPanel.controlPanel.setCurrentIndex(2)
             elif type(self.loginManager.currentUser) is Client:
-                if self.loginManager.currentUser.get_transaction_history == ():
+                if self.loginManager.currentUser.get_transaction_history() == ():
                     self.mainWindow.leftPanel.controlPanel.setCurrentIndex(3)
                 else:
                     self.mainWindow.leftPanel.controlPanel.setCurrentIndex(4)
@@ -64,15 +64,12 @@ class Core():
                                       self.mainWindow.rightPanel.page0.loginPW.text())
         # set GUI
         if self.loginManager.currentUser != None:
-
             self.setLeftPanel()
             # TODO: login error, check ==
-            if self.loginManager.currentUser.get_transaction_history == ():
+            if self.loginManager.currentUser.get_transaction_history() == ():
                 self.mainWindow.rightPanel.setCurrentIndex(1)
-                print(1)
             else:
                 self.mainWindow.rightPanel.setCurrentIndex(2)
-                print(self.loginManager.currentUser.get_transaction_history())
         # show message
         QMessageBox.about(self.mainWindow, "Message", msg)
 
@@ -95,7 +92,6 @@ class Core():
         info = SystemInfo(self.mainWindow)
         info.lcdNumber.display(db.get_dev_num())
         info.lcdNumber_2.display(db.get_client_num())
-
 
         info.setWindowFlags(QtCore.Qt.Window)
         info.show()
