@@ -65,7 +65,7 @@ class Core():
         # set GUI
         if self.loginManager.currentUser != None:
             self.setLeftPanel()
-            # TODO: login error, check ==
+
             if self.loginManager.currentUser.get_transaction_history() == ():
                 self.mainWindow.rightPanel.setCurrentIndex(1)
             else:

@@ -18,7 +18,7 @@ class LoginManager():
             self.currentUser = None
             return "YOU ARE IN BLACK LIST"
         elif db.verify_user(user_id, password):
-            user_type = db.user_type(user_id)
+            user_type = db.get_user_type(user_id)
 
             if user_type == 0:
                 self.currentUser = SuperUser(user_id)
