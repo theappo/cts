@@ -536,3 +536,37 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         return True
+
+    def get_inbox_message(self, user_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(inbox_message, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+
+        data = self.cursor.fetchall()
+
+        return data
+
+    def get_sent_message(self, user_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(sent_message, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+
+        data = self.cursor.fetchall()
+
+        return data
+
+    def new_message(self, sender, receiver, message):
+        try:
+            self.conn.connect()
+            self.cursor.execute(new_message, (sender, receiver, message))
+            self.conn.commit()
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+
