@@ -37,3 +37,16 @@ class User():
     def get_transaction_history(self):
         db = GateWay()
         return db.get_transaction_history(self.user_id, self.user_id)
+
+    def get_inbox_message(self):
+        db = GateWay()
+        return db.get_inbox_message(self.user_id)
+
+    def get_sent_message(self):
+        db = GateWay()
+        return db.get_sent_message(self.user_id)
+
+    def new_message(self, receiver, message):
+        db = GateWay()
+        return db.new_message(self.user_id, receiver, message)
+
