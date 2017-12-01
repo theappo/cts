@@ -159,9 +159,9 @@ class LeftPanel(QWidget):
         self.funcbutt.move(39, self.hight - 43)
         # connect menu event
 
-    def setpic(self, path):
+    def setpic(self, user_id):
         """ set pic to the path image"""
-        pixmap = QPixmap(path)
+        pixmap = QPixmap("../resources/pictures/" + user_id)
         # when path not found
         if (pixmap.isNull()):
             pixmap = QPixmap(self.unknownUser)
