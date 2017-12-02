@@ -77,11 +77,10 @@ project_status = "SELECT project_status FROM Projects WHERE project_id = %s"
 # get project type
 project_type = "SELECT project_type FROM Projects WHERE project_id = %s"
 
-
-#check if project name taken
+# check if project name taken
 project_exists = "SELECT project_id FROM Projects WHERE project_id = %s"
 
-#place the team or individual bids
+# place the team or individual bids
 place_teambid = "INSERT Team_Bid_Project VALUES (%s, %s, %s)"
 place_indivbid = "INSERT Individual_Bid_Project VALUES (%s, %s, %s)"
 
@@ -103,3 +102,12 @@ indiv_finished = "INSERT INTO Finished_Individual_Project VALUES (%s, %s, %s)"
 
 # enters a review
 make_project_review = "INSERT INTO TeamReviews VALUES (%s, %s, %s, %s, %s)"
+
+# get all the current project for client
+get_client_current_projects = "SELECT project_id FROM Projects WHERE client_id = %s"
+
+# get all the current project for developer
+get_developer_current_projects = "SELECT project_id FROM Current_Individual_Project WHERE developer_id = %s"
+
+# get all the current project for a team
+get_team_current_projects = "SELECT project_id FROM Current_Team_Project WHERE team_id = %s"

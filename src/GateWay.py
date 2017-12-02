@@ -39,7 +39,10 @@ class GateWay(object):
         else:
             return False
 
-    # add new user to users table, and application table
+    # TODO: warning
+    # TODO: get user waring number
+    # TODO: get user warning number
+    # add new user to users table, and application table ///Cool!
     def add_user(self, user_id, user_password, balance, user_type, user_email, user_address):
         if (self.user_exists(user_id)):
             return False
@@ -111,6 +114,7 @@ class GateWay(object):
         else:
             return False
 
+    # TODO: add reson to this function
     # add user into blacklist
     def add_blacklist(self, user_id):
         if (False and self.check_blacklist(user_id)):
@@ -126,6 +130,21 @@ class GateWay(object):
             traceback.print_exc(e)
 
         return True
+
+    # return black reason and time
+    def get_black_list(self, user_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(search_blacklist, user_id)
+            self.conn.commit()
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+
+        data = self.cursor.fetchall()
+
+        return data
+
 
     # check if user entered correct user_id and password
     def verify_user(self, user_id, password):
@@ -183,6 +202,9 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         return True
+
+    # get blacklist reason
+
 
     # get user's address
     def get_user_address(self, user_id):
