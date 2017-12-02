@@ -40,7 +40,6 @@ class GateWay(object):
             return False
 
     # TODO: warning
-    # TODO: get user waring number
     # TODO: get user warning number
     # add new user to users table, and application table ///Cool!
     def add_user(self, user_id, user_password, balance, user_type, user_email, user_address):
@@ -114,7 +113,7 @@ class GateWay(object):
         else:
             return False
 
-    # TODO: add reson to this function
+    # TODO: add reason to this function
     # add user into blacklist
     def add_blacklist(self, user_id):
         if (False and self.check_blacklist(user_id)):
