@@ -16,7 +16,7 @@ class LoginManager():
 
         if db.check_blacklist(user_id):
             self.currentUser = None
-            return "YOU ARE IN BLACK LIST"
+            return db.check_blacklist(user_id)[0][1]
         elif db.verify_user(user_id, password):
             user_type = db.get_user_type(user_id)
 
@@ -26,7 +26,7 @@ class LoginManager():
                 self.currentUser = Client(user_id)
             else:
                 self.currentUser = Developer(user_id)
-
+        #TODO: add user to blacklist if wanring = 2
             return "Welcome"
 
         else:
