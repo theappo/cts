@@ -111,3 +111,13 @@ get_developer_current_projects = "SELECT project_id FROM Current_Individual_Proj
 
 # get all the current project for a team
 get_team_current_projects = "SELECT project_id FROM Current_Team_Project WHERE team_id = %s"
+
+# get all inbox message
+inbox_message = "SELECT sender, message, time FROM Messages where receiver = %s"
+
+# get sent message
+sent_message = "SELECT receiver, message, time FROM Messages where sender = %s"
+
+# new message
+new_message = "INSERT INTO Messages (sender, receiver, message, time) VALUES (%s, %s, %s, UTC_DATE())"
+
