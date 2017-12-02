@@ -1,6 +1,8 @@
 """ panel for system information """
 
 from PyQt5.QtWidgets import QTabWidget
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -8,6 +10,7 @@ class SystemInfo(QTabWidget):
     def __init__(self, parent=None):
         super(SystemInfo, self).__init__(parent)
 
+        self.unknownUser = "../img/unknown-user.png"
         # self.lcdNumber (developer numbers)
         # self.lcdNumber_2 (client numbers)
 
@@ -115,8 +118,33 @@ class SystemInfo(QTabWidget):
         TabWidget.setTabText(TabWidget.indexOf(self.tab), _translate("TabWidget", "User Number"))
         self.label_3.setText(_translate("TabWidget", "Deverloper Making Most Money"))
         self.label_5.setText(_translate("TabWidget", "TextLabel"))
+        self.label_5.setScaledContents(True)
+        self.label_5.setFixedSize(60, 60)
         self.label_6.setText(_translate("TabWidget", "TextLabel"))
         self.label_4.setText(_translate("TabWidget", "Client With Most Projects"))
         self.label_8.setText(_translate("TabWidget", "TextLabel"))
+        self.label_8.setScaledContents(True)
+        self.label_8.setFixedSize(60, 60)
         self.label_7.setText(_translate("TabWidget", "TextLabel"))
         TabWidget.setTabText(TabWidget.indexOf(self.tab1), _translate("TabWidget", "User Rank"))
+
+    def setTop(self, top_client_id, top_dev_id):
+        """ set pic to the path image"""
+        # set client
+        pixmap = QPixmap("../resources/pictures/" + top_client_id)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_5.setPixmap(pixmap)
+        self.label_6.setText(top_client_id)
+        # set dev
+        pixmap = QPixmap("../resources/pictures/" + top_dev_id)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_8.setPixmap(pixmap)
+        self.label_7.setText(top_dev_id)

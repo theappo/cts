@@ -2,7 +2,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QToolButton, QMenu, QFormLayout, QAction, QStackedWidget
 from PyQt5.QtGui import QPixmap, QPalette, QIcon, QColor
-from PyQt5.QtCore import Qt, QSize, QObjectCleanupHandler
+from PyQt5.QtCore import Qt, QSize
 
 
 class LeftPanel(QWidget):

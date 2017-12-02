@@ -1,12 +1,16 @@
 """ page for showing the top3 clients and developers"""
 
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Top3(QWidget):
     def __init__(self, parent=None):
         super(Top3, self).__init__(parent)
+
+        self.unknownUser = "../img/unknown-user.png"
 
         self.setupUi(self, )
 
@@ -23,7 +27,7 @@ class Top3(QWidget):
         font.setWeight(75)
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.verticalLayout.addWidget(self.label, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.verticalLayout.addWidget(self.label, 0, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.widget_3 = QtWidgets.QWidget(Form)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -173,9 +177,81 @@ class Top3(QWidget):
         self.label.setText(_translate("Form", "TOP 3"))
         self.label_2.setText(_translate("Form", "Clients With Most Projects:"))
         self.label_4.setText(_translate("Form", "TextLabel"))
+        self.label_4.setScaledContents(True)
+        self.label_4.setFixedSize(60, 60)
         self.label_5.setText(_translate("Form", "TextLabel"))
+        self.label_5.setScaledContents(True)
+        self.label_5.setFixedSize(60, 60)
         self.label_6.setText(_translate("Form", "TextLabel"))
+        self.label_6.setScaledContents(True)
+        self.label_6.setFixedSize(60, 60)
         self.label_3.setText(_translate("Form", "Developer Making Most Money:"))
         self.label_7.setText(_translate("Form", "TextLabel"))
+        self.label_7.setScaledContents(True)
+        self.label_7.setFixedSize(60, 60)
         self.label_8.setText(_translate("Form", "TextLabel"))
+        self.label_8.setScaledContents(True)
+        self.label_8.setFixedSize(60, 60)
         self.label_9.setText(_translate("Form", "TextLabel"))
+        self.label_9.setScaledContents(True)
+        self.label_9.setFixedSize(60, 60)
+
+    def setTopClient(self, top_client_id1, top_client_id2, top_client_id3):
+        """ set pic to the path image"""
+        # set client1
+        pixmap = QPixmap("../resources/pictures/" + top_client_id1)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_4.setPixmap(pixmap)
+        self.lineEdit.setText(top_client_id1)
+        # set client2
+        pixmap = QPixmap("../resources/pictures/" + top_client_id2)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_5.setPixmap(pixmap)
+        self.lineEdit_2.setText(top_client_id2)
+        # set client2
+        pixmap = QPixmap("../resources/pictures/" + top_client_id3)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_6.setPixmap(pixmap)
+        self.lineEdit_3.setText(top_client_id3)
+
+    def setTopDev(self, top_dev_id1, top_dev_id2, top_dev_id3):
+        """ set pic to the path image"""
+        # set client1
+        pixmap = QPixmap("../resources/pictures/" + top_dev_id1)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_7.setPixmap(pixmap)
+        self.lineEdit_4.setText(top_dev_id1)
+        # set client2
+        pixmap = QPixmap("../resources/pictures/" + top_dev_id2)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_8.setPixmap(pixmap)
+        self.lineEdit_5.setText(top_dev_id2)
+        # set client2
+        pixmap = QPixmap("../resources/pictures/" + top_dev_id3)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap(self.unknownUser)
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label_9.setPixmap(pixmap)
+        self.lineEdit_6.setText(top_dev_id3)
