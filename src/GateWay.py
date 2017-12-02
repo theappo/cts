@@ -111,15 +111,28 @@ class GateWay(object):
         else:
             return False
 
+    # returns number of warnings
+    def check_warning_number(self, user_id):
+        if( not self.user_exists(user_id)):
+            return False
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_warnings, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data[0][0]
+
     # add user into blacklist
-    def add_blacklist(self, user_id):
+    def add_blacklist(self, user_id, reason):
         if (False and self.check_blacklist(user_id)):
             return False
         if (False and not self.user_exists(user_id)):
             return False
         try:
             self.conn.connect()
-            self.cursor.execute(add_to_blacklist, user_id)
+            self.cursor.execute(add_to_blacklist, (user_id, reason))
             self.conn.commit()
             self.conn.close()
         except Exception as e:
@@ -170,7 +183,6 @@ class GateWay(object):
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
-
         return True
 
     # clear all blacklist entries, use for testing only
@@ -294,7 +306,7 @@ class GateWay(object):
         return data[0][0]
 
     # get clients as a list ordered by projects completed, limit size
-    def get_active_clients(self, size=1):
+    def get_active_clients(self, size=3):
         try:
             self.conn.connect()
             self.cursor.execute(active_client, size)
@@ -306,7 +318,7 @@ class GateWay(object):
         return data
 
     # get devs as a list ordered by income, limit size
-    def get_active_devs(self, size=1):
+    def get_active_devs(self, size=3):
         try:
             self.conn.connect()
             self.cursor.execute(active_dev, size)
@@ -314,6 +326,46 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
 
+        data = self.cursor.fetchall()
+        return data
+
+    # update the user interests (default is all 0)
+    def update_user_interests(self, user_id, Java, Python, Cpp, IOS, Android, Desktop):
+        if(not self.user_exists(user_id)):
+            return False
+        try:
+            self.conn.connect()
+            self.cursor.execute(update_interests, (Java, Python, Cpp, IOS, Android, Desktop, user_id))
+            self.conn.commit()
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        return True
+
+    # returns user interests as array in order: Java, Python, C++, IOS, Android, Desktop
+    def get_user_interests(self, user_id):
+        if(not self.user_exists(user_id)):
+            return False
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_user_interests, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data[0]
+
+    # returns all user_ids ordered by most similar interests (should return less?)
+    def get_similar_interests(self, user_id):
+        if(not self.user_exists(user_id)):
+            return False
+        data = self.get_user_interests(user_id)
+        try:
+            self.conn.connect()
+            self.cursor.execute(find_similar_interests, (data[0], data[1], data[2], data[3], data[4], data[5]))
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
 
@@ -570,3 +622,47 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
 
+# Search functions
+    def search_by_user_id(self, user_id):
+        user_id = '%' + user_id + '%'
+        try:
+            self.conn.connect()
+            self.cursor.execute(search_users, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
+
+    def search_by_team_id(self, team_id):
+        team_id = '%' + team_id + '%'
+        try:
+            self.conn.connect()
+            self.cursor.execute(search_teams, team_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
+
+    def search_by_teamprojectid(self, project_id):
+        project_id = '%' + project_id + '%'
+        try:
+            self.conn.connect()
+            self.cursor.execute(search_team_finished_projects, project_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
+
+    def search_by_indivprojectid(self, project_id):
+        project_id = '%' + project_id + '%'
+        try:
+            self.conn.connect()
+            self.cursor.execute(search_indiv_finished_projects, project_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
