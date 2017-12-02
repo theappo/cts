@@ -1,6 +1,6 @@
 """ a panel that dispaly user information """
-import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QTableWidgetItem
+
+from PyQt5.QtWidgets import QWidget
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class UserInfo(QWidget):
@@ -146,17 +146,3 @@ class UserInfo(QWidget):
         item.setText(_translate("QWidget", "Reviewer"))
         item = self.tableWidget.horizontalHeaderItem(3)
         item.setText(_translate("QWidget", "Project Review"))
-
-def main():
-    cts = QApplication(sys.argv)
-    core = UserInfo()
-    rowPosition = core.tableWidget.rowCount()
-    core.tableWidget.insertRow(rowPosition)
-    core.tableWidget.setItem(rowPosition, 0, QTableWidgetItem("text1"))
-    core.tableWidget.setItem(rowPosition, 1, QTableWidgetItem("text2"))
-    core.tableWidget.setItem(rowPosition, 2, QTableWidgetItem("OK, I like it, five stars. Great Job"))
-    core.show()
-    sys.exit(cts.exec_())
-
-
-main()

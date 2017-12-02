@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QStackedWidget, QHBoxLayout, QWidget
 
 from LoginSignup import *
 from Top3 import *
+from Interest import *
+from SearchPage import *
 
 
 class RightPanel(QStackedWidget):
@@ -17,6 +19,9 @@ class RightPanel(QStackedWidget):
         # declare page
         self.page0 = LoginSignup(300, 170)
         self.page1 = Top3()
+        self.page2 = Interest()
+        self.page3 = SearchPage()
+
 
         self.initUI()
 
@@ -33,4 +38,10 @@ class RightPanel(QStackedWidget):
 
         # add top3 page
         self.addWidget(self.page1)
+
+        # add interest page
+        self.addWidget(self.page2)
+
+        # add search page
+        self.addWidget(self.page3)
 

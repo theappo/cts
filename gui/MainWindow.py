@@ -37,3 +37,9 @@ class MainWindow(QWidget):
         self.leftPanel.homeB2.clicked.connect(lambda: self.rightPanel.setCurrentIndex(2))
         self.leftPanel.homeB3.clicked.connect(lambda: self.rightPanel.setCurrentIndex(1))
         self.leftPanel.homeB4.clicked.connect(lambda: self.rightPanel.setCurrentIndex(2))
+
+        self.leftPanel.searchB0.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))
+        self.leftPanel.searchB1.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))
+        self.leftPanel.searchB2.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))
+        self.leftPanel.searchB3.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))
+        self.leftPanel.searchB4.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))
