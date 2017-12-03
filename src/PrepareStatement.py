@@ -2,7 +2,7 @@
 user_id_exists = "SELECT user_id FROM users WHERE user_id = %s"
 
 # insert new user
-insert_user = "INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s)"
+insert_user = "INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, 0)"
 
 # remove user from application table
 approve_user = "DELETE FROM application WHERE user_id = %s"
@@ -19,8 +19,11 @@ get_type = "SELECT user_type FROM users WHERE user_id = %s"
 # search user_id in blacklist table
 search_blacklist = "SELECT * FROM Blacklist WHERE user_id = %s"
 
+# get number of warnings 0, 1, or 2
+get_warnings = "SELECT warnings FROM users WHERE user_id = %s"
+
 # add user_id to blacklist
-add_to_blacklist = "INSERT INTO Blacklist VALUES (%s, UTC_DATE())"
+add_to_blacklist = "INSERT INTO Blacklist VALUES (%s, UTC_DATE(), %s)"
 
 # search user_id and user_password in user table
 verify_user = "SELECT user_type FROM users WHERE user_id = %s AND password = %s"
@@ -120,4 +123,16 @@ sent_message = "SELECT receiver, message, time FROM Messages where sender = %s"
 
 # new message
 new_message = "INSERT INTO Messages (sender, receiver, message, time) VALUES (%s, %s, %s, UTC_DATE())"
+
+# update interests, get the users interests, also find similar interests
+update_interests = "UPDATE UserInterests SET Java = %s, Python = %s, Cpp = %s, IOS = %s, Android = %s, DesktopApp = %s WHERE user_id = %s"
+get_user_interests = "SELECT Java, Python, Cpp, IOS, Android, DesktopApp FROM UserInterests WHERE user_id = %s"
+find_similar_interests = "SELECT user_id FROM UserInterests GROUP BY user_id ORDER BY abs (Java - %s) + abs (Python - %s) + abs (Cpp - %s) + abs (IOS - %s) + abs (Android - %s) + abs (DesktopApp - %s) ASC";
+
+# Search Statements
+# find all users/projects with substring in their id
+search_users = "SELECT user_id, user_type FROM Users WHERE user_id LIKE %s"
+search_teams = "SELECT team_id FROM Teams WHERE team_id LIKE %s"
+search_team_finished_projects = "SELECT ftp.project_id, client_id, description, team_id, bid FROM Finished_Team_Project ftp INNER JOIN Projects p ON ftp.project_id = p.project_id WHERE ftp.project_id LIKE %s"
+search_indiv_finished_projects = "SELECT fip.project_id, client_id, description, dev_id, bid FROM Finished_Individual_Project fip INNER JOIN Projects p ON fip.project_id = p.project_id WHERE fip.project_id LIKE %s"
 

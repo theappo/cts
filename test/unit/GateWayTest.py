@@ -17,7 +17,7 @@ def main():
 	testAndPrint(Manager.verify_user('testuser2','password2'),True)
 
 	# add testuser4 to blacklist, then remove
-	testAndPrint(Manager.add_blacklist('testuser4'), True)
+	testAndPrint(Manager.add_blacklist('testuser4', 'testing'), True)
 	testAndPrint(Manager.clear_blacklist(), True)
 
 	# check if testuser2 is client
@@ -43,12 +43,12 @@ def main():
 	testAndPrint(Manager.delete_account('testremove'), True)
 
 	# test total number of devs and clients
-	testAndPrint(Manager.get_dev_num(), 2)
-	testAndPrint(Manager.get_client_num(), 3)
+	testAndPrint(Manager.get_dev_num(), 5)
+	testAndPrint(Manager.get_client_num(), 6)
 
 	# test most active client and dev with most income, may fail when i edit tables more
-	testAndPrint(Manager.get_active_clients(3), (('testuser2',), ('testuser5',)))
-	testAndPrint(Manager.get_active_devs(3), (('testuser6',), ('testuser4',)))
+	testAndPrint(Manager.get_active_clients(3), (('testuser2',), ('testuser9',), ('testuser8',)))
+	testAndPrint(Manager.get_active_devs(3), (('testuser6',), ('testuser4',), ('testuser12',)))
 
 	# test adding a new project, insert team bids, individual bids, and then choose one bid, then finish the project and delete record.
 	testAndPrint(Manager.create_new_project('testproject', 'testuser2', 'testproject', '2017-12-30', 1000, '2017-12-01'), True)
@@ -64,6 +64,16 @@ def main():
 	testAndPrint(Manager.get_project_type('testproject'), 'Team')
 	testAndPrint(Manager.finish_team_project('testproject'), True)
 	testAndPrint(Manager.delete_project('testproject'), True)
+
+	# test getting user interests, and then ordering users by their interests
+	testAndPrint(Manager.get_user_interests('testuser6'), (0, 0, 0, 1, 1, 1))
+	testAndPrint(Manager.get_similar_interests('testuser6'), 'all users ordered by interests shared')
+
+	# test searching functions
+	testAndPrint(Manager.search_by_user_id('testuser'), 'list of all users with similar name')
+	testAndPrint(Manager.search_by_team_id('testteam'), 'list of all teams with similar name')
+	testAndPrint(Manager.search_by_teamprojectid('5'), 'list of projects')
+	testAndPrint(Manager.search_by_indivprojectid('6'), 'list of projects')
 
 
 
