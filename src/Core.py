@@ -78,6 +78,8 @@ class Core():
         self.mainWindow.leftPanel.messageB2.clicked.connect(self.refreshMessage)
         self.mainWindow.leftPanel.messageB3.clicked.connect(self.refreshMessage)
         self.mainWindow.leftPanel.messageB4.clicked.connect(self.refreshMessage)
+        # connect message Page refresh button
+        self.mainWindow.rightPanel.page4.pushButton_2.clicked.connect(self.refreshMessage)
         # connect message Page new message button
         self.mainWindow.rightPanel.page4.pushButton_4.clicked.connect(self.showNewMessage)
         # connectd newMessage send button
@@ -290,28 +292,32 @@ class Core():
     def refreshMessage(self):
         inbox = self.loginManager.currentUser.get_inbox_message()
 
-        for message in inbox:
+        # clear all content
+        self.mainWindow.rightPanel.page4.tableWidget.setRowCount(0)
+        self.mainWindow.rightPanel.page4.tableWidget_2.setRowCount(0)
+
+        for im in inbox:
             rowPosition = self.mainWindow.rightPanel.page4.tableWidget.rowCount()
-            self.mainWindow.rightPanel.page3.tableWidget.insertRow(rowPosition)
-            self.mainWindow.rightPanel.page3.tableWidget.setItem(rowPosition, 0,
-                                                                 QTableWidgetItem(message[0]))
-            self.mainWindow.rightPanel.page3.tableWidget.setItem(rowPosition, 1,
-                                                                 QTableWidgetItem(message[1]))
-            #self.mainWindow.rightPanel.page3.tableWidget.setItem(rowPosition, 2,
-                                                                 #QTableWidgetItem(message[2]))
+            self.mainWindow.rightPanel.page4.tableWidget.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page4.tableWidget.setItem(rowPosition, 0,
+                                                                 QTableWidgetItem(im[0]))
+            #self.mainWindow.rightPanel.page4.tableWidget.setItem(rowPosition, 1,
+                                                                 #QTableWidgetItem(im[2]))
+            self.mainWindow.rightPanel.page4.tableWidget.setItem(rowPosition, 2,
+                                                                 QTableWidgetItem(im[1]))
             # TODO: (('testuser2', 'test', datetime.datetime(2017, 12, 4, 0, 0)),), datetime
 
         sent = self.loginManager.currentUser.get_sent_message()
 
-        for message in sent:
-            rowPosition = self.mainWindow.rightPanel.page4.tableWidget.rowCount()
-            self.mainWindow.rightPanel.page3.tableWidget.insertRow(rowPosition)
-            self.mainWindow.rightPanel.page3.tableWidget.setItem(rowPosition, 0,
-                                                                 QTableWidgetItem(message[0]))
-            self.mainWindow.rightPanel.page3.tableWidget.setItem(rowPosition, 1,
-                                                                 QTableWidgetItem(message[1]))
-            #self.mainWindow.rightPanel.page3.tableWidget.setItem(rowPosition, 2,
-                                                                 #QTableWidgetItem(message[2]))
+        for sm in sent:
+            rowPosition = self.mainWindow.rightPanel.page4.tableWidget_2.rowCount()
+            self.mainWindow.rightPanel.page4.tableWidget_2.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page4.tableWidget_2.setItem(rowPosition, 0,
+                                                                 QTableWidgetItem(sm[0]))
+            #self.mainWindow.rightPanel.page4.tableWidget_2.setItem(rowPosition, 1,
+                                                                 #QTableWidgetItem(sm[2]))
+            self.mainWindow.rightPanel.page4.tableWidget_2.setItem(rowPosition, 2,
+                                                                 QTableWidgetItem(sm[1]))
         #TODO: (('testuser2', 'test', datetime.datetime(2017, 12, 4, 0, 0)),), datetime
 
     def showNewMessage(self):

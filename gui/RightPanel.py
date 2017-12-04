@@ -48,7 +48,7 @@ class RightPanel(QStackedWidget):
         # add search page
         self.addWidget(self.page3)
 
-        # add post new project page
+        # add message page
         self.addWidget(self.page4)
 
         # add history page
