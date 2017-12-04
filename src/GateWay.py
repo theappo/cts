@@ -39,8 +39,6 @@ class GateWay(object):
         else:
             return False
 
-    # TODO: warning
-    # TODO: get user warning number
     # add new user to users table, and application table ///Cool!
     def add_user(self, user_id, user_password, balance, user_type, user_email, user_address):
         if (self.user_exists(user_id)):
@@ -373,7 +371,11 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         data = self.cursor.fetchall()
-        return data[0]
+
+        if len(data):
+            return data[0]
+        else:
+            return (0, 0, 0, 0, 0, 0)
 
     # returns all user_ids ordered by most similar interests (should return less?)
     def get_similar_interests(self, user_id):
@@ -687,3 +689,6 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
+
+#db = GateWay()
+#print(db.search_by_teamprojectid(""))

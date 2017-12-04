@@ -64,6 +64,9 @@ class Messages(QTabWidget):
         self.verticalLayout_2.addWidget(self.tableWidget_2)
         QTabWidget.addTab(self.tab1, "")
 
+        self.tableWidget.setSortingEnabled(True)
+        self.tableWidget_2.setSortingEnabled(True)
+
         self.retranslateUi(QTabWidget)
         QTabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(QTabWidget)

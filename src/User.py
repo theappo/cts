@@ -49,3 +49,29 @@ class User():
     def new_message(self, receiver, message):
         db = GateWay()
         return db.new_message(self.user_id, receiver, message)
+
+    def interests(self):
+        db = GateWay()
+        return db.get_user_interests(self.user_id)
+
+    def type(self):
+        db = GateWay()
+        user_type = db.get_user_type(self.user_id)
+        if user_type == 0:
+            return "Super User"
+        elif user_type == 1:
+            return "Client"
+        else:
+            return "Develop"
+
+    #TODO: add aveger rating
+    def rating(self):
+        db = GateWay()
+        return "4.6"
+
+    #TODO: use in a team?
+    #TODO: all reveiw
+    #TODO: all history porject
+
+u = User("okokokok")
+print(u.get_sent_message())

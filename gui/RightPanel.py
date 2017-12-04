@@ -6,6 +6,8 @@ from LoginSignup import *
 from Top3 import *
 from Interest import *
 from SearchPage import *
+from Messages import *
+from History import *
 
 
 class RightPanel(QStackedWidget):
@@ -21,7 +23,8 @@ class RightPanel(QStackedWidget):
         self.page1 = Top3()
         self.page2 = Interest()
         self.page3 = SearchPage()
-
+        self.page4 = Messages()
+        self.page5 = History()
 
         self.initUI()
 
@@ -44,4 +47,10 @@ class RightPanel(QStackedWidget):
 
         # add search page
         self.addWidget(self.page3)
+
+        # add post new project page
+        self.addWidget(self.page4)
+
+        # add history page
+        self.addWidget(self.page5)
 

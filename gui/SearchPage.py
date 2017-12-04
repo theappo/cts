@@ -114,6 +114,11 @@ class SearchPage(QWidget):
         self.tabWidget.addTab(self.tab_3, "")
         self.verticalLayout.addWidget(self.tabWidget)
 
+        self.tableWidget.setSortingEnabled(True)
+        self.tableWidget_2.setSortingEnabled(True)
+        self.tableWidget_3.setSortingEnabled(True)
+        self.tableWidget_4.setSortingEnabled(True)
+
         self.retranslateUi(QWidget)
         self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(QWidget)

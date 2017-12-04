@@ -1,17 +1,26 @@
 """ a panel that dispaly user information """
 
-from PyQt5.QtWidgets import QWidget
+from Panel import *
+
+from subprocess import Popen
+
+from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class UserInfo(QWidget):
     def __init__(self, parent=None):
         super(UserInfo, self).__init__(parent)
 
+        self.user_id = None
+
         self.setupUi(self)
 
     def setupUi(self, QWidget):
         QWidget.setObjectName("QWidget")
-        QWidget.resize(522, 615)
+        QWidget.resize(576, 646)
         self.verticalLayout = QtWidgets.QVBoxLayout(QWidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.widget_3 = QtWidgets.QWidget(QWidget)
@@ -64,11 +73,11 @@ class UserInfo(QWidget):
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.widget_2)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.checkBox = QtWidgets.QCheckBox(self.widget_2)
-        self.checkBox.setCheckable(False)
+        self.checkBox.setEnabled(False)
         self.checkBox.setObjectName("checkBox")
         self.verticalLayout_3.addWidget(self.checkBox)
         self.checkBox_2 = QtWidgets.QCheckBox(self.widget_2)
-        self.checkBox_2.setCheckable(False)
+        self.checkBox_2.setEnabled(False)
         self.checkBox_2.setObjectName("checkBox_2")
         self.verticalLayout_3.addWidget(self.checkBox_2)
         self.horizontalLayout_3.addWidget(self.widget_2)
@@ -77,11 +86,11 @@ class UserInfo(QWidget):
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget_6)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.checkBox_3 = QtWidgets.QCheckBox(self.widget_6)
-        self.checkBox_3.setCheckable(False)
+        self.checkBox_3.setEnabled(False)
         self.checkBox_3.setObjectName("checkBox_3")
         self.verticalLayout_2.addWidget(self.checkBox_3)
         self.checkBox_4 = QtWidgets.QCheckBox(self.widget_6)
-        self.checkBox_4.setCheckable(False)
+        self.checkBox_4.setEnabled(False)
         self.checkBox_4.setObjectName("checkBox_4")
         self.verticalLayout_2.addWidget(self.checkBox_4)
         self.horizontalLayout_3.addWidget(self.widget_6)
@@ -90,11 +99,11 @@ class UserInfo(QWidget):
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widget_5)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.checkBox_5 = QtWidgets.QCheckBox(self.widget_5)
-        self.checkBox_5.setCheckable(False)
+        self.checkBox_5.setEnabled(False)
         self.checkBox_5.setObjectName("checkBox_5")
         self.verticalLayout_4.addWidget(self.checkBox_5)
         self.checkBox_6 = QtWidgets.QCheckBox(self.widget_5)
-        self.checkBox_6.setCheckable(False)
+
         self.checkBox_6.setObjectName("checkBox_6")
         self.verticalLayout_4.addWidget(self.checkBox_6)
         self.horizontalLayout_3.addWidget(self.widget_5)
@@ -103,6 +112,7 @@ class UserInfo(QWidget):
         self.tableWidget.setMinimumSize(QtCore.QSize(200, 200))
         self.tableWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.tableWidget.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
+        self.tableWidget.setTextElideMode(QtCore.Qt.ElideLeft)
         self.tableWidget.setCornerButtonEnabled(True)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(4)
@@ -121,6 +131,11 @@ class UserInfo(QWidget):
         self.tableWidget.verticalHeader().setCascadingSectionResizes(True)
         self.verticalLayout.addWidget(self.tableWidget)
 
+        self.tableWidget.setSortingEnabled(True)
+
+        self.lineEdit.setMinimumWidth(450)
+        self.lineEdit_2.setMinimumWidth(450)
+
         self.retranslateUi(QWidget)
         QtCore.QMetaObject.connectSlotsByName(QWidget)
 
@@ -132,12 +147,13 @@ class UserInfo(QWidget):
         self.pushButton.setText(_translate("QWidget", "View Addition Info"))
         self.label_2.setText(_translate("QWidget", "Email:"))
         self.label_3.setText(_translate("QWidget", "Adress:"))
-        self.checkBox.setText(_translate("QWidget", "CheckBox"))
-        self.checkBox_2.setText(_translate("QWidget", "CheckBox"))
-        self.checkBox_3.setText(_translate("QWidget", "CheckBox"))
-        self.checkBox_4.setText(_translate("QWidget", "CheckBox"))
-        self.checkBox_5.setText(_translate("QWidget", "CheckBox"))
-        self.checkBox_6.setText(_translate("QWidget", "CheckBox"))
+        self.checkBox.setText(_translate("QWidget", "Java"))
+        self.checkBox_2.setText(_translate("QWidget", "IOS"))
+        self.checkBox_3.setText(_translate("QWidget", "python"))
+        self.checkBox_4.setText(_translate("QWidget", "Android"))
+        self.checkBox_5.setText(_translate("QWidget", "Cpp"))
+        self.checkBox_6.setText(_translate("QWidget", "DesktopApp"))
+        self.checkBox_6.setEnabled(False)
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("QWidget", "Project ID"))
         item = self.tableWidget.horizontalHeaderItem(1)
@@ -146,3 +162,26 @@ class UserInfo(QWidget):
         item.setText(_translate("QWidget", "Reviewer"))
         item = self.tableWidget.horizontalHeaderItem(3)
         item.setText(_translate("QWidget", "Project Review"))
+
+        self.label.setFixedSize(100, 100)
+        self.label.setScaledContents(True)
+
+        # connect button
+        self.pushButton_2.clicked.connect(self.viewresume)
+
+    def setpic(self, user_id):
+        self.user_id = user_id
+        """ set pic to the path image"""
+        pixmap = QPixmap("../resources/pictures/" + self.user_id)
+        # when path not found
+        if (pixmap.isNull()):
+            pixmap = QPixmap("../img/unknown-user.png")
+        # scaled and set
+        pixmap.scaled(60, 60, Qt.KeepAspectRatio)
+        self.label.setPixmap(pixmap)
+
+    def viewresume(self):
+        pdf = "../resources/resumes/" + self.user_id + ".pdf"
+        # TODO: open pdf in mac
+        Popen([pdf], shell=True)
+        # QMessageBox.about(self, "Error", "This user not yet has a resume")

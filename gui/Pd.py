@@ -1,15 +1,16 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QTabWidget
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Pd(QWidget):
+
+class Pd(QTabWidget):
     def __init__(self, parent=None):
         super(Pd, self).__init__(parent)
 
         self.setupUi(self)
 
-    def setupUi(self, QWidget):
-        QWidget.setObjectName("QWidget")
-        QWidget.resize(486, 579)
+    def setupUi(self, QTabWidget):
+        QTabWidget.setObjectName("QTabWidget")
+        QTabWidget.resize(486, 579)
         self.PersonalInfo = QtWidgets.QWidget()
         self.PersonalInfo.setObjectName("PersonalInfo")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.PersonalInfo)
@@ -102,7 +103,7 @@ class Pd(QWidget):
         self.pushButton_3 = QtWidgets.QPushButton(self.PersonalInfo)
         self.pushButton_3.setObjectName("pushButton_3")
         self.verticalLayout.addWidget(self.pushButton_3, 0, QtCore.Qt.AlignHCenter)
-        QWidget.addTab(self.PersonalInfo, "")
+        QTabWidget.addTab(self.PersonalInfo, "")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.tab)
@@ -116,32 +117,59 @@ class Pd(QWidget):
         self.textEdit = QtWidgets.QTextEdit(self.tab)
         self.textEdit.setObjectName("textEdit")
         self.verticalLayout_5.addWidget(self.textEdit)
+        self.textBrowser = QtWidgets.QTextBrowser(self.tab)
+        self.textBrowser.setObjectName("textBrowser")
+        self.verticalLayout_5.addWidget(self.textBrowser)
+        spacerItem = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.verticalLayout_5.addItem(spacerItem)
+        self.checkBox_7 = QtWidgets.QCheckBox(self.tab)
+        self.checkBox_7.setObjectName("checkBox_7")
+        self.verticalLayout_5.addWidget(self.checkBox_7, 0, QtCore.Qt.AlignHCenter)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.verticalLayout_5.addItem(spacerItem1)
         self.pushButton_4 = QtWidgets.QPushButton(self.tab)
         self.pushButton_4.setObjectName("pushButton_4")
         self.verticalLayout_5.addWidget(self.pushButton_4, 0, QtCore.Qt.AlignHCenter)
-        QWidget.addTab(self.tab, "")
+        QTabWidget.addTab(self.tab, "")
 
-        self.retranslateUi(QWidget)
-        QWidget.setCurrentIndex(1)
-        QtCore.QMetaObject.connectSlotsByName(QWidget)
+        self.pushButton_4.setEnabled(False)
 
-    def retranslateUi(self, QWidget):
+        self.retranslateUi(QTabWidget)
+        QTabWidget.setCurrentIndex(1)
+        QtCore.QMetaObject.connectSlotsByName(QTabWidget)
+
+    def retranslateUi(self, QTabWidget):
         _translate = QtCore.QCoreApplication.translate
-        QWidget.setWindowTitle(_translate("QWidget", "QWidget"))
-        self.label.setText(_translate("QWidget", "TextLabel"))
-        self.pushButton_2.setText(_translate("QWidget", "View Resume"))
-        self.pushButton.setText(_translate("QWidget", "View Addition Info"))
-        self.label_2.setText(_translate("QWidget", "Email:"))
-        self.label_3.setText(_translate("QWidget", "Adress:"))
-        self.checkBox.setText(_translate("QWidget", "IOS"))
-        self.checkBox_2.setText(_translate("QWidget", "Java"))
-        self.checkBox_3.setText(_translate("QWidget", "Android"))
-        self.checkBox_4.setText(_translate("QWidget", "Python"))
-        self.checkBox_5.setText(_translate("QWidget", "DesktopApp"))
-        self.checkBox_6.setText(_translate("QWidget", "CPP"))
-        self.pushButton_3.setText(_translate("QWidget", "Submit Change"))
-        QWidget.setTabText(QWidget.indexOf(self.PersonalInfo), _translate("QWidget", "Tab 1"))
-        self.label_4.setText(_translate("QWidget", "Fll in below demand to quit from the system"))
-        self.pushButton_4.setText(_translate("QWidget", "Delete Acount"))
-        QWidget.setTabText(QWidget.indexOf(self.tab), _translate("QWidget", "Tab 2"))
+        QTabWidget.setWindowTitle(_translate("QTabWidget", "QTabWidget"))
+        self.label.setText(_translate("QTabWidget", "TextLabel"))
+        self.pushButton_2.setText(_translate("QTabWidget", "View Resume"))
+        self.pushButton.setText(_translate("QTabWidget", "View Addition Info"))
+        self.label_2.setText(_translate("QTabWidget", "Email:"))
+        self.label_3.setText(_translate("QTabWidget", "Adress:"))
+        self.checkBox.setText(_translate("QTabWidget", "IOS"))
+        self.checkBox_2.setText(_translate("QTabWidget", "Java"))
+        self.checkBox_3.setText(_translate("QTabWidget", "Android"))
+        self.checkBox_4.setText(_translate("QTabWidget", "Python"))
+        self.checkBox_5.setText(_translate("QTabWidget", "DesktopApp"))
+        self.checkBox_6.setText(_translate("QTabWidget", "CPP"))
+        self.pushButton_3.setText(_translate("QTabWidget", "Submit Change"))
+        QTabWidget.setTabText(QTabWidget.indexOf(self.PersonalInfo), _translate("QTabWidget", "Tab 1"))
+        self.label_4.setText(_translate("QTabWidget", "Fill in below demand to quit from the system"))
+        self.textBrowser.setHtml(_translate("QTabWidget",
+                                            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                            "p, li { white-space: pre-wrap; }\n"
+                                            "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+                                            "<p align=\"justify\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Check belwo checkbox, means you fully understand your account will be deleted. Before doing this,You must <span style=\" font-weight:600; font-style:italic;\">Withdrawal all your money</span>.</p></body></html>"))
+        self.checkBox_7.setText(_translate("QTabWidget", "I agreed"))
+        self.pushButton_4.setText(_translate("QTabWidget", "Delete Acount"))
+        QTabWidget.setTabText(QTabWidget.indexOf(self.tab), _translate("QTabWidget", "Tab 2"))
 
+        # connect check box
+        self.checkBox_7.stateChanged.connect(self.enable)
+
+    def enable(self):
+        if self.checkBox_7.isChecked():
+            self.pushButton_4.setEnabled(True)
+        else:
+            self.pushButton_4.setEnabled(False)

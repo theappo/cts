@@ -1,6 +1,6 @@
 """ shwo user who share similar interest """
 
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Interest(QWidget):
@@ -9,51 +9,43 @@ class Interest(QWidget):
 
         self.setupUi(self)
 
-    def setupUi(self, QWidget):
-        QWidget.setObjectName("QWidget")
-        QWidget.resize(1010, 714)
-        self.verticalLayout = QtWidgets.QVBoxLayout(QWidget)
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(841, 591)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.groupBox = QtWidgets.QGroupBox(QWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
-        self.groupBox.setSizePolicy(sizePolicy)
-        self.groupBox.setMinimumSize(QtCore.QSize(450, 500))
+        self.groupBox = QtWidgets.QGroupBox(Form)
         font = QtGui.QFont()
         font.setPointSize(13)
+        font.setBold(False)
+        font.setItalic(True)
+        font.setWeight(50)
         self.groupBox.setFont(font)
         self.groupBox.setObjectName("groupBox")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.groupBox)
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBox)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tableWidget = QtWidgets.QTableWidget(self.groupBox)
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(3)
+        self.tableWidget.setColumnCount(1)
         self.tableWidget.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(2, item)
-        self.horizontalLayout.addWidget(self.tableWidget)
-        self.pushButton = QtWidgets.QPushButton(self.groupBox)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.verticalLayout.addWidget(self.groupBox, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.verticalLayout_2.addWidget(self.tableWidget)
+        self.verticalLayout.addWidget(self.groupBox, 0, QtCore.Qt.AlignHCenter)
 
-        self.retranslateUi(QWidget)
-        QtCore.QMetaObject.connectSlotsByName(QWidget)
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
 
-    def retranslateUi(self, QWidget):
+    def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        QWidget.setWindowTitle(_translate("QWidget", "QWidget"))
-        self.groupBox.setTitle(_translate("QWidget", "These user share the similar interests with you:"))
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.groupBox.setTitle(_translate("Form", "You may interest in these users:"))
         item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("QWidget", "User ID"))
-        item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("QWidget", "User Type"))
-        item = self.tableWidget.horizontalHeaderItem(2)
-        item.setText(_translate("QWidget", "Rating"))
-        self.pushButton.setText(_translate("QWidget", "Detail"))
+        item.setText(_translate("Form", "User ID"))
+
+    def setUser(self, userIDs):
+        for i in range (len(userIDs) - 1):
+            rowPosition = self.tableWidget.rowCount()
+            self.tableWidget.insertRow(rowPosition)
+            self.tableWidget.setItem(rowPosition, 0, QTableWidgetItem(userIDs[i][0]))
