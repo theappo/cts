@@ -69,7 +69,7 @@ class User():
         db = GateWay()
         return "4.6"
 
-    #TODO: use in a team?
+    #TODO: user in a team?
     #TODO: all reveiw
     #TODO: all history porject
 

@@ -111,6 +111,12 @@ class History(QWidget):
         self.verticalLayout_5.addWidget(self.tableWidget_5)
         self.verticalLayout_6.addWidget(self.groupBox_7)
 
+        self.tableWidget.setSortingEnabled(True)
+        self.tableWidget_2.setSortingEnabled(True)
+        self.tableWidget_3.setSortingEnabled(True)
+        self.tableWidget_4.setSortingEnabled(True)
+        self.tableWidget_5.setSortingEnabled(True)
+
         self.retranslateUi(QWidget)
         QtCore.QMetaObject.connectSlotsByName(QWidget)
 
@@ -157,7 +163,7 @@ class History(QWidget):
         item = self.tableWidget_5.horizontalHeaderItem(1)
         item.setText(_translate("QWidget", "Client"))
         item = self.tableWidget_5.horizontalHeaderItem(2)
-        item.setText(_translate("QWidget", "New Column"))
+        item.setText(_translate("QWidget", "Developer"))
         item = self.tableWidget_5.horizontalHeaderItem(3)
         item.setText(_translate("QWidget", "Detail"))
         item = self.tableWidget_5.horizontalHeaderItem(4)

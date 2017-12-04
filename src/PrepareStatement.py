@@ -122,7 +122,7 @@ inbox_message = "SELECT sender, message, time FROM Messages where receiver = %s"
 sent_message = "SELECT receiver, message, time FROM Messages where sender = %s"
 
 # new message
-new_message = "INSERT INTO Messages (sender, receiver, message, time) VALUES (%s, %s, %s, UTC_DATE())"
+new_message = "INSERT INTO Messages (sender, receiver, message, time) VALUES (%s, %s, %s, NOW())"
 
 # update interests, get the users interests, also find similar interests
 update_interests = "UPDATE UserInterests SET Java = %s, Python = %s, Cpp = %s, IOS = %s, Android = %s, DesktopApp = %s WHERE user_id = %s"

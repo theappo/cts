@@ -54,6 +54,9 @@ class TeamInfo(QWidget):
         self.verticalLayout_3.addWidget(self.tableWidget_2)
         self.verticalLayout.addWidget(self.groupBox_2)
 
+        self.tableWidget.setSortingEnabled(True)
+        self.tableWidget_2.setSortingEnabled(True)
+
         self.retranslateUi(QWidget)
         QtCore.QMetaObject.connectSlotsByName(QWidget)
 

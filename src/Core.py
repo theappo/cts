@@ -177,7 +177,6 @@ class Core():
             QMessageBox.about(self.mainWindow, "Sorry", "You Must Filled In Every Detail, Please Try Again")
         else:
 
-            # TODO: delete/blacklist a user? how about their money?
             self.db.add_user(userID, userPW, balance, userType, email, address)
 
             self.applyPage.close()
@@ -215,7 +214,6 @@ class Core():
         self.mainWindow.rightPanel.page3.tableWidget_4.setRowCount(0)
 
         # set user
-        # TODO: search emtry string but show all
         for user in self.searchEngine.users:
             rowPosition = self.mainWindow.rightPanel.page3.tableWidget.rowCount()
             self.mainWindow.rightPanel.page3.tableWidget.insertRow(rowPosition)
@@ -326,6 +324,8 @@ class Core():
         else:
             QMessageBox.about(self.mainWindow, "Error", "User does not exists, please check")
 
+        #TODO: pymysql.err.IntegrityError: (1062, "Duplicate entry '2017-12-04 00:00:00' for key 'PRIMARY'") when send message
+
     def personalInfo(self):
         self.info.show()
 
@@ -338,7 +338,7 @@ class Core():
         except ArithmeticError:
             pass
 
-        #TODO: pymysql.err.IntegrityError: (1062, "Duplicate entry '2017-12-04 00:00:00' for key 'PRIMARY'")
+        #TODO: pymysql.err.IntegrityError: (1062, "Duplicate entry '2017-12-04 00:00:00' for key 'PRIMARY'") when delete acount
 
 
     def systemInfo(self):
