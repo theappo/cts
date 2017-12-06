@@ -64,6 +64,10 @@ class User():
         else:
             return "Develop"
 
+    def black_reason(self):
+        db = GateWay()
+        return db.get_black_list(self.user_id)[0]
+
     #TODO: add aveger rating
     def rating(self):
         db = GateWay()
@@ -73,5 +77,8 @@ class User():
     #TODO: all reveiw
     #TODO: all history porject
 
-u = User("okokokok")
-print(u.get_sent_message())
+#u = User("okokokok")
+#print(u.black_reason())
+
+import datetime
+print(str(datetime.date.today().replace(year=datetime.date.today().year-1)) > "2016-12-01")

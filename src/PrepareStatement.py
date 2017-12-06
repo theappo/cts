@@ -25,6 +25,9 @@ get_warnings = "SELECT warnings FROM users WHERE user_id = %s"
 # add user_id to blacklist
 add_to_blacklist = "INSERT INTO Blacklist VALUES (%s, UTC_DATE(), %s)"
 
+# remove user from blacklist
+remove_from_blacklist = "DELETE FROM Blacklist WHERE user_id = %s"
+
 # search user_id and user_password in user table
 verify_user = "SELECT user_type FROM users WHERE user_id = %s AND password = %s"
 

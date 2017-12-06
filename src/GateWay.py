@@ -140,6 +140,16 @@ class GateWay(object):
 
         return True
 
+    # delete user from blacklist
+    def remove_blacklist(self, user_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(remove_from_blacklist, user_id)
+            self.conn.commit()
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+
     # return black reason and time
     def get_black_list(self, user_id):
         try:
