@@ -144,7 +144,7 @@ class ClientProjs(QTabWidget):
         item.setText(_translate("QTabWidget", "Rating"))
         self.pushButton_3.setText(_translate("QTabWidget", "View Developer Deatil"))
         self.pushButton_4.setText(_translate("QTabWidget", "View Team Detail"))
-        self.pushButton.setText(_translate("QTabWidget", "Select this developer"))
+        self.pushButton.setText(_translate("QTabWidget", "Select this developer / team"))
         QTabWidget.setTabText(QTabWidget.indexOf(self.tab), _translate("QTabWidget", "Pending Project"))
         self.pushButton_5.setText(_translate("QTabWidget", "Download Project"))
         QTabWidget.setTabText(QTabWidget.indexOf(self.tab1), _translate("QTabWidget", "Current Project"))
@@ -153,3 +153,5 @@ class ClientProjs(QTabWidget):
         self.label_3.setText(_translate("QTabWidget", "DeadLine"))
         self.pushButton_2.setText(_translate("QTabWidget", "Post"))
         QTabWidget.setTabText(QTabWidget.indexOf(self.tab_2), _translate("QTabWidget", "New Project"))
+
+        #TODO: client current project:project name, dev, team, desciption

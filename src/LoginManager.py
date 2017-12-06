@@ -27,6 +27,7 @@ class LoginManager():
 
             if db.check_warning_number(user_id) >= 2:
                 db.add_blacklist(user_id, "Due to your low performance, you have been add to the blacklist")
+                return "This is your last time login"
 
             return "Welcome"
 

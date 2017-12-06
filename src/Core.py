@@ -22,7 +22,6 @@ from NewMessage import *
 from Pd import *
 
 from shutil import copyfile
-from time import gmtime, strftime
 
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem
 from PyQt5 import QtCore
@@ -110,7 +109,7 @@ class Core():
                 else:
                     self.mainWindow.leftPanel.controlPanel.setCurrentIndex(4)
             else:
-                self.mainWindow.leftPanel.controlPanel.setCurrentIndex(5)
+                self.mainWindow.leftPanel.controlPanel.setCurrentIndex(8)
 
             self.mainWindow.leftPanel.setpic(self.loginManager.currentUser.user_id)
             self.mainWindow.leftPanel.setFuncMenu(True)
@@ -123,22 +122,24 @@ class Core():
             self.setLeftPanel()
 
             # TODO: add function check user is in appication table?
-
-            if self.loginManager.currentUser.get_transaction_history() == ():
-                topC = self.db.get_active_clients(3)
-                topD = self.db.get_active_devs(3)
-
-                self.mainWindow.rightPanel.setCurrentIndex(1)
-
-                self.mainWindow.rightPanel.page1.setTopClient(topC[0][0], topC[1][0], topC[2][0])
-                self.mainWindow.rightPanel.page1.setTopDev(topD[0][0], topD[1][0], topD[2][0])
+            if type(self.loginManager.currentUser) is SuperUser:
+                self.mainWindow.rightPanel.setCurrentIndex(8)
             else:
-                self.mainWindow.rightPanel.setCurrentIndex(2)
-                self.mainWindow.rightPanel.page2.setUser(
-                    self.db.get_similar_interests(self.loginManager.currentUser.user_id))
+                if self.loginManager.currentUser.get_transaction_history() == ():
+                    topC = self.db.get_active_clients(3)
+                    topD = self.db.get_active_devs(3)
 
-            if self.loginManager.currentUser.interests() == (0, 0, 0, 0, 0, 0):
-                self.applyPage2.show()
+                    self.mainWindow.rightPanel.setCurrentIndex(1)
+
+                    self.mainWindow.rightPanel.page1.setTopClient(topC[0][0], topC[1][0], topC[2][0])
+                    self.mainWindow.rightPanel.page1.setTopDev(topD[0][0], topD[1][0], topD[2][0])
+                else:
+                    self.mainWindow.rightPanel.setCurrentIndex(2)
+                    self.mainWindow.rightPanel.page2.setUser(
+                        self.db.get_similar_interests(self.loginManager.currentUser.user_id))
+
+                if self.loginManager.currentUser.interests() == (0, 0, 0, 0, 0, 0):
+                    self.applyPage2.show()
 
         # show message
         QMessageBox.about(self.mainWindow, "Message", msg)
@@ -165,9 +166,9 @@ class Core():
         elif len(self.mainWindow.rightPanel.page0.signUpPW.text()) < 6:
             QMessageBox.about(self.mainWindow, "Sorry", "Password must have length 6 or more")
         elif self.db.check_blacklist(self.mainWindow.rightPanel.page0.signUpID.text()):
-            # if this user was add into the blacklist a yeat ago, then his can login again
+            # if this user was add into the blacklist a year ago, then his can login again
             if self.db.get_black_list(self.mainWindow.rightPanel.page0.signUpID.text())[1] < str(
-                datetime.date.today().replace(year=datetime.date.today().year - 1)):
+                    datetime.date.today().replace(year=datetime.date.today().year - 1)):
                 self.db.remove_blacklist(self.mainWindow.rightPanel.page0.signUpID.text())
                 QMessageBox.about(self.mainWindow, "Message", "Welcome back! You are removed from blacklist")
             else:
@@ -215,7 +216,6 @@ class Core():
         Python = int(self.applyPage2.checkBox_5.isChecked())
         Cpp = int(self.applyPage2.checkBox_6.isChecked())
 
-        # TODO: need to insert first
         self.db.update_user_interests(self.loginManager.currentUser.user_id, Java, Python, Cpp, IOS, Android, Desktop)
 
         self.applyPage2.close()
@@ -256,7 +256,6 @@ class Core():
             self.mainWindow.rightPanel.page3.tableWidget_3.setItem(rowPosition, 4,
                                                                    QTableWidgetItem(
                                                                        str(self.searchEngine.idprojs[i][4])))
-            # TODO: (('proj6', 'testuser2', '', 'testuser10', Decimal('200.00')),) 200.00 string
 
         for i in range(len((self.searchEngine.teamprojs))):
             rowPosition = self.mainWindow.rightPanel.page3.tableWidget_4.rowCount()
@@ -272,7 +271,6 @@ class Core():
             self.mainWindow.rightPanel.page3.tableWidget_4.setItem(rowPosition, 4,
                                                                    QTableWidgetItem(
                                                                        str(self.searchEngine.teamprojs[i][4])))
-            # TODO: (('proj5', 'testuser2', '', 'testteam1', Decimal('100.00')),)
 
     def viewUserInfo(self):
         try:

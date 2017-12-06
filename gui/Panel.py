@@ -1,8 +1,6 @@
 """ a panel that dispaly user information """
 
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
