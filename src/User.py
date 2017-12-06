@@ -79,6 +79,3 @@ class User():
 
 #u = User("okokokok")
 #print(u.black_reason())
-
-import datetime
-print(str(datetime.date.today().replace(year=datetime.date.today().year-1)) > "2016-12-01")
