@@ -7,6 +7,7 @@ import traceback
 
 from PrepareStatement import *
 from DatabaseInfo import *
+from decimal import *
 
 
 class GateWay(object):
@@ -665,6 +666,9 @@ class GateWay(object):
             size = 2
         elif(devs[3] == None):
             size = 3
+        if(devs[0] == user_id or devs[1] == user_id or devs[2] == user_id or devs[3] == user_id or devs[4] == user_id):
+            return False
+
         try:
             self.conn.connect()
             self.cursor.execute(add_to_team, ('dev' + str(size), user_id, team_id))
@@ -878,7 +882,7 @@ class GateWay(object):
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
-        self.update_user_balance(client, self.get_user_balance(client) - data[2] / 2)
+        self.update_user_balance(client, Decimal(self.get_user_balance(client)) - data[2] / 2)
         return True
 
     def finish_individual_project(self, project_id):
@@ -895,7 +899,7 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         client = self.get_project_info(project_id)[1]
-        self.update_user_balance(client, self.get_user_balance - data[2] / 2)
+        self.update_user_balance(client, Decimal(self.get_user_balance(client)) - data[2] / 2)
 
         return True
 
@@ -910,29 +914,33 @@ class GateWay(object):
             return False
         if(not self.worked_on_project(receiver, project_id)):
             return False
+        type = 'Individual'
+        if(self.get_project_type(project_id) == 'Team'):
+            type = 'Team'
         bid = 0
         if(self.get_project_type(project_id) == 'Team'):
             bid = self.get_finished_team_project(project_id)[4]
         else:
             bid = self.get_finished_indiv_project(project_id)[2]
+        user = self.get_user_type(sender)
         try:
             self.conn.connect()
             self.cursor.execute(make_project_review, (project_id, sender, receiver, message, rating))
-            if(get_user_type(sender) == 1 and rating > 2):
+            if(user == 1 and rating > 2 and type == 'Individual'):
                 self.cursor.execute(transferfunds2, project_id)
             self.conn.commit()
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
-        if(get_user_type(sender) == 1 and rating > 2):
-            self.update_user_balance(sender, self.get_user_balance(sender) - bid / 20)
-            self.update_user_balance(receiver, self.get_user_balance(receiver) + bid - bid / 20)
+        if(self.get_user_type(sender) == 1 and rating > 2):
+            self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - bid / 20)
+            self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + bid - bid / 20)
         return True
 
     def create_team_project_review(self, project_id, rating, message = 'NULL'):
-        if(self.get_project_status != 'Finished'):
+        if(self.get_project_status(project_id) != 'Finished'):
             return False
-        if(self.get_project_type != 'Team'):
+        if(self.get_project_type(project_id) != 'Team'):
             return False
         bid = self.get_finished_team_project(project_id)[4]
         devs = self.get_project_teamdevs(project_id)
@@ -947,10 +955,11 @@ class GateWay(object):
         elif(devs[4] == None):
             shares = 4
         for i in range(shares):
-            self.update_user_balance(devs[i], self.get_user_balance(devs[i]) + bid - bid / 20 / shares)
-            self.update_user_balance('SuperUser', self.get_user_balance(SuperUser) + bid / 20 / shares)
-        self.update_user_balance(client, self.get_user_balance(client) - bid / 20)
-        self.update_user_balance('SuperUser', self.get_user_balance(SuperUser) + bid / 20)
+            self.create_project_review(project_id, client, devs[i], rating, message)
+            self.update_user_balance(devs[i], Decimal(self.get_user_balance(devs[i])) + bid - bid / 20 / shares)
+            self.update_user_balance('SuperUser', Decimal(self.get_user_balance('SuperUser')) + bid / 20 / shares)
+        self.update_user_balance(client, Decimal(self.get_user_balance(client)) - bid / 20)
+        self.update_user_balance('SuperUser', Decimal(self.get_user_balance('SuperUser')) + bid / 20)
         try:
             self.conn.connect()
             self.cursor.execute(make_team_project_review, (rating, message, project_id))
@@ -962,6 +971,7 @@ class GateWay(object):
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
+        return True
 
 
     def worked_on_project(self, dev_id, project_id):
@@ -1064,10 +1074,12 @@ class GateWay(object):
         elif(self.get_project_status(project_id) == "Current"):
             projectinfo = self.get_current_team_project(project_id)
             projectinfo = [projectinfo[1], 'NOW()']
-            
         try:
             self.conn.connect()
-            self.cursor.execute(get_project_teamdevs, (projectinfo[0], projectinfo[1]))
+            if(projectinfo[1] == 'NOW()'):
+                self.cursor.execute(get_project_teamdevs2, projectinfo[0])
+            else:
+                self.cursor.execute(get_project_teamdevs, (projectinfo[0], projectinfo[1]))
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
@@ -1082,6 +1094,8 @@ class GateWay(object):
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
 
 
     # gets all of users projectreviews
@@ -1105,7 +1119,7 @@ class GateWay(object):
             return False
         try:
             self.conn.connect()
-            self.cursor.execute(get_users_teams, user_id)
+            self.cursor.execute(get_users_teams, (user_id, user_id, user_id, user_id, user_id))
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
@@ -1190,8 +1204,8 @@ class GateWay(object):
 
 
     def transfer_funds(self, sender, receiver, amount):
-        self.update_user_balance(sender, self.get_user_balance(sender) - amount)
-        self.update_user_balance(receiver, self.get_user_balance(receiver) + amount)
+        self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - amount)
+        self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + amount)
         try:
             self.conn.connect()
             self.cursor.execute(add_transaction, (amount, receiver, sender))

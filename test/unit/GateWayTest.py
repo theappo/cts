@@ -51,6 +51,7 @@ def main():
 	testAndPrint(Manager.get_active_devs(3), (('testuser6',), ('testuser4',), ('testuser12',)))
 
 	# test adding a new project, insert team bids, individual bids, and then choose one bid, then finish the project and delete record.
+	testAndPrint(Manager.delete_project('testproject'), True)
 	testAndPrint(Manager.create_new_project('testproject', 'testuser2', 'testproject', '2017-12-30', 1000, '2017-12-01'), True)
 	testAndPrint(Manager.place_team_bid('testproject', 'testteam1', 500), True)
 	testAndPrint(Manager.place_team_bid('testproject', 'testteam2', 250), True)
@@ -63,7 +64,11 @@ def main():
 	testAndPrint(Manager.get_project_status('testproject'), 'Current')
 	testAndPrint(Manager.get_project_type('testproject'), 'Team')
 	testAndPrint(Manager.finish_team_project('testproject'), True)
-	testAndPrint(Manager.delete_project('testproject'), True)
+	testAndPrint(Manager.create_team_project_review('testproject', 5, 'Good Project'), True)
+	testAndPrint(Manager.create_project_review('testproject', 'testuser4', 'testuser6', 5, 'gz'), True)
+	testAndPrint(Manager.create_project_review('testproject', 'testuser6', 'testuser4', 5, 'gz'), True)
+	testAndPrint(Manager.get_projectreviews('testuser6'), 'user6\'s project reviews')
+
 
 	# test getting user interests, and then ordering users by their interests
 	testAndPrint(Manager.get_user_interests('testuser6'), (0, 0, 0, 1, 1, 1))
@@ -77,6 +82,10 @@ def main():
 
 	testAndPrint(Manager.new_message('testuser4', 'testuser6', 'testmessage'), '')
 	testAndPrint(Manager.get_teams_users('testteam1'), '')
+
+	testAndPrint(Manager.get_users_teams('testuser6'), 'user\'s teams')
+	testAndPrint(Manager.get_team_projecthistory('testteam1'), 'teams project history')
+
 
 
 
