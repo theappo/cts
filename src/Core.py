@@ -1,6 +1,7 @@
 """ CTS core system, program start from here """
 
 import sys
+import datetime
 
 sys.path.insert(0, "../gui")
 
@@ -21,6 +22,7 @@ from NewMessage import *
 from Pd import *
 
 from shutil import copyfile
+from time import gmtime, strftime
 
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem
 from PyQt5 import QtCore
@@ -38,12 +40,16 @@ class Core():
         self.applyPage2 = Application2(self.mainWindow)
         self.applyPage2.setWindowFlags(QtCore.Qt.Window)
 
-        self.userInfo = UserInfo()
-        self.teamInfo = TeamInfo()
+        self.userInfo = UserInfo(self.mainWindow)
+        self.userInfo.setWindowFlags(QtCore.Qt.Window)
+        self.teamInfo = TeamInfo(self.mainWindow)
+        self.teamInfo.setWindowFlags(QtCore.Qt.Window)
 
-        self.newMessage = NewMessage()
+        self.newMessage = NewMessage(self.mainWindow)
+        self.newMessage.setWindowFlags(QtCore.Qt.Window)
 
-        self.info = Pd()
+        self.info = Pd(self.mainWindow)
+        self.info.setWindowFlags(QtCore.Qt.Window)
 
         self.setup()
 
@@ -158,6 +164,14 @@ class Core():
             QMessageBox.about(self.mainWindow, "Sorry", "This ID already taken by others, try to use somthing else")
         elif len(self.mainWindow.rightPanel.page0.signUpPW.text()) < 6:
             QMessageBox.about(self.mainWindow, "Sorry", "Password must have length 6 or more")
+        elif self.db.check_blacklist(self.mainWindow.rightPanel.page0.signUpID.text()):
+            # if this user was add into the blacklist a yeat ago, then his can login again
+            if self.db.get_black_list(self.mainWindow.rightPanel.page0.signUpID.text())[1] < str(
+                datetime.date.today().replace(year=datetime.date.today().year - 1)):
+                self.db.remove_blacklist(self.mainWindow.rightPanel.page0.signUpID.text())
+                QMessageBox.about(self.mainWindow, "Message", "Welcome back! You are removed from blacklist")
+            else:
+                QMessageBox.about(self.mainWindow, "Error", "You are in blacklist")
         else:
             self.applyPage.show()
 
@@ -239,6 +253,9 @@ class Core():
                                                                    QTableWidgetItem(self.searchEngine.idprojs[i][2]))
             self.mainWindow.rightPanel.page3.tableWidget_3.setItem(rowPosition, 3,
                                                                    QTableWidgetItem(self.searchEngine.idprojs[i][3]))
+            self.mainWindow.rightPanel.page3.tableWidget_3.setItem(rowPosition, 4,
+                                                                   QTableWidgetItem(
+                                                                       str(self.searchEngine.idprojs[i][4])))
             # TODO: (('proj6', 'testuser2', '', 'testuser10', Decimal('200.00')),) 200.00 string
 
         for i in range(len((self.searchEngine.teamprojs))):
@@ -252,6 +269,9 @@ class Core():
                                                                    QTableWidgetItem(self.searchEngine.teamprojs[i][2]))
             self.mainWindow.rightPanel.page3.tableWidget_4.setItem(rowPosition, 3,
                                                                    QTableWidgetItem(self.searchEngine.teamprojs[i][3]))
+            self.mainWindow.rightPanel.page3.tableWidget_4.setItem(rowPosition, 4,
+                                                                   QTableWidgetItem(
+                                                                       str(self.searchEngine.teamprojs[i][4])))
             # TODO: (('proj5', 'testuser2', '', 'testteam1', Decimal('100.00')),)
 
     def viewUserInfo(self):
@@ -301,11 +321,10 @@ class Core():
             self.mainWindow.rightPanel.page4.tableWidget.insertRow(rowPosition)
             self.mainWindow.rightPanel.page4.tableWidget.setItem(rowPosition, 0,
                                                                  QTableWidgetItem(im[0]))
-            #self.mainWindow.rightPanel.page4.tableWidget.setItem(rowPosition, 1,
-                                                                 #QTableWidgetItem(im[2]))
+            self.mainWindow.rightPanel.page4.tableWidget.setItem(rowPosition, 1,
+                                                                 QTableWidgetItem(str(im[2])))
             self.mainWindow.rightPanel.page4.tableWidget.setItem(rowPosition, 2,
                                                                  QTableWidgetItem(im[1]))
-            # TODO: (('testuser2', 'test', datetime.datetime(2017, 12, 4, 0, 0)),), datetime
 
         sent = self.loginManager.currentUser.get_sent_message()
 
@@ -313,39 +332,35 @@ class Core():
             rowPosition = self.mainWindow.rightPanel.page4.tableWidget_2.rowCount()
             self.mainWindow.rightPanel.page4.tableWidget_2.insertRow(rowPosition)
             self.mainWindow.rightPanel.page4.tableWidget_2.setItem(rowPosition, 0,
-                                                                 QTableWidgetItem(sm[0]))
-            #self.mainWindow.rightPanel.page4.tableWidget_2.setItem(rowPosition, 1,
-                                                                 #QTableWidgetItem(sm[2]))
+                                                                   QTableWidgetItem(sm[0]))
+            self.mainWindow.rightPanel.page4.tableWidget_2.setItem(rowPosition, 1,
+                                                                   (QTableWidgetItem(str(sm[2]))))
             self.mainWindow.rightPanel.page4.tableWidget_2.setItem(rowPosition, 2,
-                                                                 QTableWidgetItem(sm[1]))
-        #TODO: (('testuser2', 'test', datetime.datetime(2017, 12, 4, 0, 0)),), datetime
+                                                                   QTableWidgetItem(sm[1]))
 
     def showNewMessage(self):
         self.newMessage.show()
 
     def sendNewMessage(self):
         if self.db.user_exists(self.newMessage.lineEdit.text()):
-            self.loginManager.currentUser.new_message(self.newMessage.lineEdit.text(), self.newMessage.textEdit.toPlainText())
+            self.loginManager.currentUser.new_message(self.newMessage.lineEdit.text(),
+                                                      self.newMessage.textEdit.toPlainText())
             self.newMessage.close()
         else:
             QMessageBox.about(self.mainWindow, "Error", "User does not exists, please check")
-
-        #TODO: pymysql.err.IntegrityError: (1062, "Duplicate entry '2017-12-04 00:00:00' for key 'PRIMARY'") when send message
 
     def personalInfo(self):
         self.info.show()
 
     def deleteAcount(self):
         # TODO: add superuser SuperUser
+        # TODO: check user current project number
         try:
             self.loginManager.currentUser.new_message("SuperUser", self.info.textEdit.toPlainText())
-            self.db.delete_account(self.loginManager.currentUser.user_id)
+            # self.db.delete_account(self.loginManager.currentUser.user_id)
             self.logout()
         except ArithmeticError:
             pass
-
-        #TODO: pymysql.err.IntegrityError: (1062, "Duplicate entry '2017-12-04 00:00:00' for key 'PRIMARY'") when delete acount
-
 
     def systemInfo(self):
         info = SystemInfo(self.mainWindow)
