@@ -25,7 +25,7 @@ def main():
 
 	# update test user balance and check if update successful
 	testAndPrint(Manager.update_user_balance('testuser3', 2000.00), True)
-	testAndPrint(Manager.get_user_balance('testuser3'), 2000.00)
+	testAndPrint(Manager.get_user_balance('testuser3'), 'user balance')
 
 	# test get_user_address, and update user_address
 	testAndPrint(Manager.get_user_address('testuser2'), '123 40th St. Queens, NY')
@@ -59,7 +59,7 @@ def main():
 	testAndPrint(Manager.place_individual_bid('testproject', 'testuser6', 600), True)
 	testAndPrint(Manager.get_individual_project_bids('testproject'), (('testuser6', 600.00), ('testuser4', 700.00)))
 	testAndPrint(Manager.get_team_project_bids('testproject'), (('testteam2', 250.00), ('testteam1', 500.00), ('testteam3', 600.00)))
-	testAndPrint(Manager.choose_team('testproject', 'testteam2', 250), True)
+	testAndPrint(Manager.choose_team('testproject', 'testteam1', 500.00), True)
 	testAndPrint(Manager.get_project_status('testproject'), 'Current')
 	testAndPrint(Manager.get_project_type('testproject'), 'Team')
 	testAndPrint(Manager.finish_team_project('testproject'), True)
@@ -74,6 +74,9 @@ def main():
 	testAndPrint(Manager.search_by_team_id('testteam'), 'list of all teams with similar name')
 	testAndPrint(Manager.search_by_teamprojectid('5'), 'list of projects')
 	testAndPrint(Manager.search_by_indivprojectid('6'), 'list of projects')
+
+	testAndPrint(Manager.new_message('testuser4', 'testuser6', 'testmessage'), '')
+	testAndPrint(Manager.get_teams_users('testteam1'), '')
 
 
 
