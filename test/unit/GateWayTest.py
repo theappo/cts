@@ -65,9 +65,26 @@ def main():
 	testAndPrint(Manager.get_project_type('testproject'), 'Team')
 	testAndPrint(Manager.finish_team_project('testproject'), True)
 	testAndPrint(Manager.create_team_project_review('testproject', 5, 'Good Project'), True)
+	testAndPrint(Manager.get_dev_pending_reviews('testuser4', 'testproject'), 'pending reviews')
 	testAndPrint(Manager.create_project_review('testproject', 'testuser4', 'testuser6', 5, 'gz'), True)
 	testAndPrint(Manager.create_project_review('testproject', 'testuser6', 'testuser4', 5, 'gz'), True)
 	testAndPrint(Manager.get_projectreviews('testuser6'), 'user6\'s project reviews')
+
+	# makes another test project
+	print('Testing project 2...\n\n')
+	testAndPrint(Manager.delete_project('testproject2'), True)
+	testAndPrint(Manager.create_new_project('testproject2', 'testuser5', 'testproject2', '2017-12-29', 1000, '2017-12-10'), True)
+	testAndPrint(Manager.place_team_bid('testproject2', 'testteam2', 600.00), True)
+	testAndPrint(Manager.choose_team('testproject2', 'testteam2', 600.00), True)
+	testAndPrint(Manager.finish_team_project('testproject2'), True)
+	testAndPrint(Manager.create_team_project_review('testproject2', 1, 'Bad Review'), True)
+	testAndPrint(Manager.get_bad_projects(), 'list of bad projects')
+	testAndPrint(Manager.settle_project_dispute('testproject2', 3, 600.00), True)
+	testAndPrint(Manager.get_dev_pending_reviews('testuser4', 'testproject2'), 'user\'s pending reviews')
+	testAndPrint(Manager.create_project_review('testproject2', 'testuser4', 'testuser5', 4, 'good project'), True)
+	testAndPrint(Manager.create_project_review('testproject2', 'testuser4', 'testuser6', 2, ''), True)
+
+	print('Done testing project 2...\n\n')
 
 
 	# test getting user interests, and then ordering users by their interests
@@ -85,6 +102,7 @@ def main():
 
 	testAndPrint(Manager.get_users_teams('testuser6'), 'user\'s teams')
 	testAndPrint(Manager.get_team_projecthistory('testteam1'), 'teams project history')
+	testAndPrint(Manager.get_devs_finished_team_projects('testuser4'), 'user4\'s team project history')
 
 
 

@@ -13,6 +13,8 @@ remove_user = "DELETE FROM users WHERE user_id = %s"
 # insert new user into applications too
 insert_applications = "INSERT INTO application VALUES (%s)"
 
+user_approved = "SELECT * FROM applications WHERE user_id = %s"
+
 # get user's type (0 = superuser, 1 = client, 2 = developer)
 get_type = "SELECT user_type FROM users WHERE user_id = %s"
 
@@ -107,7 +109,7 @@ team_bids = "SELECT team_id, bid FROM Team_Bid_Project WHERE project_id = %s ORD
 choose_team_bid = "INSERT INTO Current_Team_Project VALUES (%s, %s, %s)"
 choose_indiv_bid = "INSERT INTO Current_Individual_Project VALUES (%s, %s, %s)"
 transferfunds1 = "INSERT INTO TransactionPending (amount, transaction_date, receiver, sender, project_id) VALUES (%s, NOW(), %s, (SELECT client_id FROM Projects WHERE project_id = %s), %s)"
-transferfunds2 = "INSERT INTO TransactionHistory (SELECT amount, NOW(), receiver, sender FROM TransactionPending WHERE project_id = %s)"
+transferfunds2 = "INSERT INTO TransactionHistory (amount, transaction_date, receiver, sender) (SELECT amount, NOW(), receiver, sender FROM TransactionPending WHERE project_id = %s)"
 canceltransfer = "DELETE FROM TransactionPending WHERE project_id = %s"
 
 # gets all from current project record
@@ -128,7 +130,12 @@ make_project_review = "INSERT INTO ProjectReviews VALUES (%s, %s, %s, %s, %s)"
 make_team_project_review = "UPDATE Finished_Team_Project SET teamrating = %s, teamreview = %s WHERE project_id = %s"
 # enter a review between team mates
 make_team_review = "INSERT TeamReviews VALUES (%s, %s, %s, %s, %s)"
-update_team_review = "UPDATE TeamReviews SET review = %s, rating = %s WHERE dev_id = %s AND receiver_id = %s AND team_id = %s"
+update_team_review = "UPDATE ProjectReviews SET rating = %s WHERE project_id = %s"
+update_team_project_review = "UPDATE Finished_Team_Project SET teamrating = %s, bid = %s WHERE project_id = %s"
+update_indiv_project_review = "UPDATE Finished_Individual_Project SET bid = %s WHERE project_id = %s"
+get_bad_projects = "SELECT tp.project_id, pr.rating, SUM(tp.amount) FROM TransactionPending tp INNER JOIN ProjectReviews pr ON tp.project_id = pr.project_id  AND tp.receiver = pr.receiver_id WHERE pr.rating <= 2 GROUP BY tp.project_id"
+get_dev_pending_client_reviews = "SELECT p.project_id, p.client_id FROM Projects p INNER JOIN Finished_Individual_Project fip ON p.project_id = fip.project_id WHERE fip.dev_id = %s AND fip.dev_id NOT IN (SELECT receiver_id FROM ProjectReviews WHERE project_id = p.project_id AND sender_id = p.client_id)"
+get_review = "SELECT * FROM ProjectReviews WHERE sender_id = %s AND receiver_id = %s AND project_id = %s"
 
 # get all the clients overdue projects
 get_client_overdue_projects2 = "SELECT project_id FROM Projects WHERE client_id = %s AND deadline < NOW()"
@@ -163,6 +170,7 @@ search_team_finished_projects = "SELECT ftp.project_id, client_id, description, 
 search_indiv_finished_projects = "SELECT fip.project_id, client_id, description, dev_id, bid FROM Finished_Individual_Project fip INNER JOIN Projects p ON fip.project_id = p.project_id WHERE fip.project_id LIKE %s"
 get_project_teamdevs = "SELECT dev1, dev2, dev3, dev4, dev5 FROM TeamHistory WHERE team_id = %s AND time_formed < %s ORDER BY time_formed DESC LIMIT 1"
 get_project_teamdevs2 = "SELECT dev1, dev2, dev3, dev4, dev5 FROM TeamHistory WHERE team_id = %s AND time_formed < NOW() ORDER BY time_formed DESC LIMIT 1"
+get_project_team = "SELECT th.dev1, th.dev2, th.dev3, th.dev4, th.dev5 FROM TeamHistory th INNER JOIN Finished_Team_Project ftp ON th.team_id = ftp.team_id where ftp.project_id = %s AND th.time_formed < ftp.date_submit ORDER BY th.time_formed DESC LIMIT 1"
 get_user_reviews = "SELECT * FROM ProjectReviews WHERE receiver_id = %s"
 get_teamhistory = "SELECT * FROM Finished_Team_Project WHERE team_id = %s"
 get_users_teams = "SELECT team_id FROM teams WHERE dev1 = %s OR dev2 = %s OR dev3 = %s OR dev4 = %s OR dev5 = %s"
@@ -177,6 +185,7 @@ get_clients_finished_team_projects = "SELECT * FROM Projects p INNER JOIN Finish
 get_dev_bids = "SELECT * FROM Projects p INNER JOIN Individual_Bid_Project ibp ON p.project_id = ibp.project_id WHERE ibp.user_id = %s"
 get_dev_current_projects = "SELECT * FROM Projects p INNER JOIN Current_Individual_Project cip ON p.project_id = cip.project_id WHERE cip.developer_id = %s"
 get_dev_finished_projects = "SELECT * FROM Projects p INNER JOIN Finished_Individual_Project fip ON p.project_id = fip.project_id WHERE fip.dev_id = %s"
+get_dev_finished_team_projects = "SELECT p.*, ftp.* FROM (Projects p INNER JOIN Finished_Team_Project ftp ON p.project_id = ftp.project_id) INNER JOIN TeamHistory th ON th.team_id = ftp.team_id WHERE %s IN (th.dev1, th.dev2, th.dev3, th.dev4, th.dev5) AND th.time_formed < ftp.date_submit ORDER BY th.time_formed DESC LIMIT 1"
 get_team_bids = "SELECT * FROM Projects p INNER JOIN Team_Bid_Project tbp ON p.project_id = tbp.project_id WHERE tbp.team_id = %s"
 get_team_current_projects = "SELECT * FROM Projects p INNER JOIN Current_Team_Project ctp ON p.project_id = ctp.project_id WHERE ctp.team_id = %s"
 get_team_finished_projects = "SELECT * FROM Projects p INNER JOIN Finished_Team_Project ftp ON p.project_id = ftp.project_id WHERE ftp.project_id = %s"
