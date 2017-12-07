@@ -8,6 +8,9 @@ from Interest import *
 from SearchPage import *
 from Messages import *
 from History import *
+from ClientProjs import *
+from DevProjs import *
+from SystemManager import *
 
 
 class RightPanel(QStackedWidget):
@@ -25,6 +28,9 @@ class RightPanel(QStackedWidget):
         self.page3 = SearchPage()
         self.page4 = Messages()
         self.page5 = History()
+        self.page6 = ClientProjs()
+        self.page7 = DevProjs()
+        self.page8 = SystemManager()
 
         self.initUI()
 
@@ -53,4 +59,13 @@ class RightPanel(QStackedWidget):
 
         # add history page
         self.addWidget(self.page5)
+
+        # add projects page for client
+        self.addWidget(self.page6)
+
+        # add projects page for developer
+        self.addWidget(self.page7)
+
+        # add SystemManager Page for super user
+        self.addWidget(self.page8)
 

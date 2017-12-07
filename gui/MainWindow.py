@@ -53,3 +53,15 @@ class MainWindow(QWidget):
         self.leftPanel.historyB2.clicked.connect(lambda: self.rightPanel.setCurrentIndex(5))
         self.leftPanel.historyB3.clicked.connect(lambda: self.rightPanel.setCurrentIndex(5))
         self.leftPanel.historyB4.clicked.connect(lambda: self.rightPanel.setCurrentIndex(5))
+
+        self.leftPanel.ProjectB3.clicked.connect(lambda: self.rightPanel.setCurrentIndex(6))
+        self.leftPanel.ProjectB4.clicked.connect(lambda: self.rightPanel.setCurrentIndex(6))
+
+        self.leftPanel.ProjectB1.clicked.connect(lambda: self.rightPanel.setCurrentIndex(7))
+        self.leftPanel.ProjectB2.clicked.connect(lambda: self.rightPanel.setCurrentIndex(7))
+
+        self.leftPanel.manage.clicked.connect(lambda: self.rightPanel.setCurrentIndex(8))
+        self.leftPanel.messageB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(4))
+
+        self.leftPanel.homeB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(1))
+        self.leftPanel.searchB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))

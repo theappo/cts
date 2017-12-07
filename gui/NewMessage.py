@@ -9,7 +9,7 @@ class NewMessage(QWidget):
 
     def setupUi(self, QWidget):
         QWidget.setObjectName("QWidget")
-        QWidget.resize(688, 737)
+        QWidget.resize(450, 500)
         self.verticalLayout = QtWidgets.QVBoxLayout(QWidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.groupBox = QtWidgets.QGroupBox(QWidget)

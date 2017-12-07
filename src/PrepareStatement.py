@@ -14,9 +14,12 @@ remove_user = "DELETE FROM users WHERE user_id = %s"
 # insert new user into applications too
 insert_applications = "INSERT INTO application (user_id) VALUES (%s)"
 
+<<<<<<< HEAD
 # get applications for superuser
 get_applications = "SELECT * FROM application"
 
+=======
+>>>>>>> develop
 user_approved = "SELECT * FROM application WHERE user_id = %s"
 
 # get user's type (0 = superuser, 1 = client, 2 = developer)
@@ -31,6 +34,9 @@ remove_warning = "UPDATE users SET warnings = 0 WHERE user_id = %s"
 
 # add user_id to blacklist
 add_to_blacklist = "INSERT INTO Blacklist VALUES (%s, UTC_DATE(), %s)"
+
+# remove user from blacklist
+remove_from_blacklist = "DELETE FROM Blacklist WHERE user_id = %s"
 
 # search user_id and user_password in user table
 verify_user = "SELECT user_type FROM users WHERE user_id = %s AND password = %s"
@@ -110,7 +116,7 @@ place_indivbid = "INSERT Individual_Bid_Project VALUES (%s, %s, %s)"
 individual_bids = "SELECT user_id, bid FROM Individual_Bid_Project WHERE project_id = %s ORDER BY bid ASC"
 team_bids = "SELECT team_id, bid FROM Team_Bid_Project WHERE project_id = %s ORDER BY bid ASC"
 
-# puts bid into current project table, also clears bid table of the project, same for individual chosen
+# puts bid into currecurrent project table, also clears bid table of the project, same for individual chosen
 choose_team_bid = "INSERT INTO Current_Team_Project VALUES (%s, %s, %s)"
 choose_indiv_bid = "INSERT INTO Current_Individual_Project VALUES (%s, %s, %s)"
 transferfunds1 = "INSERT INTO TransactionPending (amount, transaction_date, receiver, sender, project_id) VALUES (%s, NOW(), %s, (SELECT client_id FROM Projects WHERE project_id = %s), %s)"
