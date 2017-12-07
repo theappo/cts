@@ -114,7 +114,7 @@ class GateWay(object):
 
     # returns number of warnings
     def check_warning_number(self, user_id):
-        if( not self.user_exists(user_id)):
+        if (not self.user_exists(user_id)):
             return False
         try:
             self.conn.connect()
@@ -164,7 +164,6 @@ class GateWay(object):
         data = self.cursor.fetchall()
 
         return data
-
 
     # check if user entered correct user_id and password
     def verify_user(self, user_id, password):
@@ -360,7 +359,7 @@ class GateWay(object):
 
     # update the user interests (default is all 0)
     def update_user_interests(self, user_id, Java, Python, Cpp, IOS, Android, Desktop):
-        if(not self.user_exists(user_id)):
+        if (not self.user_exists(user_id)):
             return False
         try:
             self.conn.connect()
@@ -373,7 +372,7 @@ class GateWay(object):
 
     # returns user interests as array in order: Java, Python, C++, IOS, Android, Desktop
     def get_user_interests(self, user_id):
-        if(not self.user_exists(user_id)):
+        if (not self.user_exists(user_id)):
             return False
         try:
             self.conn.connect()
@@ -390,7 +389,7 @@ class GateWay(object):
 
     # returns all user_ids ordered by most similar interests (should return less?)
     def get_similar_interests(self, user_id):
-        if(not self.user_exists(user_id)):
+        if (not self.user_exists(user_id)):
             return False
         data = self.get_user_interests(user_id)
         try:
@@ -401,6 +400,24 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
+
+    # return user's average rating
+    def average_rating(self, user_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_user_reviews, user_id)
+            self.conn.commit()
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        sum = 0
+        count = 0
+        for review in data:
+            sum += review[4]
+            count += 1
+        if count != 0:
+            return sum/count
 
     # Project Methods
     def project_id_exists(self, project_name):
@@ -418,7 +435,7 @@ class GateWay(object):
 
     # gets all info from project record
     def get_project_info(self, project_id):
-        if(not self.project_id_exists(project_id)):
+        if (not self.project_id_exists(project_id)):
             return False
         try:
             self.conn.connect()
@@ -431,7 +448,7 @@ class GateWay(object):
 
     # get clients pending projects (from projects join pendingprojects, includes projectid twice)
     def get_clients_pending_projects(self, client_id):
-        if(not self.get_user_type(client_id) == 1):
+        if (not self.get_user_type(client_id) == 1):
             return False
         try:
             self.conn.connect()
@@ -444,7 +461,7 @@ class GateWay(object):
 
     # get clients current individual projects (from projects join indivprojects)
     def get_clients_current_indiv_projects(self, client_id):
-        if(not self.get_user_type(client_id) == 1):
+        if (not self.get_user_type(client_id) == 1):
             return False
         try:
             self.conn.connect()
@@ -454,9 +471,10 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
+
     # get clients current team projects
     def get_clients_current_team_projects(self, client_id):
-        if(not self.get_user_type(client_id) == 1):
+        if (not self.get_user_type(client_id) == 1):
             return False
         try:
             self.conn.connect()
@@ -466,33 +484,36 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
+
     # get clients finished indiv projects
     def get_clients_finished_indiv_projects(self, client_id):
-        if(not self.get_user_type(client_id) == 1):
+        if (not self.get_user_type(client_id) == 1):
             return False
         try:
             self.conn.connect()
-            self.cursor.execute(get_clients_finished_indiv_projects)
+            self.cursor.execute(get_clients_finished_indiv_projects, client_id)
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
+
     # get clients finished team projects
     def get_clients_finished_team_projects(self, client_id):
-        if(not self.get_user_type(client_id) == 1):
+        if (not self.get_user_type(client_id) == 1):
             return False
         try:
             self.conn.connect()
-            self.cursor.execute(get_clients_finished_team_projects)
+            self.cursor.execute(get_clients_finished_team_projects, client_id)
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
+
     # get dev's bids
     def get_devs_bids(self, dev_id):
-        if(not self.get_user_type(dev_id) == 2):
+        if (not self.get_user_type(dev_id) == 2):
             return False
         try:
             self.conn.connect()
@@ -504,7 +525,7 @@ class GateWay(object):
         return data
 
     def get_devs_current_projects(self, dev_id):
-        if(not self.get_user_type(dev_id) == 2):
+        if (not self.get_user_type(dev_id) == 2):
             return False
         try:
             self.conn.connect()
@@ -516,7 +537,7 @@ class GateWay(object):
         return data
 
     def get_devs_finished_projects(self, dev_id):
-        if(not self.get_user_type(dev_id) == 2):
+        if (not self.get_user_type(dev_id) == 2):
             return False
         try:
             self.conn.connect()
@@ -556,7 +577,6 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
-
 
     # gets project status (pending, current, or finished)
     def get_project_status(self, project_id):
@@ -635,12 +655,12 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         data = self.cursor.fetchall()
-        if(len(data) > 0):
+        if (len(data) > 0):
             return True
         return False
 
     def create_team(self, team_id, user_id):
-        if(self.team_exists(team_id)):
+        if (self.team_exists(team_id)):
             return False
         try:
             self.conn.connect()
@@ -652,7 +672,7 @@ class GateWay(object):
         return True
 
     def get_team_devs(self, team_id):
-        if(not self.team_exists(team_id)):
+        if (not self.team_exists(team_id)):
             return False
         try:
             self.conn.connect()
@@ -665,18 +685,18 @@ class GateWay(object):
 
     def add_to_team(self, team_id, user_id):
         devs = self.get_team_devs(team_id)
-        if(devs == False):
+        if (devs == False):
             return False
-        if(devs[4] != None):
+        if (devs[4] != None):
             return False
         size = 4
-        if(devs[1] == None):
+        if (devs[1] == None):
             size = 1
-        elif(devs[2] == None):
+        elif (devs[2] == None):
             size = 2
-        elif(devs[3] == None):
+        elif (devs[3] == None):
             size = 3
-        if(devs[0] == user_id or devs[1] == user_id or devs[2] == user_id or devs[3] == user_id or devs[4] == user_id):
+        if (devs[0] == user_id or devs[1] == user_id or devs[2] == user_id or devs[3] == user_id or devs[4] == user_id):
             return False
 
         try:
@@ -688,30 +708,29 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
-
     def remove_from_team(self, team_id, user_id):
         devs = self.get_team_devs(team_id)
-        if(devs == False):
+        if (devs == False):
             return False
         size = 5
         i = 1
-        if(devs[2] == None):
+        if (devs[2] == None):
             size = 2
-        elif(devs[3] == None):
+        elif (devs[3] == None):
             size = 3
-        elif(devs[4] == None):
+        elif (devs[4] == None):
             size = 4
-        if(devs[1] == None):
+        if (devs[1] == None):
             return False
-        if(devs[4] == user_id):
+        if (devs[4] == user_id):
             i = 5
-        elif(devs[3] == user_id):
+        elif (devs[3] == user_id):
             i = 4
-        elif(devs[2] == user_id):
+        elif (devs[2] == user_id):
             i = 3
-        elif(devs[1] == user_id):
+        elif (devs[1] == user_id):
             i = 2
-        elif(devs[0] != user_id):
+        elif (devs[0] != user_id):
             return False
         try:
             self.conn.connect()
@@ -768,17 +787,17 @@ class GateWay(object):
             return False
         client = self.get_project_info(project_id)[1]
         funds = float(self.get_user_balance(client))
-        if(11 / 10 * bid >  funds): # client can't afford
+        if (11 / 10 * bid > funds):  # client can't afford
             return False
         team = self.get_teams_users(team_id)
         shares = 5
-        if(team[1] == None):
+        if (team[1] == None):
             shares = 1
-        elif(team[2] == None):
+        elif (team[2] == None):
             shares = 2
-        elif(team[3] == None):
+        elif (team[3] == None):
             shares = 3
-        elif(team[4] == None):
+        elif (team[4] == None):
             shares = 4
         try:
             self.conn.connect()
@@ -799,7 +818,7 @@ class GateWay(object):
             return False
         client = self.get_project_info(project_id)[1]
         funds = float(self.get_user_balance(client))
-        if(11 / 10 * bid >  funds): # client can't afford
+        if (11 / 10 * bid > funds):  # client can't afford
             return False
         try:
             self.conn.connect()
@@ -843,7 +862,7 @@ class GateWay(object):
 
     # gets all from finished team project record
     def get_finished_team_project(self, project_id):
-        if(self.get_project_status(project_id) != "Finished"):
+        if (self.get_project_status(project_id) != "Finished"):
             return False
         try:
             self.conn.connect()
@@ -856,7 +875,7 @@ class GateWay(object):
 
     # gets all from finished individual project record
     def get_finished_indiv_project(self, project_id):
-        if(self.get_project_status(project_id) != 'Finished'):
+        if (self.get_project_status(project_id) != 'Finished'):
             return False
         try:
             self.conn.connect()
@@ -875,13 +894,13 @@ class GateWay(object):
         devs = self.get_project_teamdevs(project_id)
         client = self.get_project_info(project_id)[1]
         shares = 5
-        if(devs[1] == None):
+        if (devs[1] == None):
             shares = 1
-        elif(devs[2] == None):
+        elif (devs[2] == None):
             shares = 2
-        elif(devs[3] == None):
+        elif (devs[3] == None):
             shares = 3
-        elif(devs[4] == None):
+        elif (devs[4] == None):
             shares = 4
         try:
             self.conn.connect()
@@ -916,19 +935,19 @@ class GateWay(object):
     # leave a project review, make it possible to replace one?
     # trigger will make sure 2 users were in project
     def create_project_review(self, project_id, sender, receiver, rating, message='NULL'):
-        if(sender == receiver):
+        if (sender == receiver):
             return False
         if (not (self.get_project_status(project_id) == "Finished")):
             return False
-        if(not self.worked_on_project(sender, project_id)):
+        if (not self.worked_on_project(sender, project_id)):
             return False
-        if(not self.worked_on_project(receiver, project_id)):
+        if (not self.worked_on_project(receiver, project_id)):
             return False
         type = 'Individual'
-        if(self.get_project_type(project_id) == 'Team'):
+        if (self.get_project_type(project_id) == 'Team'):
             type = 'Team'
         bid = 0
-        if(self.get_project_type(project_id) == 'Team'):
+        if (self.get_project_type(project_id) == 'Team'):
             bid = self.get_finished_team_project(project_id)[4]
         else:
             bid = self.get_finished_indiv_project(project_id)[2]
@@ -936,33 +955,33 @@ class GateWay(object):
         try:
             self.conn.connect()
             self.cursor.execute(make_project_review, (project_id, sender, receiver, message, rating))
-            if(user == 1 and rating > 2 and type == 'Individual'):
+            if (user == 1 and rating > 2 and type == 'Individual'):
                 self.cursor.execute(transferfunds2, project_id)
             self.conn.commit()
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
-        if(self.get_user_type(sender) == 1 and rating > 2):
+        if (self.get_user_type(sender) == 1 and rating > 2):
             self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - bid / 20)
             self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + bid - bid / 20)
         return True
 
-    def create_team_project_review(self, project_id, rating, message = 'NULL'):
-        if(self.get_project_status(project_id) != 'Finished'):
+    def create_team_project_review(self, project_id, rating, message='NULL'):
+        if (self.get_project_status(project_id) != 'Finished'):
             return False
-        if(self.get_project_type(project_id) != 'Team'):
+        if (self.get_project_type(project_id) != 'Team'):
             return False
         bid = self.get_finished_team_project(project_id)[4]
         devs = self.get_project_teamdevs(project_id)
         client = self.get_project_info(project_id)[1]
         shares = 5
-        if(devs[1] == None):
+        if (devs[1] == None):
             shares = 1
-        elif(devs[2] == None):
+        elif (devs[2] == None):
             shares = 2
-        elif(devs[3] == None):
+        elif (devs[3] == None):
             shares = 3
-        elif(devs[4] == None):
+        elif (devs[4] == None):
             shares = 4
         for i in range(shares):
             self.create_project_review(project_id, client, devs[i], rating, message)
@@ -983,17 +1002,16 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
-
     def worked_on_project(self, dev_id, project_id):
-        if(self.get_project_status(project_id) != 'Finished'):
+        if (self.get_project_status(project_id) != 'Finished'):
             return False
-        if(self.get_project_type(project_id) != 'Team'):
+        if (self.get_project_type(project_id) != 'Team'):
             return False
         client = self.get_project_info(project_id)[1]
-        if(client == dev_id):
+        if (client == dev_id):
             return True
         devs = self.get_project_teamdevs(project_id)
-        if(dev_id == devs[0] or dev_id == devs[1] or dev_id == devs[2] or dev_id == devs[3] or dev_id == devs[4]):
+        if (dev_id == devs[0] or dev_id == devs[1] or dev_id == devs[2] or dev_id == devs[3] or dev_id == devs[4]):
             return True
         return False
 
@@ -1030,7 +1048,8 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
 
-# Search functions
+        # Search functions
+
     def search_by_user_id(self, user_id):
         user_id = '%' + user_id + '%'
         try:
@@ -1078,15 +1097,15 @@ class GateWay(object):
     # gets the 5 devs on the team that completed a project
     def get_project_teamdevs(self, project_id):
         projectinfo = ''
-        if(self.get_project_status(project_id) == "Finished"):
+        if (self.get_project_status(project_id) == "Finished"):
             projectinfo = self.get_finished_team_project(project_id)
             projectinfo = [projectinfo[2], projectinfo[5]]
-        elif(self.get_project_status(project_id) == "Current"):
+        elif (self.get_project_status(project_id) == "Current"):
             projectinfo = self.get_current_team_project(project_id)
             projectinfo = [projectinfo[1], 'NOW()']
         try:
             self.conn.connect()
-            if(projectinfo[1] == 'NOW()'):
+            if (projectinfo[1] == 'NOW()'):
                 self.cursor.execute(get_project_teamdevs2, projectinfo[0])
             else:
                 self.cursor.execute(get_project_teamdevs, (projectinfo[0], projectinfo[1]))
@@ -1107,10 +1126,9 @@ class GateWay(object):
         data = self.cursor.fetchall()
         return data
 
-
     # gets all of users projectreviews
     def get_projectreviews(self, user_id):
-        if(not self.user_exists(user_id)):
+        if (not self.user_exists(user_id)):
             return False
         try:
             self.conn.connect()
@@ -1123,9 +1141,9 @@ class GateWay(object):
 
     # get all of users teams
     def get_users_teams(self, user_id):
-        if(not self.user_exists(user_id)):
+        if (not self.user_exists(user_id)):
             return False
-        if(self.get_user_type(user_id) != 2):
+        if (self.get_user_type(user_id) != 2):
             return False
         try:
             self.conn.connect()
@@ -1149,7 +1167,7 @@ class GateWay(object):
 
     # checks if client's project deadline has passed
     def check_client_projects(self, user_id):
-        if(self.get_user_type(user_id) != 1):
+        if (self.get_user_type(user_id) != 1):
             return False
         try:
             self.conn.connect()
@@ -1165,7 +1183,7 @@ class GateWay(object):
 
     # checks for late devs/teams
     def check_client_projects2(self, user_id):
-        if(self.get_user_type(user_id) != 1):
+        if (self.get_user_type(user_id) != 1):
             return False
         try:
             self.conn.connect()
@@ -1175,7 +1193,7 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         for project in data:
-            if(self.get_project_type(project[0]) == 'Individual'):
+            if (self.get_project_type(project[0]) == 'Individual'):
                 self.finish_individual_project(project[0])
                 project_info = self.get_finished_indiv_project(project[0])[0]
                 try:
@@ -1186,18 +1204,18 @@ class GateWay(object):
                     self.conn.close()
                 except Exception as e:
                     traceback.print_exc(e)
-            if(self.get_project_type(project[0]) == 'Team'):
+            if (self.get_project_type(project[0]) == 'Team'):
                 self.finish_team_project(project)
                 project_info = self.get_finished_team_project(project[0])[0]
                 devs = self.get_project_teamdevs(project[0])
                 shares = 5
-                if(devs[1] == None):
+                if (devs[1] == None):
                     shares = 1
-                elif(devs[2] == None):
+                elif (devs[2] == None):
                     shares = 2
-                elif(devs[3] == None):
+                elif (devs[3] == None):
                     shares = 3
-                elif(devs[4] == None):
+                elif (devs[4] == None):
                     shares = 4
                 try:
                     self.conn.connect()
@@ -1211,8 +1229,6 @@ class GateWay(object):
                     self.create_project_review(project[0], user_id, devs[i], 1, 'Late Project')
         return True
 
-
-
     def transfer_funds(self, sender, receiver, amount):
         self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - amount)
         self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + amount)
@@ -1224,11 +1240,3 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         return True
-
-
-
-
-
-
-#db = GateWay()
-#print(db.search_by_teamprojectid(""))

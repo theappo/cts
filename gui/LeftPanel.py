@@ -136,12 +136,12 @@ class LeftPanel(QWidget):
         ctly.addRow(self.historyB4)
         ct.setLayout(ctly)
         self.controlPanel.addWidget(ct)
-        # TODO: add superUser
+        # add super user
         su = QWidget()
         suly = QFormLayout()
         suly.addRow(self.manage)
         suly.addRow(self.messageB5)
-        su.setLayout(ctly)
+        su.setLayout(suly)
         self.controlPanel.addWidget(su)
         # add controlPanel to LeftPanel
         self.controlPanel.setCurrentIndex(0)
