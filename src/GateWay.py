@@ -81,9 +81,24 @@ class GateWay(object):
             return False
         return True
 
+    # get all applications for super user to approve/deny
+    def get_applications(self):
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_applications)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
+
+
     # remove user from application table
     def approve_user_id(self, user_id):
         if (not self.user_exists(user_id)):
+            return False
+        if(self.check_blacklist(user_id)):
+            self.deny_user_id(user_id, 'User_id on blacklist')
             return False
         try:
             self.conn.connect()
@@ -92,7 +107,6 @@ class GateWay(object):
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
-
         return True
 
     # get user's type (0 = superuser, 1 = client, 2 = developer)
@@ -137,6 +151,16 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data[0][0]
+
+    # super user removes warning from user
+    def remove_warning(self, user_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(remove_warning, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        return True
 
     # add user into blacklist
     def add_blacklist(self, user_id, reason):

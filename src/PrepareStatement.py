@@ -6,14 +6,18 @@ insert_user = "INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, 0)"
 
 # remove user from application table
 approve_user = "DELETE FROM application WHERE user_id = %s"
+deny_user = "UPDATE application SET denied = 1, reason = %s WHERE user_id = %s"
 
 # remove user from system (foreign keys will cascade)
 remove_user = "DELETE FROM users WHERE user_id = %s"
 
 # insert new user into applications too
-insert_applications = "INSERT INTO application VALUES (%s)"
+insert_applications = "INSERT INTO application (user_id) VALUES (%s)"
 
-user_approved = "SELECT * FROM applications WHERE user_id = %s"
+# get applications for superuser
+get_applications = "SELECT * FROM application"
+
+user_approved = "SELECT * FROM application WHERE user_id = %s"
 
 # get user's type (0 = superuser, 1 = client, 2 = developer)
 get_type = "SELECT user_type FROM users WHERE user_id = %s"
@@ -23,6 +27,7 @@ search_blacklist = "SELECT * FROM Blacklist WHERE user_id = %s"
 
 # get number of warnings 0, 1, or 2
 get_warnings = "SELECT warnings FROM users WHERE user_id = %s"
+remove_warning = "UPDATE users SET warnings = 0 WHERE user_id = %s"
 
 # add user_id to blacklist
 add_to_blacklist = "INSERT INTO Blacklist VALUES (%s, UTC_DATE(), %s)"

@@ -47,8 +47,8 @@ def main():
 	testAndPrint(Manager.get_client_num(), 6)
 
 	# test most active client and dev with most income, may fail when i edit tables more
-	testAndPrint(Manager.get_active_clients(3), (('testuser2',), ('testuser9',), ('testuser8',)))
-	testAndPrint(Manager.get_active_devs(3), (('testuser6',), ('testuser4',), ('testuser12',)))
+	testAndPrint(Manager.get_active_clients(3), '3 clients')
+	testAndPrint(Manager.get_active_devs(3), '3 devs')
 
 	# test adding a new project, insert team bids, individual bids, and then choose one bid, then finish the project and delete record.
 	testAndPrint(Manager.delete_project('testproject'), True)
