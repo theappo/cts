@@ -6,7 +6,6 @@ insert_user = "INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, 0)"
 
 # remove user from application table
 approve_user = "DELETE FROM application WHERE user_id = %s"
-deny_user = "UPDATE application SET denied = 1, reason = %s WHERE user_id = %s"
 
 # remove user from system (foreign keys will cascade)
 remove_user = "DELETE FROM users WHERE user_id = %s"
@@ -14,12 +13,9 @@ remove_user = "DELETE FROM users WHERE user_id = %s"
 # insert new user into applications too
 insert_applications = "INSERT INTO application (user_id) VALUES (%s)"
 
-<<<<<<< HEAD
 # get applications for superuser
 get_applications = "SELECT * FROM application"
 
-=======
->>>>>>> develop
 user_approved = "SELECT * FROM application WHERE user_id = %s"
 
 # get user's type (0 = superuser, 1 = client, 2 = developer)

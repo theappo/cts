@@ -654,7 +654,7 @@ class GateWay(object):
         return data[0][0]
 
     # adds project to project table and pending project table
-    def create_new_project(self, project_name, client_id, description, deadline, maxbid, bid_deadline):
+    def create_new_project(self, project_name, client_id, description, deadline, maxbid , bid_deadline):
         if (self.project_id_exists(project_name)):
             return False
         if (not (self.get_user_type(client_id) == 1)):
