@@ -781,7 +781,7 @@ class GateWay(object):
 
     # returns the team bids as a list of lists for a pending project, add limit?
     def get_team_project_bids(self, project_id):
-        if (not (self.get_project_status(project_id) == 'Pending')):
+        if (not (self.get_project_status(project_id) != 'Pending')):
             return False
         try:
             self.conn.connect()
@@ -794,7 +794,7 @@ class GateWay(object):
 
     # returns the individual bids as a list of lists, add limit?
     def get_individual_project_bids(self, project_id):
-        if (not (self.get_project_status(project_id) == 'Pending')):
+        if (not (self.get_project_status(project_id) != 'Pending')):
             return False
         try:
             self.conn.connect()

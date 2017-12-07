@@ -50,6 +50,11 @@ class Core():
         self.info = Pd(self.mainWindow)
         self.info.setWindowFlags(QtCore.Qt.Window)
 
+        # temp varibales
+        self.pendingprojects = ()
+        self.indiv_bid = ()
+        self.team_bid = ()
+
         self.setup()
 
     def setup(self):
@@ -87,9 +92,21 @@ class Core():
         self.mainWindow.rightPanel.page4.pushButton_2.clicked.connect(self.refreshMessage)
         # connect message Page new message button
         self.mainWindow.rightPanel.page4.pushButton_4.clicked.connect(self.showNewMessage)
-        # connectd newMessage send button
+        # connect newMessage send button
         self.newMessage.pushButton.clicked.connect(self.sendNewMessage)
-        # connectd history button
+        # connect client project button
+        self.mainWindow.leftPanel.ProjectB3.clicked.connect(self.refreshClientProject)
+        self.mainWindow.leftPanel.ProjectB4.clicked.connect(self.refreshClientProject)
+        # connect client project table1
+        self.mainWindow.rightPanel.page6.tableWidget.itemClicked.connect(self.setbidtables)
+        # connect client project post new project table
+        self.mainWindow.rightPanel.page6.pushButton_2.clicked.connect(self.postNewProject)
+        # connect developer project button
+        self.mainWindow.leftPanel.ProjectB1.clicked.connect(self.refreshDevProject)
+        self.mainWindow.leftPanel.ProjectB2.clicked.connect(self.refreshDevProject)
+        # connect developer project page refresh button
+        self.mainWindow.rightPanel.page7.pushButton_4.clicked.connect(self.refreshDevProject)
+        # connect history button
         self.mainWindow.leftPanel.historyB1.clicked.connect(self.refreshHistory)
         self.mainWindow.leftPanel.historyB2.clicked.connect(self.refreshHistory)
         self.mainWindow.leftPanel.historyB3.clicked.connect(self.refreshHistory)
@@ -102,6 +119,9 @@ class Core():
             self.mainWindow.leftPanel.setpic("")
             self.mainWindow.leftPanel.controlPanel.setCurrentIndex(0)
             self.mainWindow.leftPanel.setFuncMenu(False)
+        elif self.loginManager.currentUser.check_application():
+            self.mainWindow.leftPanel.controlPanel.setCurrentIndex(6)
+            self.mainWindow.leftPanel.setFuncMenu(True)
         else:
             if type(self.loginManager.currentUser) is Developer:
                 if self.loginManager.currentUser.get_transaction_history() == ():
@@ -126,7 +146,6 @@ class Core():
         if self.loginManager.currentUser != None:
             self.setLeftPanel()
 
-            # TODO: add function check user is in appication table?
             if type(self.loginManager.currentUser) is SuperUser:
                 self.mainWindow.rightPanel.setCurrentIndex(8)
             else:
@@ -135,9 +154,9 @@ class Core():
                     topD = self.db.get_active_devs(3)
 
                     self.mainWindow.rightPanel.setCurrentIndex(1)
-            #TODO: topD
+
                     self.mainWindow.rightPanel.page1.setTopClient(topC[0][0], topC[1][0], topC[2][0])
-                    #self.mainWindow.rightPanel.page1.setTopDev(topD[0][0], topD[1][0], topD[2][0])
+                    self.mainWindow.rightPanel.page1.setTopDev(topD[0][0], topD[1][0], topD[2][0])
                 else:
                     self.mainWindow.rightPanel.setCurrentIndex(2)
                     self.mainWindow.rightPanel.page2.setUser(
@@ -299,11 +318,26 @@ class Core():
             if interest[5]:
                 self.userInfo.checkBox_6.setChecked(True)
 
-            # TODO: set user history projects
+            reviews = user.get_review()
+            print(reviews)
+
+            self.userInfo.tableWidget.setRowCount(0)
+
+            for review in reviews:
+                rowPosition = self.userInfo.tableWidget.rowCount()
+                self.userInfo.tableWidget.insertRow(rowPosition)
+                self.userInfo.tableWidget.setItem(rowPosition, 0,
+                                                  QTableWidgetItem(review[0]))
+                self.userInfo.tableWidget.setItem(rowPosition, 1,
+                                                  QTableWidgetItem(str(review[4])))
+                self.userInfo.tableWidget.setItem(rowPosition, 2,
+                                                  QTableWidgetItem(review[1]))
+                self.userInfo.tableWidget.setItem(rowPosition, 3,
+                                                  QTableWidgetItem(review[3]))
 
             self.userInfo.show()
         except AttributeError:
-            pass
+            print(AttributeError.with_traceback())
 
     def viewTeamInfo(self):
         try:
@@ -352,6 +386,64 @@ class Core():
         else:
             QMessageBox.about(self.mainWindow, "Error", "User does not exists, please check")
 
+    def refreshClientProject(self):
+        # clear all content
+        self.mainWindow.rightPanel.page6.tableWidget.setRowCount(0)
+        self.mainWindow.rightPanel.page6.tableWidget_2.setRowCount(0)
+        self.mainWindow.rightPanel.page6.tableWidget_3.setRowCount(0)
+        self.mainWindow.rightPanel.page6.tableWidget_4.setRowCount(0)
+
+        self.pendingprojects = self.loginManager.currentUser.pending_projects()
+
+        for project in self.pendingprojects:
+            rowPosition = self.mainWindow.rightPanel.page6.tableWidget.rowCount()
+            self.mainWindow.rightPanel.page6.tableWidget.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page6.tableWidget.setItem(rowPosition, 0,
+                                                                 QTableWidgetItem(project[0]))
+            self.mainWindow.rightPanel.page6.tableWidget.setItem(rowPosition, 1,
+                                                                 (QTableWidgetItem(project[2])))
+
+        current_indiv_projects = self.loginManager.currentUser.current_indiv_projects()
+
+        for project in current_indiv_projects:
+            # TODO: Current project
+            rowPosition = self.mainWindow.rightPanel.page6.tableWidget_2.rowCount()
+            self.mainWindow.rightPanel.page6.tableWidget_2.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page6.tableWidget_2.setItem(rowPosition, 0,
+                                                                   QTableWidgetItem(project[0]))
+            self.mainWindow.rightPanel.page6.tableWidget_2.setItem(rowPosition, 1,
+                                                                   (QTableWidgetItem(project[2])))
+            self.mainWindow.rightPanel.page6.tableWidget_2.setItem(rowPosition, 3,
+                                                                   (QTableWidgetItem(project[2])))
+
+    def refreshDevProject(self):
+        projects = self.loginManager.currentUser.current_indiv_projects()
+
+    def setbidtables(self):
+        indiv_bid = self.db.get_individual_project_bids(
+            self.pendingprojects[self.mainWindow.rightPanel.page6.tableWidget.currentItem().row()][0])
+
+        team_bid = self.db.get_team_project_bids(
+            self.pendingprojects[self.mainWindow.rightPanel.page6.tableWidget.currentItem().row()][0])
+
+        for bid in indiv_bid:
+            # TODO: add bid
+            print(bid)
+
+        for bid in team_bid:
+            # TODO: add bid
+            print(bid)
+
+    def postNewProject(self):
+        if self.db.project_id_exists(self.mainWindow.rightPanel.page6.lineEdit.text()):
+            QMessageBox.about(self.mainWindow, "Sorry", "This ID already taken by others, try to use somthing else")
+        else:
+            #self.db.create_new_project(self.mainWindow.rightPanel.page6.lineEdit.text(),
+            #                           self.loginManager.currentUser.user_id,
+            #                           self.mainWindow.rightPanel.page6.textEdit.toPlainText(),
+            #                           self.mainWindow.rightPanel.page6.dateEdit.date().toPyDate())
+            print(self.mainWindow.rightPanel.page6.dateEdit.date().toPyDate())
+
     def refreshHistory(self):
         transactions = self.loginManager.currentUser.get_transaction_history()
         reviews = self.loginManager.currentUser.get_review()
@@ -372,11 +464,11 @@ class Core():
             rowPosition = self.mainWindow.rightPanel.page5.tableWidget.rowCount()
             self.mainWindow.rightPanel.page5.tableWidget.insertRow(rowPosition)
             self.mainWindow.rightPanel.page5.tableWidget.setItem(rowPosition, 0,
-                                                                   QTableWidgetItem(str(transaction[1])))
+                                                                 QTableWidgetItem(str(transaction[1])))
             self.mainWindow.rightPanel.page5.tableWidget.setItem(rowPosition, 1,
-                                                                   (QTableWidgetItem(transaction[4])))
+                                                                 (QTableWidgetItem(transaction[4])))
             self.mainWindow.rightPanel.page5.tableWidget.setItem(rowPosition, 2,
-                                                                   QTableWidgetItem(transaction[3]))
+                                                                 QTableWidgetItem(transaction[3]))
             self.mainWindow.rightPanel.page5.tableWidget.setItem(rowPosition, 3,
                                                                  QTableWidgetItem(str(transaction[2])))
 
@@ -384,59 +476,58 @@ class Core():
             rowPosition = self.mainWindow.rightPanel.page5.tableWidget_2.rowCount()
             self.mainWindow.rightPanel.page5.tableWidget_2.insertRow(rowPosition)
             self.mainWindow.rightPanel.page5.tableWidget_2.setItem(rowPosition, 0,
-                                                                 QTableWidgetItem(review[0]))
+                                                                   QTableWidgetItem(review[0]))
             self.mainWindow.rightPanel.page5.tableWidget_2.setItem(rowPosition, 1,
-                                                                 (QTableWidgetItem(review[1])))
+                                                                   (QTableWidgetItem(review[1])))
             self.mainWindow.rightPanel.page5.tableWidget_2.setItem(rowPosition, 2,
-                                                                 QTableWidgetItem(review[2]))
+                                                                   QTableWidgetItem(review[2]))
             self.mainWindow.rightPanel.page5.tableWidget_2.setItem(rowPosition, 3,
-                                                                 QTableWidgetItem(str(review[4])))
+                                                                   QTableWidgetItem(str(review[4])))
             self.mainWindow.rightPanel.page5.tableWidget_2.setItem(rowPosition, 4,
-                                                                 QTableWidgetItem(review[3]))
+                                                                   QTableWidgetItem(review[3]))
 
         for project in projects:
             rowPosition = self.mainWindow.rightPanel.page5.tableWidget_3.rowCount()
             self.mainWindow.rightPanel.page5.tableWidget_3.insertRow(rowPosition)
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 0,
-                                                                 QTableWidgetItem(project[0]))
+                                                                   QTableWidgetItem(project[0]))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 1,
-                                                                 (QTableWidgetItem(project[1])))
+                                                                   (QTableWidgetItem(project[1])))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 2,
-                                                                 QTableWidgetItem(project[8]))
+                                                                   QTableWidgetItem(project[8]))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 4,
-                                                                 QTableWidgetItem(str(project[9])))
+                                                                   QTableWidgetItem(str(project[9])))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 5,
-                                                                 QTableWidgetItem(str(project[5])))
+                                                                   QTableWidgetItem(str(project[5])))
 
         for project in team_projects:
             rowPosition = self.mainWindow.rightPanel.page5.tableWidget_3.rowCount()
             self.mainWindow.rightPanel.page5.tableWidget_3.insertRow(rowPosition)
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 0,
-                                                                 QTableWidgetItem(project[0]))
+                                                                   QTableWidgetItem(project[0]))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 1,
-                                                                 (QTableWidgetItem(project[1])))
+                                                                   (QTableWidgetItem(project[1])))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 2,
-                                                                 QTableWidgetItem(project[9]))
+                                                                   QTableWidgetItem(project[9]))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 4,
-                                                                 QTableWidgetItem(str(project[11])))
+                                                                   QTableWidgetItem(str(project[11])))
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 5,
-                                                                 QTableWidgetItem(str(project[5])))
-
-
+                                                                   QTableWidgetItem(str(project[5])))
 
     def personalInfo(self):
         self.info.show()
 
     def deleteAcount(self):
-        # TODO: add superuser SuperUser
-        # TODO: check user current project number
-        try:
-            self.loginManager.currentUser.new_message("SuperUser", self.info.textEdit.toPlainText())
-            self.db.delete_account(self.loginManager.currentUser.user_id)
-            self.info.close()
-            self.logout()
-        except ArithmeticError:
-            pass
+        if len(self.loginManager.currentUser.current_indiv_projects()) == 0:
+            try:
+                self.loginManager.currentUser.new_message("SuperUser", self.info.textEdit.toPlainText())
+                self.db.delete_account(self.loginManager.currentUser.user_id)
+                self.info.close()
+                self.logout()
+            except ArithmeticError:
+                pass
+        else:
+            QMessageBox.about(self.mainWindow, "Error", "Unable to delete account, you still have unfinished projects")
 
     def systemInfo(self):
         info = SystemInfo(self.mainWindow)

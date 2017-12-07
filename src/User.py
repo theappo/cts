@@ -64,8 +64,11 @@ class User():
     def get_review(self):
         return self.db.get_projectreviews(self.user_id)
 
+    def check_application(self):
+        return self.db.check_application(self.user_id)
+
 
     #TODO: user in a team?
 
-u = User("testuser2")
-print(u.get_review())
+#u = User("123456")
+#print(u.get)

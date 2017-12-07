@@ -4,7 +4,6 @@ from User import *
 class Client(User):
     def __init__(self, user_id):
         super(Client, self).__init__(user_id)
-        self.db = GateWay()
 
     def pending_projects(self):
         return self.db.get_clients_pending_projects(self.user_id)
@@ -21,4 +20,4 @@ class Client(User):
     def finished_team_projects(self):
         return self.db.get_clients_finished_team_projects(self.user_id)
     
-#print(Client("testuser2").finished_team_projects())
+print(Client("testuser2").current_indiv_projects())

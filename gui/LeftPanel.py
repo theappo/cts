@@ -56,6 +56,9 @@ class LeftPanel(QWidget):
         # for superuser
         self.manage = QPushButton("System Manager")
         self.messageB5 = QPushButton("Message")
+        # for new user
+        self.homeB5 = QPushButton("Home")
+        self.searchB5 = QPushButton("Search")
 
         # declare function button
         self.funcbutt = QToolButton(self)
@@ -143,6 +146,13 @@ class LeftPanel(QWidget):
         suly.addRow(self.messageB5)
         su.setLayout(suly)
         self.controlPanel.addWidget(su)
+        # add new user
+        new = QWidget()
+        newly = QFormLayout()
+        newly.addRow(self.homeB5)
+        newly.addRow(self.searchB5)
+        new.setLayout(newly)
+        self.controlPanel.addWidget(new)
         # add controlPanel to LeftPanel
         self.controlPanel.setCurrentIndex(0)
         self.controlPanel.move(0, 180)

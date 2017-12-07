@@ -62,3 +62,6 @@ class MainWindow(QWidget):
 
         self.leftPanel.manage.clicked.connect(lambda: self.rightPanel.setCurrentIndex(8))
         self.leftPanel.messageB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(4))
+
+        self.leftPanel.homeB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(1))
+        self.leftPanel.searchB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))
