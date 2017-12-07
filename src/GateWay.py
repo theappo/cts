@@ -68,6 +68,19 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
+    # returns true if user is in applications list
+    def check_application(self, user_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(user_approved, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        if (len(data) == 0):
+            return False
+        return True
+
     # remove user from application table
     def approve_user_id(self, user_id):
         if (not self.user_exists(user_id)):
@@ -417,7 +430,7 @@ class GateWay(object):
             sum += review[4]
             count += 1
         if count != 0:
-            return sum/count
+            return sum / count
 
     # Project Methods
     def project_id_exists(self, project_name):
@@ -542,6 +555,18 @@ class GateWay(object):
         try:
             self.conn.connect()
             self.cursor.execute(get_dev_finished_projects, dev_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
+
+    def get_devs_finished_team_projects(self, dev_id):
+        if (not self.get_user_type(dev_id) == 2):
+            return False
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_dev_finished_team_projects, dev_id)
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
@@ -906,7 +931,7 @@ class GateWay(object):
             self.conn.connect()
             self.cursor.execute(team_finished, (data[0], data[1], data[2]))
             for i in range(shares):
-                self.cursor.execute(transferfunds1, (data[2] / 2, devs[i], project_id, project_id))
+                self.cursor.execute(transferfunds1, (data[2] / 2 / shares, devs[i], project_id, project_id))
             self.conn.commit()
             self.conn.close()
         except Exception as e:
@@ -957,11 +982,13 @@ class GateWay(object):
             self.cursor.execute(make_project_review, (project_id, sender, receiver, message, rating))
             if (user == 1 and rating > 2 and type == 'Individual'):
                 self.cursor.execute(transferfunds2, project_id)
+                self.cursor.execute(canceltransfer, project_id)
             self.conn.commit()
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
-        if (self.get_user_type(sender) == 1 and rating > 2):
+
+        if (self.get_user_type(sender) == 1 and rating > 2 and type == 'Individual'):
             self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - bid / 20)
             self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + bid - bid / 20)
         return True
@@ -992,14 +1019,62 @@ class GateWay(object):
         try:
             self.conn.connect()
             self.cursor.execute(make_team_project_review, (rating, message, project_id))
-            for i in range(shares):
-                self.cursor.execute(add_transaction, (bid, devs[i], client))
-                self.cursor.execute(add_transaction, (bid / 20 / shares, 'SuperUser', devs[i]))
-            self.cursor.execute(add_transaction, (bid / 20, 'SuperUser', client))
+            if (rating > 2):
+                for i in range(shares):
+                    self.cursor.execute(transferfunds2, project_id)
+                    self.cursor.execute(canceltransfer, project_id)
+                    self.cursor.execute(add_transaction, (bid / 20 / shares, 'SuperUser', devs[i]))
+                self.cursor.execute(add_transaction, (bid / 20, 'SuperUser', client))
             self.conn.commit()
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
+        return True
+
+    # return all projects where client gave review < 3 and transaction isnt approved yet
+    def get_bad_projects(self):
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_bad_projects)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
+
+    # super user sets dev(s) ratings and cost.
+    def settle_project_dispute(self, project_id, new_rating, new_cost):
+        try:
+            self.conn.connect()
+            self.cursor.execute(update_team_review, (new_rating, project_id))
+            self.cursor.execute(update_team_project_review, (new_rating, new_cost, project_id))
+            self.cursor.execute(update_indiv_project_review, (new_cost, project_id))
+            self.cursor.execute(canceltransfer, project_id)
+            self.conn.commit()
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        project_info = self.get_project_info(project_id)
+        if (project_info[4] == 'Individual'):
+            dev = self.get_finished_indiv_project(project_id)[1]
+            self.transfer_funds(project_info[1], dev, new_cost)
+            self.transfer_funds(project_info[1], 'SuperUser', new_cost / 20)
+            self.tranfer_funds(dev, 'SuperUser', new_cost / 20)
+        else:
+            devs = self.get_project_teamdevs(project_id)
+            size = 5
+            if (devs[1] == None):
+                size = 1
+            elif (devs[2] == None):
+                size = 2
+            elif (devs[3] == None):
+                size = 3
+            elif (devs[4] == None):
+                size = 4
+            for i in range(size):
+                self.transfer_funds(project_info[1], devs[i], new_cost / size)
+                self.transfer_funds(devs[i], 'SuperUser', new_cost / size / 20)
+            self.transfer_funds(project_info[1], 'SuperUser', new_cost / 20)
         return True
 
     def worked_on_project(self, dev_id, project_id):
@@ -1048,7 +1123,7 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
 
-        # Search functions
+            # Search functions
 
     def search_by_user_id(self, user_id):
         user_id = '%' + user_id + '%'
@@ -1192,10 +1267,13 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         data = self.cursor.fetchall()
+
         for project in data:
             if (self.get_project_type(project[0]) == 'Individual'):
+
                 self.finish_individual_project(project[0])
                 project_info = self.get_finished_indiv_project(project[0])[0]
+                self.transfer_funds(projectinfo[1], user_id, projectinfo[2] / 10)
                 try:
                     self.conn.connect()
                     self.cursor.execute(canceltransfer, project[0])
@@ -1217,6 +1295,8 @@ class GateWay(object):
                     shares = 3
                 elif (devs[4] == None):
                     shares = 4
+                for i in range(shares):
+                    self.transfer_funds(devs[i], user_id, project_info[4] / shares / 10)
                 try:
                     self.conn.connect()
                     self.cursor.execute(canceltransfer, project[0])
@@ -1229,9 +1309,62 @@ class GateWay(object):
                     self.create_project_review(project[0], user_id, devs[i], 1, 'Late Project')
         return True
 
+    def get_dev_pending_client_reviews(self, user_id):
+        if (not self.get_user_type(user_id) == 2):
+            return False
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_dev_pending_client_reviews, user_id)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
+
+    def get_dev_pending_reviews(self, user_id, project_id):
+        if (not self.get_project_status(project_id) == 'Finished'):
+            return False
+        if (self.get_user_type(user_id) != 2):
+            return False
+        project_info = self.get_project_info(project_id)
+        devs = ''
+        if (project_info[4] == 'Team'):
+            devs = self.get_project_teamdevs(project_id)
+        data = []
+        if (self.get_review(project_id, user_id, project_info[1]) == False):
+            data = data + [[project_id, project_info[1]]]
+        size = 5
+        if (devs[1] == None):
+            size = 1
+        elif (devs[2] == None):
+            size = 2
+        elif (devs[3] == None):
+            size = 3
+        elif (devs[4] == None):
+            size = 4
+        for i in range(size):
+            if (devs[i] == user_id):
+                continue
+            if (self.get_review(project_id, user_id, devs[i]) == False):
+                data = data + [[project_id, devs[i]]]
+        return data
+
+    # gets specific review
+    def get_review(self, project_id, sender_id, receiver_id):
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_review, (sender_id, receiver_id, project_id))
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        if (len(data) == 0):
+            return False
+        return data[0]
+
     def transfer_funds(self, sender, receiver, amount):
-        self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - amount)
-        self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + amount)
+        self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - Decimal(amount))
+        self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + Decimal(amount))
         try:
             self.conn.connect()
             self.cursor.execute(add_transaction, (amount, receiver, sender))
