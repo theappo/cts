@@ -90,6 +90,8 @@ def main():
 
 	print('Done testing project 2...\n\n')
 
+	testAndPrint(Manager.get_lowest_bid('4'), 'No bids')
+
 
 	# test getting user interests, and then ordering users by their interests
 	testAndPrint(Manager.get_user_interests('testuser6'), (0, 0, 0, 1, 1, 1))

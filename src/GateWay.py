@@ -843,11 +843,11 @@ class GateWay(object):
     def get_lowest_bid(self, project_id):
         indivbid = self.get_individual_project_bids(project_id)
         teambid = self.get_team_project_bids(project_id)
-        if(indivbid == None and teambid == None):
+        if(len(indivbid) == 0 and len(teambid) == 0):
             return -1
-        if(indivbid == None):
+        if(len(indivbid) == 0):
             return teambid[0][1]
-        if(teambid == None):
+        if(len(teambid) == 0):
             return indivbid[0][1]
         if(indivbid[0][1] < teambid[0][1]):
             return indivbid[0][1]
