@@ -20,10 +20,12 @@ from UserInfo import *
 from TeamInfo import *
 from NewMessage import *
 from Pd import *
+from NotLow import *
+from Rating import *
 
 from shutil import copyfile
 
-from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QFileDialog
 from PyQt5 import QtCore
 
 
@@ -50,10 +52,22 @@ class Core():
         self.info = Pd(self.mainWindow)
         self.info.setWindowFlags(QtCore.Qt.Window)
 
+        self.notlow = NotLow(self.mainWindow)
+        self.notlow.setWindowFlags(QtCore.Qt.Window)
+
+        self.rating = Rating()
+        self.rating.setWindowFlags(QtCore.Qt.Window)
+
         # temp varibales
         self.pendingprojects = ()
         self.indiv_bid = ()
         self.team_bid = ()
+        self.current_indiv_projects = ()
+        self.current_team_projects = ()
+
+        self.devCurrProj = ()
+        self.needReview = ()
+        self.bidProj = ()
 
         self.setup()
 
@@ -100,15 +114,21 @@ class Core():
         # connect client project table1
         self.mainWindow.rightPanel.page6.tableWidget.itemClicked.connect(self.setbidtables)
         # connect client select this developer button
-        self.mainWindow.rightPanel.page6.pushButton_3.clicked.connect(self.placeIndivProject)
-        self.mainWindow.rightPanel.page6.pushButton_4.clicked.connect(self.placeTeamProject)
+        self.mainWindow.rightPanel.page6.pushButton_3.clicked.connect(self.choosedev)
+        self.mainWindow.rightPanel.page6.pushButton_4.clicked.connect(self.chooseTeam)
         # connect client project post new project table
         self.mainWindow.rightPanel.page6.pushButton_2.clicked.connect(self.postNewProject)
+        # connect client download button
+        self.mainWindow.rightPanel.page6.pushButton_5.clicked.connect(self.clientReview)
+        # connect rating buttion
+        self.rating.pushButton.clicked.connect(self.lowrating)
         # connect developer project button
         self.mainWindow.leftPanel.ProjectB1.clicked.connect(self.refreshDevProject)
         self.mainWindow.leftPanel.ProjectB2.clicked.connect(self.refreshDevProject)
         # connect developer project page refresh button
         self.mainWindow.rightPanel.page7.pushButton_4.clicked.connect(self.refreshDevProject)
+        # connect developer project page bid project button
+        self.mainWindow.rightPanel.page7.pushButton_3.clicked.connect(self.palceBid)
         # connect history button
         self.mainWindow.leftPanel.historyB1.clicked.connect(self.refreshHistory)
         self.mainWindow.leftPanel.historyB2.clicked.connect(self.refreshHistory)
@@ -116,6 +136,8 @@ class Core():
         self.mainWindow.leftPanel.historyB4.clicked.connect(self.refreshHistory)
         # connect grand statistic button
         self.mainWindow.leftPanel.grandStat.triggered.connect(self.systemInfo)
+        # connect superUser panel
+        self.mainWindow.leftPanel.manage.clicked.connect(self.refreshManage)
 
     def setLeftPanel(self):
         if self.loginManager.currentUser == None:
@@ -403,9 +425,9 @@ class Core():
             self.mainWindow.rightPanel.page6.tableWidget.setItem(rowPosition, 1,
                                                                  (QTableWidgetItem(project[2])))
 
-        current_indiv_projects = self.loginManager.currentUser.current_indiv_projects()
+        self.current_indiv_projects = self.loginManager.currentUser.current_indiv_projects()
 
-        for project in current_indiv_projects:
+        for project in self.current_indiv_projects:
             rowPosition = self.mainWindow.rightPanel.page6.tableWidget_4.rowCount()
             self.mainWindow.rightPanel.page6.tableWidget_4.insertRow(rowPosition)
             self.mainWindow.rightPanel.page6.tableWidget_4.setItem(rowPosition, 0,
@@ -415,9 +437,9 @@ class Core():
             self.mainWindow.rightPanel.page6.tableWidget_4.setItem(rowPosition, 3,
                                                                    (QTableWidgetItem(project[2])))
 
-        current_team_projects = self.loginManager.currentUser.current_team_projects()
+        self.current_team_projects = self.loginManager.currentUser.current_team_projects()
 
-        for project in current_team_projects:
+        for project in self.current_team_projects:
             rowPosition = self.mainWindow.rightPanel.page6.tableWidget_4.rowCount()
             self.mainWindow.rightPanel.page6.tableWidget_4.insertRow(rowPosition)
             self.mainWindow.rightPanel.page6.tableWidget_4.setItem(rowPosition, 0,
@@ -428,7 +450,49 @@ class Core():
                                                                    (QTableWidgetItem(project[2])))
 
     def refreshDevProject(self):
-        projects = self.loginManager.currentUser.current_indiv_projects()
+        self.mainWindow.rightPanel.page7.tableWidget.setRowCount(0)
+        self.mainWindow.rightPanel.page7.tableWidget_2.setRowCount(0)
+        self.mainWindow.rightPanel.page7.tableWidget_3.setRowCount(0)
+
+        self.devCurrProj = self.loginManager.currentUser.current_indiv_projects()
+
+        for project in self.devCurrProj:
+            rowPosition = self.mainWindow.rightPanel.page7.tableWidget.rowCount()
+            self.mainWindow.rightPanel.page7.tableWidget.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 0,
+                                                                 QTableWidgetItem(project[0]))
+            self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 2,
+                                                                 (QTableWidgetItem(project[2])))
+            self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 1,
+                                                                 (QTableWidgetItem(str(project[9]))))
+
+        self.needReview = self.loginManager.currentUser.get_dev_pending_client_reviews()
+
+        for case in self.needReview:
+            rowPosition = self.mainWindow.rightPanel.page7.tableWidget_2.rowCount()
+            self.mainWindow.rightPanel.page7.tableWidget_2.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page7.tableWidget_2.setItem(rowPosition, 0,
+                                                                   QTableWidgetItem(case[0]))
+            self.mainWindow.rightPanel.page7.tableWidget_2.setItem(rowPosition, 1,
+                                                                   (QTableWidgetItem(case[1])))
+
+        self.bidProj = self.db.get_pending_projects()
+
+        for project in self.bidProj:
+            try:
+                lowest = str(self.db.get_lowest_bid(project[0]))
+            except IndexError:
+                lowest = "No bid yet"
+            rowPosition = self.mainWindow.rightPanel.page7.tableWidget_3.rowCount()
+            self.mainWindow.rightPanel.page7.tableWidget_3.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page7.tableWidget_3.setItem(rowPosition, 0,
+                                                                   QTableWidgetItem(project[0]))
+            self.mainWindow.rightPanel.page7.tableWidget_3.setItem(rowPosition, 1,
+                                                                   (QTableWidgetItem(project[1])))
+            self.mainWindow.rightPanel.page7.tableWidget_3.setItem(rowPosition, 2,
+                                                                   (QTableWidgetItem(str(project[4]))))
+            self.mainWindow.rightPanel.page7.tableWidget_3.setItem(rowPosition, 3,
+                                                                   (QTableWidgetItem(lowest)))
 
     def setbidtables(self):
         self.indiv_bid = self.db.get_individual_project_bids(
@@ -458,7 +522,6 @@ class Core():
                                                                    (QTableWidgetItem(str(bid[1]))))
 
     def postNewProject(self):
-        # TODO: crate project
         if self.db.project_id_exists(self.mainWindow.rightPanel.page6.lineEdit.text()):
             QMessageBox.about(self.mainWindow, "Sorry", "This ID already taken by others, try to use somthing else")
         else:
@@ -471,26 +534,65 @@ class Core():
             self.refreshClientProject()
             QMessageBox.about(self.mainWindow, "New Project", "Done")
 
-    def placeIndivProject(self):
+    def choosedev(self):
         try:
             dev = self.indiv_bid[self.mainWindow.rightPanel.page6.tableWidget_2.currentItem().row()][0]
             bid = self.indiv_bid[self.mainWindow.rightPanel.page6.tableWidget_2.currentItem().row()][1]
             project = self.pendingprojects[self.mainWindow.rightPanel.page6.tableWidget.currentItem().row()][0]
             self.db.choose_dev(project, dev, float(bid))
+            try:
+                lowest = self.db.get_lowest_bid(project)
+                if lowest < bid:
+                    self.notlow.show()
+            except IndexError:
+                pass
             self.refreshClientProject()
         except AttributeError:
             print(AttributeError.with_traceback())
             QMessageBox.about(self.mainWindow, "Error", "Please select a develop and project")
 
-    def placeTeamProject(self):
+    def chooseTeam(self):
         try:
             team = self.team_bid[self.mainWindow.rightPanel.page6.tableWidget_3.currentItem().row()][0]
             bid = self.team_bid[self.mainWindow.rightPanel.page6.tableWidget_3.currentItem().row()][1]
             project = self.pendingprojects[self.mainWindow.rightPanel.page6.tableWidget.currentItem().row()][0]
+            try:
+                lowest = self.db.get_lowest_bid(project)
+                if lowest < bid:
+                    self.notlow.show()
+            except IndexError:
+                pass
             self.db.choose_team(project, team, float(bid))
             self.refreshClientProject()
         except AttributeError:
             QMessageBox.about(self.mainWindow, "Error", "Please select a team and project")
+
+    def clientReview(self):
+        download = QFileDialog.getSaveFileName(self.mainWindow, "Upload Picture", "", "exe (*.exe)")
+        try:
+            copyfile("../resources/projects/" + self.current_indiv_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0] + ".exe", download)
+        except TypeError:
+            self.rating.show()
+
+    def lowrating(self):
+        #TODO: FIX BUG
+        if int(self.rating.comboBox.currentText()) < 3 and len(self.rating.textEdit.toPlainText()) == 0:
+            QMessageBox.about(self.mainWindow, "Error", "You must leave a review")
+        else:
+            self.rating.close()
+
+    def palceBid(self):
+        project = self.bidProj[self.mainWindow.rightPanel.page7.tableWidget_3.currentItem().row()][0]
+        bid = self.mainWindow.rightPanel.page7.lineEdit.text()
+        id = self.loginManager.currentUser.user_id
+        try:
+            self.db.place_individual_bid(project, id, float(bid))
+            self.refreshDevProject()
+        except AttributeError:
+            QMessageBox.about(self.mainWindow, "Error", "You already bid on this project")
+        except TypeError:
+            QMessageBox.about(self.mainWindow, "Error", "Invalid bid price")
 
     def refreshHistory(self):
         transactions = self.loginManager.currentUser.get_transaction_history()
@@ -562,8 +664,11 @@ class Core():
             self.mainWindow.rightPanel.page5.tableWidget_3.setItem(rowPosition, 5,
                                                                    QTableWidgetItem(str(project[5])))
 
+    def refreshManage(self):
+        pass
+
     def personalInfo(self):
-        #TODO:add detail
+        # TODO:add detail
         self.info.show()
 
     def deleteAcount(self):

@@ -19,5 +19,4 @@ class Client(User):
 
     def finished_team_projects(self):
         return self.db.get_clients_finished_team_projects(self.user_id)
-    
-#print(Client("testuser2").current_team_projects())
+

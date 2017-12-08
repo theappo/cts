@@ -1429,4 +1429,4 @@ class GateWay(object):
         return True
 
 db = GateWay()
-db.get_pending_projects()
+print(db.get_individual_project_bids("2"))

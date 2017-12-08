@@ -12,4 +12,7 @@ class Developer(User):
     def finished_indiv_projects(self):
         return self.db.get_devs_finished_projects(self.user_id)
 
-print(Developer("testuser10").current_indiv_projects())
+    def get_dev_pending_client_reviews(self):
+        return self.db.get_dev_pending_client_reviews(self.user_id)
+
+#print(Developer("testuser4").current_indiv_projects())
