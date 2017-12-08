@@ -158,19 +158,22 @@ class Core():
         self.mainWindow.rightPanel.page8.pushButton_3.clicked.connect(self.addToBlacklist)
         # connect superUser remove blacklist button
         self.mainWindow.rightPanel.page8.pushButton_4.clicked.connect(self.removeBlacklist)
-        # connect superUser rest warning buttion
+        # connect superUser rest warning button
         self.mainWindow.rightPanel.page8.pushButton_5.clicked.connect(self.resetwarning)
         # connect team page
         self.mainWindow.leftPanel.manageTeam1.clicked.connect(self.refreshTeam)
         self.mainWindow.leftPanel.manageTeam2.clicked.connect(self.refreshTeam)
         # connect team page review button
         self.mainWindow.rightPanel.page9.pushButton_3.clicked.connect(self.devReview)
-        # connect team page join team buttion
+        # connect team page join team button
         self.mainWindow.rightPanel.page9.pushButton.clicked.connect(self.jointeam)
-        # connect team page create team buttion
+        # connect team page create team button
         self.mainWindow.rightPanel.page9.pushButton_2.clicked.connect(self.createteam)
-        # connect team page submit project buttion
+        # connect team page submit project button
         self.mainWindow.rightPanel.page9.pushButton_4.clicked.connect(self.submitteamProj)
+
+        # connect rating submit button
+        self.rating.pushButton.clicked.connect(self.createReview)
 
     def setLeftPanel(self):
         if self.loginManager.currentUser == None:
@@ -460,6 +463,7 @@ class Core():
                                                                  (QTableWidgetItem(project[2])))
 
         self.current_indiv_projects = self.loginManager.currentUser.current_indiv_projects()
+        print(self.current_indiv_projects)
 
         for project in self.current_indiv_projects:
             rowPosition = self.mainWindow.rightPanel.page6.tableWidget_4.rowCount()
@@ -608,6 +612,19 @@ class Core():
             self.rating.show()
         except TypeError:
             QMessageBox.about(self.mainWindow, "Error", "Project not yet uploaded")
+        except AttributeError:
+            pass
+
+    def createReview(self):
+        rating = self.rating.comboBox.currentText()
+        project = self.current_indiv_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0]
+        dev = self.current_indiv_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][8]
+        message = self.rating.textEdit.toPlainText()
+
+        self.loginManager.currentUser.create_project_review(project, dev, rating, message)
+        self.refreshClientProject()
 
     def devReview(self):
         self.rating.show()
