@@ -1410,5 +1410,5 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
-#db = GateWay()
-#db.place_individual_bid("0", "testuser11","600")
+db = GateWay()
+db.get_pending_projects()
