@@ -45,6 +45,7 @@ class Interest(QWidget):
         item.setText(_translate("Form", "User ID"))
 
     def setUser(self, userIDs):
+        self.tableWidget.setRowCount(0)
         for i in range (len(userIDs) - 1):
             rowPosition = self.tableWidget.rowCount()
             self.tableWidget.insertRow(rowPosition)
