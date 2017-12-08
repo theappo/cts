@@ -1303,7 +1303,6 @@ class GateWay(object):
         return data[0]
 
     # checks if client's project deadline has passed
-    # TODO: add this two function to login
     def check_client_projects(self, user_id):
         if (self.get_user_type(user_id) != 1):
             return False

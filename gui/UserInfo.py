@@ -2,7 +2,7 @@
 
 from subprocess import Popen
 
-from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtWidgets import QWidget, QMessageBox, QFileDialog
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -174,7 +174,9 @@ class UserInfo(QWidget):
         self.label.setPixmap(pixmap)
 
     def viewresume(self):
-        pdf = "../resources/resumes/" + self.user_id + ".pdf"
-        # TODO: open pdf in mac
-        Popen([pdf], shell=True)
-        # QMessageBox.about(self, "Error", "This user not yet has a resume")
+        download = QFileDialog.getSaveFileName(self.mainWindow, "Download Project", "", "pdf (*.pdf)")
+
+        try:
+            copyfile("../resources/resumes/" + self.user_id + ".pdf", download[0])
+        except TypeError:
+            QMessageBox.about(self, "Error", "This user not yet has a resume")

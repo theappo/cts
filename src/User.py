@@ -67,8 +67,5 @@ class User():
     def check_application(self):
         return self.db.check_application(self.user_id)
 
-
-    #TODO: user in a team?
-
 #u = User("123456")
 #print(u.get)
