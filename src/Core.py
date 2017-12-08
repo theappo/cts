@@ -8,6 +8,8 @@ sys.path.insert(0, "../gui")
 from MainWindow import *
 from LoginManager import *
 from SearchEngine import *
+from ApplicationManager import *
+from TeamManager import *
 from User import *
 from Developer import *
 from Client import *
@@ -25,7 +27,7 @@ from Rating import *
 
 from shutil import copyfile
 
-from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem, QFileDialog, QInputDialog, QLineEdit
 from PyQt5 import QtCore
 
 
@@ -34,6 +36,8 @@ class Core():
         self.db = GateWay()
         self.loginManager = LoginManager()
         self.searchEngine = SearchEngine()
+        self.appManager = ApplicationManager()
+        self.teamManager = TeamManager()
         self.mainWindow = MainWindow()
 
         self.applyPage = Application(self.mainWindow)
@@ -127,6 +131,10 @@ class Core():
         self.mainWindow.leftPanel.ProjectB2.clicked.connect(self.refreshDevProject)
         # connect developer project page refresh button
         self.mainWindow.rightPanel.page7.pushButton_4.clicked.connect(self.refreshDevProject)
+        # connect developer project page submit project button
+        self.mainWindow.rightPanel.page7.pushButton.clicked.connect(self.submitProj)
+        # connect developer project page review client button
+        self.mainWindow.rightPanel.page7.pushButton_2.clicked.connect(self.devReview)
         # connect developer project page bid project button
         self.mainWindow.rightPanel.page7.pushButton_3.clicked.connect(self.palceBid)
         # connect history button
@@ -138,6 +146,27 @@ class Core():
         self.mainWindow.leftPanel.grandStat.triggered.connect(self.systemInfo)
         # connect superUser panel
         self.mainWindow.leftPanel.manage.clicked.connect(self.refreshManage)
+        # connect superUser accept application button
+        self.mainWindow.rightPanel.page8.pushButton.clicked.connect(self.acceptApp)
+        # connect superUser reject application button
+        self.mainWindow.rightPanel.page8.pushButton_2.clicked.connect(self.rejectApp)
+        # connect superUser change review button
+        self.mainWindow.rightPanel.page8.pushButton_7.clicked.connect(self.changeReview)
+        # connect superUser add blacklist button
+        self.mainWindow.rightPanel.page8.pushButton_3.clicked.connect(self.addToBlacklist)
+        # connect superUser remove blacklist button
+        self.mainWindow.rightPanel.page8.pushButton_4.clicked.connect(self.removeBlacklist)
+        # connect superUser rest warning buttion
+        self.mainWindow.rightPanel.page8.pushButton_5.clicked.connect(self.resetwarning)
+        # connect team page
+        self.mainWindow.leftPanel.manageTeam1.clicked.connect(self.refreshTeam)
+        self.mainWindow.leftPanel.manageTeam2.clicked.connect(self.refreshTeam)
+        # connect team page review button
+        self.mainWindow.rightPanel.page9.pushButton_3.clicked.connect(self.devReview)
+        # connect team page join team buttion
+        self.mainWindow.rightPanel.page9.pushButton.clicked.connect(self.jointeam)
+        # connect team page create team buttion
+        self.mainWindow.rightPanel.page9.pushButton_2.clicked.connect(self.createteam)
 
     def setLeftPanel(self):
         if self.loginManager.currentUser == None:
@@ -172,6 +201,7 @@ class Core():
             self.setLeftPanel()
 
             if type(self.loginManager.currentUser) is SuperUser:
+                self.refreshManage()
                 self.mainWindow.rightPanel.setCurrentIndex(8)
             else:
                 if self.loginManager.currentUser.get_transaction_history() == ():
@@ -479,9 +509,8 @@ class Core():
         self.bidProj = self.db.get_pending_projects()
 
         for project in self.bidProj:
-            try:
-                lowest = str(self.db.get_lowest_bid(project[0]))
-            except IndexError:
+            lowest = str(self.db.get_lowest_bid(project[0]))
+            if lowest == "-1":
                 lowest = "No bid yet"
             rowPosition = self.mainWindow.rightPanel.page7.tableWidget_3.rowCount()
             self.mainWindow.rightPanel.page7.tableWidget_3.insertRow(rowPosition)
@@ -568,15 +597,19 @@ class Core():
             QMessageBox.about(self.mainWindow, "Error", "Please select a team and project")
 
     def clientReview(self):
-        download = QFileDialog.getSaveFileName(self.mainWindow, "Upload Picture", "", "exe (*.exe)")
+        download = QFileDialog.getSaveFileName(self.mainWindow, "Download Project", "", "exe (*.exe)")
         try:
             copyfile("../resources/projects/" + self.current_indiv_projects[
-                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0] + ".exe", download)
-        except TypeError:
+                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0] + ".exe", download[0])
             self.rating.show()
+        except TypeError:
+            QMessageBox.about(self.mainWindow, "Error", "Project not yet uploaded")
+
+    def devReview(self):
+        self.rating.show()
 
     def lowrating(self):
-        #TODO: FIX BUG
+        # TODO: FIX BUG
         if int(self.rating.comboBox.currentText()) < 3 and len(self.rating.textEdit.toPlainText()) == 0:
             QMessageBox.about(self.mainWindow, "Error", "You must leave a review")
         else:
@@ -593,6 +626,16 @@ class Core():
             QMessageBox.about(self.mainWindow, "Error", "You already bid on this project")
         except TypeError:
             QMessageBox.about(self.mainWindow, "Error", "Invalid bid price")
+
+    def submitProj(self):
+        path = QFileDialog.getOpenFileName(self.mainWindow, "Submit Project", "", "exe (*.exe)")
+        project = self.devCurrProj[self.mainWindow.rightPanel.page7.tableWidget.currentItem().row()][0]
+        try:
+            copyfile(path[0], "../resources/projects/" + project + ".exe")
+            self.loginManager.currentUser.new_message(self.db.get_project_info(project)[1],
+                                                      "Your project" + project + "is up")
+        except AttributeError:
+            QMessageBox.about(self.mainWindow, "Error", "Please select a project")
 
     def refreshHistory(self):
         transactions = self.loginManager.currentUser.get_transaction_history()
@@ -665,7 +708,104 @@ class Core():
                                                                    QTableWidgetItem(str(project[5])))
 
     def refreshManage(self):
-        pass
+        # clear all content
+        self.mainWindow.rightPanel.page8.tableWidget.setRowCount(0)
+
+        self.appManager.read()
+
+        for app in self.appManager.apps:
+            print(app.user_id)
+            rowPosition = self.mainWindow.rightPanel.page8.tableWidget.rowCount()
+            self.mainWindow.rightPanel.page8.tableWidget.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page8.tableWidget.setItem(rowPosition, 0,
+                                                                 QTableWidgetItem(app.user_id))
+            self.mainWindow.rightPanel.page8.tableWidget.setItem(rowPosition, 1,
+                                                                 QTableWidgetItem(app.type()))
+            self.mainWindow.rightPanel.page8.tableWidget.setItem(rowPosition, 2,
+                                                                 QTableWidgetItem(app.get_email()))
+            self.mainWindow.rightPanel.page8.tableWidget.setItem(rowPosition, 2,
+                                                                 QTableWidgetItem(app.get_address()))
+
+    def acceptApp(self):
+        self.appManager.accept(self.mainWindow.rightPanel.page8.tableWidget.currentItem().row())
+
+    def rejectApp(self):
+        text, okPressed = QInputDialog.getText(self.mainWindow, "Reason", "Reason:", QLineEdit.Normal, "")
+
+        if okPressed and text != '':
+            self.appManager.reject(self.mainWindow.rightPanel.page8.tableWidget.currentItem().row(), str(text))
+
+    def addToBlacklist(self):
+        self.db.add_blacklist(self.mainWindow.rightPanel.page8.lineEdit.text(),
+                              self.mainWindow.rightPanel.page8.lineEdit_4.text())
+
+    def removeBlacklist(self):
+        self.db.remove_blacklist(self.mainWindow.rightPanel.page8.lineEdit_5.text())
+
+    def resetwarning(self):
+        self.db.remove_warning(self.mainWindow.rightPanel.page8.lineEdit_6.text())
+
+    def changeReview(self):
+        projct = self.mainWindow.rightPanel.page8.lineEdit_7.text()
+        rating = self.mainWindow.rightPanel.page8.lineEdit_3.text()
+        cost = self.mainWindow.rightPanel.page8.lineEdit_8.text()
+
+        self.db.settle_project_dispute(projct, rating, cost)
+
+    def refreshTeam(self):
+        # clear all content
+        self.mainWindow.rightPanel.page9.tableWidget.setRowCount(0)
+        self.mainWindow.rightPanel.page9.tableWidget_2.setRowCount(0)
+
+        self.teamManager.read(self.loginManager.currentUser)
+
+        for team in self.teamManager.teams:
+            member = team.get_team_members()
+            rowPosition = self.mainWindow.rightPanel.page9.tableWidget.rowCount()
+            self.mainWindow.rightPanel.page9.tableWidget.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 0,
+                                                                 QTableWidgetItem(str(team.team_id)))
+            self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 1,
+                                                                 QTableWidgetItem(str(member[0])))
+            self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 2,
+                                                                 QTableWidgetItem(str(member[1])))
+            self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 3,
+                                                                 QTableWidgetItem(str(member[2])))
+            self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 4,
+                                                                 QTableWidgetItem(str(member[3])))
+            self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 5,
+                                                                 QTableWidgetItem(str(member[4])))
+
+        for project in self.indiv_bid:
+            rowPosition = self.mainWindow.rightPanel.page9.tableWidget_2.rowCount()
+            self.mainWindow.rightPanel.page9.tableWidget_2.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 0,
+                                                                   QTableWidgetItem(project[0]))
+            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 1,
+                                                                   (QTableWidgetItem(project[1])))
+            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 2,
+                                                                   QTableWidgetItem(project[9]))
+            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 4,
+                                                                   QTableWidgetItem(str(project[11])))
+            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 5,
+                                                                   QTableWidgetItem(str(project[5])))
+
+    def jointeam(self):
+        text, okPressed = QInputDialog.getText(self.mainWindow, "Password", "Password:", QLineEdit.Normal, "")
+
+        if okPressed and text != '':
+            teamID = self.mainWindow.rightPanel.page9.lineEdit.text()
+            self.loginManager.currentUser.join_team(teamID)
+            self.refreshTeam()
+            QMessageBox.about(self.mainWindow, "Success", "Doen")
+
+    def createteam(self):
+        teamID = self.mainWindow.rightPanel.page9.lineEdit_2.text()
+        if self.db.team_exists(teamID):
+            QMessageBox.about(self.mainWindow, "Eroor", "This ID already taken by others, try to use somthing else")
+        else:
+            self.loginManager.currentUser.create_team(teamID)
+            self.refreshTeam()
 
     def personalInfo(self):
         # TODO:add detail
@@ -681,7 +821,8 @@ class Core():
             except ArithmeticError:
                 pass
         else:
-            QMessageBox.about(self.mainWindow, "Error", "Unable to delete account, you still have unfinished projects")
+            QMessageBox.about(self.mainWindow, "Error",
+                              "Unable to delete account, you still have unfinished projects")
 
     def systemInfo(self):
         info = SystemInfo(self.mainWindow)

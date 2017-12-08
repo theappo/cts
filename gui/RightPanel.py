@@ -11,6 +11,7 @@ from History import *
 from ClientProjs import *
 from DevProjs import *
 from SystemManager import *
+from TeamPage import *
 
 
 class RightPanel(QStackedWidget):
@@ -31,6 +32,7 @@ class RightPanel(QStackedWidget):
         self.page6 = ClientProjs()
         self.page7 = DevProjs()
         self.page8 = SystemManager()
+        self.page9 = TeamPage()
 
         self.initUI()
 
@@ -69,3 +71,5 @@ class RightPanel(QStackedWidget):
         # add SystemManager Page for super user
         self.addWidget(self.page8)
 
+        # add team page
+        self.addWidget(self.page9)

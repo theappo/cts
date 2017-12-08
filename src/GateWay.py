@@ -1428,5 +1428,5 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
-db = GateWay()
-print(db.get_individual_project_bids("2"))
+#db = GateWay()
+#print(db.get_team_devs("testteam2"))

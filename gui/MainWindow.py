@@ -65,3 +65,6 @@ class MainWindow(QWidget):
 
         self.leftPanel.homeB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(1))
         self.leftPanel.searchB5.clicked.connect(lambda: self.rightPanel.setCurrentIndex(3))
+
+        self.leftPanel.manageTeam1.clicked.connect(lambda: self.rightPanel.setCurrentIndex(9))
+        self.leftPanel.manageTeam2.clicked.connect(lambda: self.rightPanel.setCurrentIndex(9))

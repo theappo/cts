@@ -15,4 +15,13 @@ class Developer(User):
     def get_dev_pending_client_reviews(self):
         return self.db.get_dev_pending_client_reviews(self.user_id)
 
-#print(Developer("testuser4").current_indiv_projects())
+    def get_team(self):
+        return self.db.get_users_teams(self.user_id)
+
+    def create_team(self, team_id):
+        self.db.create_team(team_id, self.user_id)
+
+    def join_team(self, team_id):
+        self.db.add_to_team(team_id, self.user_id)
+
+#print(Developer("testuser4").get_team())

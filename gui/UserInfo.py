@@ -1,7 +1,5 @@
 """ a panel that dispaly user information """
 
-from Panel import *
-
 from subprocess import Popen
 
 from PyQt5.QtWidgets import QWidget, QMessageBox
