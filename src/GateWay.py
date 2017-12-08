@@ -816,7 +816,9 @@ class GateWay(object):
 
     # returns the team bids as a list of lists for a pending project, add limit?
     def get_team_project_bids(self, project_id):
-        if (not (self.get_project_status(project_id) == 'Pending')):
+
+        if (self.get_project_status(project_id) != 'Pending'):
+
             return False
         try:
             self.conn.connect()
@@ -829,7 +831,9 @@ class GateWay(object):
 
     # returns the individual bids as a list of lists, add limit?
     def get_individual_project_bids(self, project_id):
-        if (not (self.get_project_status(project_id) == 'Pending')):
+
+        if (self.get_project_status(project_id) != 'Pending'):
+
             return False
         try:
             self.conn.connect()
@@ -839,6 +843,20 @@ class GateWay(object):
             traceback.print_exc(e)
         data = self.cursor.fetchall()
         return data
+
+    def get_lowest_bid(self, project_id):
+        indivbid = self.get_individual_project_bids(project_id)[0][1]
+        teambid = self.get_team_project_bids(project_id)[0][1]
+        if(indivbid == None and teambid == None):
+            return -1
+        if(indivbid == None):
+            return teambid
+        if(teambid == None):
+            return indivbid
+        if(indivbid < teambid):
+            return indivbid
+        else:
+            return teambid
 
     # choose a team_id's bid for a project, make sure team placed a bid!
     # trigger will clear other bids, and execute other necessary changes
