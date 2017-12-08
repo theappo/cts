@@ -841,18 +841,18 @@ class GateWay(object):
         return data
 
     def get_lowest_bid(self, project_id):
-        indivbid = self.get_individual_project_bids(project_id)[0][1]
-        teambid = self.get_team_project_bids(project_id)[0][1]
+        indivbid = self.get_individual_project_bids(project_id)
+        teambid = self.get_team_project_bids(project_id)
         if(indivbid == None and teambid == None):
             return -1
         if(indivbid == None):
-            return teambid
+            return teambid[0][1]
         if(teambid == None):
-            return indivbid
-        if(indivbid < teambid):
-            return indivbid
+            return indivbid[0][1]
+        if(indivbid[0][1] < teambid[0][1]):
+            return indivbid[0][1]
         else:
-            return teambid
+            return teambid[0][1]
 
     # choose a team_id's bid for a project, make sure team placed a bid!
     # trigger will clear other bids, and execute other necessary changes
