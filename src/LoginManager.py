@@ -4,8 +4,6 @@ from Client import *
 from Developer import *
 from GateWay import *
 
-from PyQt5.QtWidgets import QMessageBox
-
 
 class LoginManager():
     def __init__(self):
@@ -16,7 +14,7 @@ class LoginManager():
 
         if db.check_blacklist(user_id):
             self.currentUser = None
-            return "YOU ARE IN BLACK LIST"
+            return db.get_black_list(user_id)[0]
         elif db.verify_user(user_id, password):
             user_type = db.get_user_type(user_id)
 
@@ -26,6 +24,10 @@ class LoginManager():
                 self.currentUser = Client(user_id)
             else:
                 self.currentUser = Developer(user_id)
+
+            if db.check_warning_number(user_id) >= 2:
+                db.add_blacklist(user_id, "Due to your low performance, you have been add to the blacklist")
+                return "This is your last time login"
 
             return "Welcome"
 

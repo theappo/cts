@@ -2,7 +2,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QToolButton, QMenu, QFormLayout, QAction, QStackedWidget
 from PyQt5.QtGui import QPixmap, QPalette, QIcon, QColor
-from PyQt5.QtCore import Qt, QSize, QObjectCleanupHandler
+from PyQt5.QtCore import Qt, QSize
 
 
 class LeftPanel(QWidget):
@@ -30,34 +30,35 @@ class LeftPanel(QWidget):
         # for develop has no transaction history
         self.homeB1 = QPushButton("Home")
         self.searchB1 = QPushButton("Search")
-        self.currentProjectB1 = QPushButton("Current Project")
-        self.submitProjectB1 = QPushButton("Submit Project")
+        self.ProjectB1 = QPushButton("Project")
         self.messageB1 = QPushButton("Message")
         self.historyB1 = QPushButton("History")
         self.manageTeam1 = QPushButton("Team Manager")
         # for develop has transaction history
         self.homeB2 = QPushButton("Home")
         self.searchB2 = QPushButton("Search")
-        self.currentProjectB2 = QPushButton("Current Project")
-        self.submitProjectB2 = QPushButton("Submit Project")
+        self.ProjectB2 = QPushButton("Project")
         self.messageB2 = QPushButton("Message")
         self.historyB2 = QPushButton("History")
         self.manageTeam2 = QPushButton("Team Manager")
         # for client has no transaction history
         self.homeB3 = QPushButton("Home")
         self.searchB3 = QPushButton("Search")
-        self.currentProjectB3 = QPushButton("Current Project")
-        self.postProjectB3 = QPushButton("Post New Project")
+        self.ProjectB3 = QPushButton("Project")
         self.messageB3 = QPushButton("Message")
         self.historyB3 = QPushButton("History")
         # for client has transaction history
         self.homeB4 = QPushButton("Home")
         self.searchB4 = QPushButton("Search")
-        self.currentProjectB4 = QPushButton("Current Project")
-        self.postProjectB4 = QPushButton("Post New Project")
+        self.ProjectB4 = QPushButton("Project")
         self.messageB4 = QPushButton("Message")
         self.historyB4 = QPushButton("History")
-        # TODO: super user buttons
+        # for superuser
+        self.manage = QPushButton("System Manager")
+        self.messageB5 = QPushButton("Message")
+        # for new user
+        self.homeB5 = QPushButton("Home")
+        self.searchB5 = QPushButton("Search")
 
         # declare function button
         self.funcbutt = QToolButton(self)
@@ -101,8 +102,7 @@ class LeftPanel(QWidget):
         dntly = QFormLayout()
         dntly.addRow(self.homeB1)
         dntly.addRow(self.searchB1)
-        dntly.addRow(self.currentProjectB1)
-        dntly.addRow(self.submitProjectB1)
+        dntly.addRow(self.ProjectB1)
         dntly.addRow(self.messageB1)
         dntly.addRow(self.historyB1)
         dntly.addRow(self.manageTeam1)
@@ -113,8 +113,7 @@ class LeftPanel(QWidget):
         dtly = QFormLayout()
         dtly.addRow(self.homeB2)
         dtly.addRow(self.searchB2)
-        dtly.addRow(self.currentProjectB2)
-        dtly.addRow(self.submitProjectB2)
+        dtly.addRow(self.ProjectB2)
         dtly.addRow(self.messageB2)
         dtly.addRow(self.historyB2)
         dtly.addRow(self.manageTeam2)
@@ -125,8 +124,7 @@ class LeftPanel(QWidget):
         cntly = QFormLayout()
         cntly.addRow(self.homeB3)
         cntly.addRow(self.searchB3)
-        cntly.addRow(self.currentProjectB3)
-        cntly.addRow(self.postProjectB3)
+        cntly.addRow(self.ProjectB3)
         cntly.addRow(self.messageB3)
         cntly.addRow(self.historyB3)
         cnt.setLayout(cntly)
@@ -136,13 +134,25 @@ class LeftPanel(QWidget):
         ctly = QFormLayout()
         ctly.addRow(self.homeB4)
         ctly.addRow(self.searchB4)
-        ctly.addRow(self.currentProjectB4)
-        ctly.addRow(self.postProjectB4)
+        ctly.addRow(self.ProjectB4)
         ctly.addRow(self.messageB4)
         ctly.addRow(self.historyB4)
         ct.setLayout(ctly)
         self.controlPanel.addWidget(ct)
-        # TODO: add superUser
+        # add super user
+        su = QWidget()
+        suly = QFormLayout()
+        suly.addRow(self.manage)
+        suly.addRow(self.messageB5)
+        su.setLayout(suly)
+        self.controlPanel.addWidget(su)
+        # add new user
+        new = QWidget()
+        newly = QFormLayout()
+        newly.addRow(self.homeB5)
+        newly.addRow(self.searchB5)
+        new.setLayout(newly)
+        self.controlPanel.addWidget(new)
         # add controlPanel to LeftPanel
         self.controlPanel.setCurrentIndex(0)
         self.controlPanel.move(0, 180)
@@ -159,9 +169,9 @@ class LeftPanel(QWidget):
         self.funcbutt.move(39, self.hight - 43)
         # connect menu event
 
-    def setpic(self, path):
+    def setpic(self, user_id):
         """ set pic to the path image"""
-        pixmap = QPixmap(path)
+        pixmap = QPixmap("../resources/pictures/" + user_id)
         # when path not found
         if (pixmap.isNull()):
             pixmap = QPixmap(self.unknownUser)
