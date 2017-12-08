@@ -1316,7 +1316,7 @@ class GateWay(object):
         data = self.cursor.fetchall()
         for project in data:
             self.delete_project(project[0])
-            self.transferfunds(user_id, 'SuperUser', 10.00)
+            self.transfer_funds(user_id, 'SuperUser', 10.00)
         return True
 
     # checks for late devs/teams

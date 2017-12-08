@@ -172,7 +172,7 @@ get_review = "SELECT * FROM ProjectReviews WHERE sender_id = %s AND receiver_id 
 # get all the clients overdue projects
 get_client_overdue_projects2 = "SELECT project_id FROM Projects WHERE client_id = %s AND deadline < NOW()"
 # gets all pending projects where deadline has passed
-get_client_overdue_projects = "SELECT project_id FROM PendingProjects WHERE client_id = %s AND bid_deadline > NOW()"
+get_client_overdue_projects = "SELECT p.project_id FROM PendingProjects pp INNER JOIN Projects p WHERE p.client_id = %s AND pp.bid_deadline > NOW()"
 
 # get all the current project for developer
 get_developer_current_projects = "SELECT project_id FROM Current_Individual_Project WHERE developer_id = %s"
