@@ -463,7 +463,6 @@ class Core():
                                                                  (QTableWidgetItem(project[2])))
 
         self.current_indiv_projects = self.loginManager.currentUser.current_indiv_projects()
-        print(self.current_indiv_projects)
 
         for project in self.current_indiv_projects:
             rowPosition = self.mainWindow.rightPanel.page6.tableWidget_4.rowCount()
@@ -585,7 +584,6 @@ class Core():
                 pass
             self.refreshClientProject()
         except AttributeError:
-            print(AttributeError.with_traceback())
             QMessageBox.about(self.mainWindow, "Error", "Please select a develop and project")
 
     def chooseTeam(self):
@@ -622,6 +620,10 @@ class Core():
         dev = self.current_indiv_projects[
                 self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][8]
         message = self.rating.textEdit.toPlainText()
+        print(rating)
+        print(project)
+        print(dev)
+        print(message)
 
         self.loginManager.currentUser.create_project_review(project, dev, rating, message)
         self.refreshClientProject()
@@ -757,7 +759,6 @@ class Core():
         self.appManager.read()
 
         for app in self.appManager.apps:
-            print(app.user_id)
             rowPosition = self.mainWindow.rightPanel.page8.tableWidget.rowCount()
             self.mainWindow.rightPanel.page8.tableWidget.insertRow(rowPosition)
             self.mainWindow.rightPanel.page8.tableWidget.setItem(rowPosition, 0,

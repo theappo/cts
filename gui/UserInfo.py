@@ -131,6 +131,12 @@ class UserInfo(QWidget):
         self.tableWidget.verticalHeader().setCascadingSectionResizes(True)
         self.verticalLayout.addWidget(self.tableWidget)
 
+        self.label.setFixedSize(100, 100)
+        self.label.setScaledContents(True)
+
+        self.lineEdit.setMinimumWidth(400)
+        self.lineEdit_2.setMinimumWidth(400)
+
         self.retranslateUi(QWidget)
         QtCore.QMetaObject.connectSlotsByName(QWidget)
 
