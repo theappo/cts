@@ -137,6 +137,8 @@ class Core():
         self.mainWindow.rightPanel.page7.pushButton_2.clicked.connect(self.devReview)
         # connect developer project page bid project button
         self.mainWindow.rightPanel.page7.pushButton_3.clicked.connect(self.palceBid)
+        # connect developer project page bid team project button
+        self.mainWindow.rightPanel.page7.pushButton_5.clicked.connect(self.palceteamBid)
         # connect history button
         self.mainWindow.leftPanel.historyB1.clicked.connect(self.refreshHistory)
         self.mainWindow.leftPanel.historyB2.clicked.connect(self.refreshHistory)
@@ -167,6 +169,8 @@ class Core():
         self.mainWindow.rightPanel.page9.pushButton.clicked.connect(self.jointeam)
         # connect team page create team buttion
         self.mainWindow.rightPanel.page9.pushButton_2.clicked.connect(self.createteam)
+        # connect team page submit project buttion
+        self.mainWindow.rightPanel.page9.pushButton_4.clicked.connect(self.submitteamProj)
 
     def setLeftPanel(self):
         if self.loginManager.currentUser == None:
@@ -616,16 +620,34 @@ class Core():
             self.rating.close()
 
     def palceBid(self):
-        project = self.bidProj[self.mainWindow.rightPanel.page7.tableWidget_3.currentItem().row()][0]
-        bid = self.mainWindow.rightPanel.page7.lineEdit.text()
-        id = self.loginManager.currentUser.user_id
         try:
-            self.db.place_individual_bid(project, id, float(bid))
-            self.refreshDevProject()
+            project = self.bidProj[self.mainWindow.rightPanel.page7.tableWidget_3.currentItem().row()][0]
+            bid = self.mainWindow.rightPanel.page7.lineEdit.text()
+            id = self.loginManager.currentUser.user_id
+            try:
+                self.db.place_individual_bid(project, id, float(bid))
+                self.refreshDevProject()
+            except AttributeError:
+                QMessageBox.about(self.mainWindow, "Error", "You already bid on this project")
+            except TypeError:
+                QMessageBox.about(self.mainWindow, "Error", "Invalid bid price")
         except AttributeError:
-            QMessageBox.about(self.mainWindow, "Error", "You already bid on this project")
-        except TypeError:
-            QMessageBox.about(self.mainWindow, "Error", "Invalid bid price")
+            QMessageBox.about(self.mainWindow, "Error", "Place select a project")
+
+    def palceteamBid(self):
+        text, okPressed = QInputDialog.getText(self.mainWindow, "Team", "Team ID:", QLineEdit.Normal, "")
+
+        if okPressed and text != '':
+            project = self.bidProj[self.mainWindow.rightPanel.page7.tableWidget_3.currentItem().row()][0]
+            bid = self.mainWindow.rightPanel.page7.lineEdit.text()
+            id = str(text)
+            try:
+                self.db.place_team_bid(project, id, float(bid))
+                self.refreshDevProject()
+            except AttributeError:
+                QMessageBox.about(self.mainWindow, "Error", "You already bid on this project")
+            except TypeError:
+                QMessageBox.about(self.mainWindow, "Error", "Invalid bid price")
 
     def submitProj(self):
         path = QFileDialog.getOpenFileName(self.mainWindow, "Submit Project", "", "exe (*.exe)")
@@ -636,6 +658,10 @@ class Core():
                                                       "Your project" + project + "is up")
         except AttributeError:
             QMessageBox.about(self.mainWindow, "Error", "Please select a project")
+
+    def submitteamProj(self):
+        path = QFileDialog.getOpenFileName(self.mainWindow, "Submit Project", "", "exe (*.exe)")
+        #TODO: FIX BUG
 
     def refreshHistory(self):
         transactions = self.loginManager.currentUser.get_transaction_history()
@@ -776,7 +802,7 @@ class Core():
             self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 5,
                                                                  QTableWidgetItem(str(member[4])))
 
-        for project in self.indiv_bid:
+        for project in self.loginManager.currentUser.current_indiv_projects():
             rowPosition = self.mainWindow.rightPanel.page9.tableWidget_2.rowCount()
             self.mainWindow.rightPanel.page9.tableWidget_2.insertRow(rowPosition)
             self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 0,

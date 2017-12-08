@@ -22,6 +22,9 @@ class LoginManager():
                 self.currentUser = SuperUser(user_id)
             elif user_type == 1:
                 self.currentUser = Client(user_id)
+                # Any client with inadequate fund to fulfill a bid will be warned automatically and the posted project nullified
+                db.check_client_projects(self.currentUser.user_id)
+                db.check_client_projects2(self.currentUser.user_id)
             else:
                 self.currentUser = Developer(user_id)
 

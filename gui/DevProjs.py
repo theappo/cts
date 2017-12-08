@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QTabWidget
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class DevProjs(QTabWidget):
     def __init__(self, parent=None):
         super(DevProjs, self).__init__(parent)
@@ -91,6 +92,9 @@ class DevProjs(QTabWidget):
         self.pushButton_3 = QtWidgets.QPushButton(self.widget_4)
         self.pushButton_3.setObjectName("pushButton_3")
         self.horizontalLayout_2.addWidget(self.pushButton_3)
+        self.pushButton_5 = QtWidgets.QPushButton(self.widget_4)
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.horizontalLayout_2.addWidget(self.pushButton_5)
         self.pushButton_4 = QtWidgets.QPushButton(self.widget_4)
         self.pushButton_4.setObjectName("pushButton_4")
         self.horizontalLayout_2.addWidget(self.pushButton_4)
@@ -129,5 +133,6 @@ class DevProjs(QTabWidget):
         item.setText(_translate("QTabWidget", "Detail"))
         self.label.setText(_translate("QTabWidget", "Bid Price"))
         self.pushButton_3.setText(_translate("QTabWidget", "Bid"))
+        self.pushButton_5.setText(_translate("QTabWidget", "Team Bid"))
         self.pushButton_4.setText(_translate("QTabWidget", "Refresh"))
         QTabWidget.setTabText(QTabWidget.indexOf(self.tab), _translate("QTabWidget", "Bid Project"))
