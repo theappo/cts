@@ -52,7 +52,7 @@ def main():
 
 	# test adding a new project, insert team bids, individual bids, and then choose one bid, then finish the project and delete record.
 	testAndPrint(Manager.delete_project('testproject'), True)
-	testAndPrint(Manager.create_new_project('testproject', 'testuser2', 'testproject', '2017-12-30', 1000, '2017-12-01'), True)
+	testAndPrint(Manager.create_new_project('testproject', 'testuser2', 'testproject', '2017-12-30', 1000, '2017-12-20'), True)
 	testAndPrint(Manager.place_team_bid('testproject', 'testteam1', 500), True)
 	testAndPrint(Manager.place_team_bid('testproject', 'testteam2', 250), True)
 	testAndPrint(Manager.place_team_bid('testproject', 'testteam3', 600), True)
