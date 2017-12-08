@@ -102,7 +102,31 @@ team_exists = "SELECT * FROM Teams WHERE team_id = %s"
 create_team = "INSERT Teams VALUES (%s, %s, NULL, NULL, NULL, NULL)"
 get_team_devs = "SELECT dev1, dev2, dev3, dev4, dev5 FROM Teams WHERE team_id = %s"
 set_team_devs = "UPDATE Teams set %s = %s, %s = NULL WHERE team_id = %s"
-add_to_team = "UPDATE Teams set %s = %s WHERE team_id = %s"
+set_team_devs11 = "UPDATE Teams set dev1 = %s, dev1 = NULL WHERE team_id = %s"
+set_team_devs12 = "UPDATE Teams set dev1 = %s, dev2 = NULL WHERE team_id = %s"
+set_team_devs13 = "UPDATE Teams set dev1 = %s, dev3 = NULL WHERE team_id = %s"
+set_team_devs14 = "UPDATE Teams set dev1 = %s, dev4 = NULL WHERE team_id = %s"
+set_team_devs15 = "UPDATE Teams set dev1 = %s, dev5 = NULL WHERE team_id = %s"
+set_team_devs22 = "UPDATE Teams set dev2 = %s, dev2 = NULL WHERE team_id = %s"
+set_team_devs33 = "UPDATE Teams set dev3 = %s, dev3 = NULL WHERE team_id = %s"
+set_team_devs44 = "UPDATE Teams set dev4 = %s, dev4 = NULL WHERE team_id = %s"
+set_team_devs55 = "UPDATE Teams set dev5 = %s, dev5 = NULL WHERE team_id = %s"
+set_team_devs23 = "UPDATE Teams set dev2 = %s, dev3 = NULL WHERE team_id = %s"
+set_team_devs24 = "UPDATE Teams set dev2 = %s, dev4 = NULL WHERE team_id = %s"
+set_team_devs25 = "UPDATE Teams set dev2 = %s, dev5 = NULL WHERE team_id = %s"
+set_team_devs34 = "UPDATE Teams set dev3 = %s, dev4 = NULL WHERE team_id = %s"
+set_team_devs35 = "UPDATE Teams set dev3 = %s, dev5 = NULL WHERE team_id = %s"
+set_team_devs45 = "UPDATE Teams set dev4 = %s, dev5 = NULL WHERE team_id = %s"
+
+
+
+
+
+add_to_team1 = "UPDATE Teams set dev1 = %s WHERE team_id = %s"
+add_to_team2 = "UPDATE Teams set dev2 = %s WHERE team_id = %s"
+add_to_team3 = "UPDATE Teams set dev3 = %s WHERE team_id = %s"
+add_to_team4 = "UPDATE Teams set dev4 = %s WHERE team_id = %s"
+add_to_team5 = "UPDATE Teams set dev5 = %s WHERE team_id = %s"
 
 
 # place the team or individual bids
@@ -168,7 +192,7 @@ new_message = "INSERT INTO Messages (sender, receiver, message, time) VALUES (%s
 # update interests, get the users interests, also find similar interests
 update_interests = "UPDATE UserInterests SET Java = %s, Python = %s, Cpp = %s, IOS = %s, Android = %s, DesktopApp = %s WHERE user_id = %s"
 get_user_interests = "SELECT Java, Python, Cpp, IOS, Android, DesktopApp FROM UserInterests WHERE user_id = %s"
-find_similar_interests = "SELECT user_id FROM UserInterests GROUP BY user_id ORDER BY abs (Java - %s) + abs (Python - %s) + abs (Cpp - %s) + abs (IOS - %s) + abs (Android - %s) + abs (DesktopApp - %s) ASC";
+find_similar_interests = "SELECT user_id FROM UserInterests WHERE user_id not in (%s) GROUP BY user_id ORDER BY abs (Java - %s) + abs (Python - %s) + abs (Cpp - %s) + abs (IOS - %s) + abs (Android - %s) + abs (DesktopApp - %s) ASC"
 
 # Search Statements
 # find all users/projects with substring in their id
