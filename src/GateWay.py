@@ -805,7 +805,7 @@ class GateWay(object):
 
     # returns the team bids as a list of lists for a pending project, add limit?
     def get_team_project_bids(self, project_id):
-        if (not (self.get_project_status(project_id) != 'Pending')):
+        if (not (self.get_project_status(project_id) == 'Pending')):
             return False
         try:
             self.conn.connect()
@@ -818,7 +818,7 @@ class GateWay(object):
 
     # returns the individual bids as a list of lists, add limit?
     def get_individual_project_bids(self, project_id):
-        if (not (self.get_project_status(project_id) != 'Pending')):
+        if (not (self.get_project_status(project_id) == 'Pending')):
             return False
         try:
             self.conn.connect()
@@ -1265,6 +1265,7 @@ class GateWay(object):
         return data[0]
 
     # checks if client's project deadline has passed
+    # TODO: add this two function to login
     def check_client_projects(self, user_id):
         if (self.get_user_type(user_id) != 1):
             return False
@@ -1397,3 +1398,6 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         return True
+
+#db = GateWay()
+#db.place_individual_bid("0", "testuser11","600")

@@ -8,4 +8,4 @@ class PendingProject(Project):
     def individual_bids(self):
         return self.db.get_individual_project_bids(self.project_id)
 
-print(PendingProject("0","testuser2","","2017-12-30" ).individual_bids())
+#print(PendingProject("0","testuser2","","2017-12-30" ).individual_bids())
