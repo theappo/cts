@@ -58,6 +58,7 @@ def main():
 	testAndPrint(Manager.place_team_bid('testproject', 'testteam3', 600), True)
 	testAndPrint(Manager.place_individual_bid('testproject', 'testuser4', 700), True)
 	testAndPrint(Manager.place_individual_bid('testproject', 'testuser6', 600), True)
+	testAndPrint(Manager.get_pending_projects(), '\n\nPendingProjects\n')
 	testAndPrint(Manager.get_lowest_bid('testproject'), 'Lowest bid = 250')
 	testAndPrint(Manager.get_individual_project_bids('testproject'), (('testuser6', 600.00), ('testuser4', 700.00)))
 	testAndPrint(Manager.get_team_project_bids('testproject'), (('testteam2', 250.00), ('testteam1', 500.00), ('testteam3', 600.00)))
@@ -70,6 +71,8 @@ def main():
 	testAndPrint(Manager.create_project_review('testproject', 'testuser4', 'testuser6', 5, 'gz'), True)
 	testAndPrint(Manager.create_project_review('testproject', 'testuser6', 'testuser4', 5, 'gz'), True)
 	testAndPrint(Manager.get_projectreviews('testuser6'), 'user6\'s project reviews')
+
+	testAndPrint(Manager.get_applications(), 'applications')
 
 	# makes another test project
 	print('Testing project 2...\n\n')
@@ -86,6 +89,8 @@ def main():
 	testAndPrint(Manager.create_project_review('testproject2', 'testuser4', 'testuser6', 2, ''), True)
 
 	print('Done testing project 2...\n\n')
+
+	testAndPrint(Manager.get_lowest_bid('4'), 'No bids')
 
 
 	# test getting user interests, and then ordering users by their interests
