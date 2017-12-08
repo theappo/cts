@@ -76,6 +76,7 @@ active_dev = "SELECT receiver FROM transactionhistory WHERE receiver IN (SELECT 
 # Create a project (must insert to projects and pendingprojects)
 new_project = "INSERT Projects VALUES (%s, %s, %s, %s, NULL, %s, NOW())"
 add_pending_project = "INSERT PendingProjects VALUES (%s, %s, %s)"
+get_pending_projects = "SELECT p.project_id, p.client_id, p.description, p.date_posted, pp.bid_deadline, p.deadline FROM Projects p INNER JOIN PendingProjects pp ON p.project_id = pp.project_id"
 
 get_project_info = "SELECT * FROM Projects WHERE project_id = %s"
 

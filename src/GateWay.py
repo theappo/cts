@@ -683,6 +683,7 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
+
     # place a team bid
     def place_team_bid(self, project_id, team_id, bid):
         if (not self.project_id_exists(project_id)):
@@ -789,6 +790,16 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         return True
+
+    def get_pending_projects(self):
+        try:
+            self.conn.connect()
+            self.cursor.execute(get_pending_projects)
+            self.conn.close()
+        except Exception as e:
+            traceback.print_exc(e)
+        data = self.cursor.fetchall()
+        return data
 
     # place individual bid
     def place_individual_bid(self, project_id, dev_id, bid):
