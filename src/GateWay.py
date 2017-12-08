@@ -431,7 +431,7 @@ class GateWay(object):
         data = self.get_user_interests(user_id)
         try:
             self.conn.connect()
-            self.cursor.execute(find_similar_interests, (data[0], data[1], data[2], data[3], data[4], data[5]))
+            self.cursor.execute(find_similar_interests, (user_id, data[0], data[1], data[2], data[3], data[4], data[5]))
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
@@ -739,19 +739,26 @@ class GateWay(object):
             return False
         if (devs[4] != None):
             return False
-        size = 4
+        size = 'dev5'
         if (devs[1] == None):
-            size = 1
+            size = 'dev2'
         elif (devs[2] == None):
-            size = 2
+            size = 'dev3'
         elif (devs[3] == None):
-            size = 3
+            size = 'dev4'
         if (devs[0] == user_id or devs[1] == user_id or devs[2] == user_id or devs[3] == user_id or devs[4] == user_id):
             return False
 
         try:
             self.conn.connect()
-            self.cursor.execute(add_to_team, ('dev' + str(size), user_id, team_id))
+            if(size == 'dev5'):
+                self.cursor.execute(add_to_team5, (user_id, team_id))
+            elif(size == 'dev4'):
+                self.cursor.execute(add_to_team4, (user_id, team_id))
+            elif(size == 'dev3'):
+                self.cursor.execute(add_to_team3, (user_id, team_id))
+            elif(size == 'dev2'):
+                self.cursor.execute(add_to_team2, (user_id, team_id))
             self.conn.commit()
             self.conn.close()
         except Exception as e:
@@ -782,9 +789,10 @@ class GateWay(object):
             i = 2
         elif (devs[0] != user_id):
             return False
+        query = 'set_team_devs' + str(i) + str(size)
         try:
             self.conn.connect()
-            self.cursor.execute(set_team_devs, ('dev' + str(i), devs[size], 'dev' + str(size)))
+            self.cursor.execute(query, (devs[size], team_id))
             self.conn.commit()
             self.conn.close()
         except Exception as e:
@@ -1033,6 +1041,7 @@ class GateWay(object):
         try:
             self.conn.connect()
             self.cursor.execute(make_project_review, (project_id, sender, receiver, message, rating))
+            print('review made')
             if (user == 1 and rating > 2 and type == 'Individual'):
                 self.cursor.execute(transferfunds2, project_id)
                 self.cursor.execute(canceltransfer, project_id)
