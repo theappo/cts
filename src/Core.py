@@ -772,12 +772,14 @@ class Core():
 
     def acceptApp(self):
         self.appManager.accept(self.mainWindow.rightPanel.page8.tableWidget.currentItem().row())
+        self.refreshManage()
 
     def rejectApp(self):
         text, okPressed = QInputDialog.getText(self.mainWindow, "Reason", "Reason:", QLineEdit.Normal, "")
 
         if okPressed and text != '':
             self.appManager.reject(self.mainWindow.rightPanel.page8.tableWidget.currentItem().row(), str(text))
+            self.refreshManage()
 
     def addToBlacklist(self):
         self.db.add_blacklist(self.mainWindow.rightPanel.page8.lineEdit.text(),
