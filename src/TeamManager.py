@@ -22,7 +22,9 @@ class TeamManager():
         for team in dev.get_team():
             self.teams.append(Team(team[0]))
 
-t = TeamManager()
-t.read(Developer("testuser4"))
-for team in t.teams:
-    print(team.get_current_projects())
+    def project(self, i):
+        return self.teams[i].get_current_projects()
+
+#t = TeamManager()
+#t.read(Developer("testuser4"))
+#print(t.project(0))

@@ -14,7 +14,7 @@ class LoginManager():
 
         if db.check_blacklist(user_id):
             self.currentUser = None
-            return db.get_black_list(user_id)[0]
+            return db.get_black_list(user_id)[0][2]
         elif db.verify_user(user_id, password):
             user_type = db.get_user_type(user_id)
 

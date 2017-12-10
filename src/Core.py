@@ -2,6 +2,7 @@
 
 import sys
 import datetime
+import shutil
 
 sys.path.insert(0, "../gui")
 
@@ -163,6 +164,8 @@ class Core():
         # connect team page
         self.mainWindow.leftPanel.manageTeam1.clicked.connect(self.refreshTeam)
         self.mainWindow.leftPanel.manageTeam2.clicked.connect(self.refreshTeam)
+        # connect team current project table
+        self.mainWindow.rightPanel.page9.tableWidget.itemClicked.connect(self.refreshteamcurrentprojct)
         # connect team page review button
         self.mainWindow.rightPanel.page9.pushButton_3.clicked.connect(self.devReview)
         # connect team page join team button
@@ -224,7 +227,8 @@ class Core():
                     self.mainWindow.rightPanel.page2.setUser(
                         self.db.get_similar_interests(self.loginManager.currentUser.user_id))
 
-                if self.loginManager.currentUser.interests() == (0, 0, 0, 0, 0, 0):
+                if self.loginManager.currentUser.interests() == (
+                        0, 0, 0, 0, 0, 0) and not self.loginManager.currentUser.check_application():
                     self.applyPage2.show()
 
         # show message
@@ -616,9 +620,9 @@ class Core():
     def createReview(self):
         rating = self.rating.comboBox.currentText()
         project = self.current_indiv_projects[
-                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0]
+            self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0]
         dev = self.current_indiv_projects[
-                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][8]
+            self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][8]
         message = self.rating.textEdit.toPlainText()
         print(rating)
         print(project)
@@ -675,12 +679,18 @@ class Core():
             copyfile(path[0], "../resources/projects/" + project + ".exe")
             self.loginManager.currentUser.new_message(self.db.get_project_info(project)[1],
                                                       "Your project" + project + "is up")
+            # TODO: fix finish project bug
+            self.db.finish_individual_project(project)
         except AttributeError:
             QMessageBox.about(self.mainWindow, "Error", "Please select a project")
+        except shutil.SameFileError:
+            QMessageBox.about(self.mainWindow, "Error", "This Project already submited")
+        except FileNotFoundError:
+            QMessageBox.about(self.mainWindow, "Error", "Project not found")
 
     def submitteamProj(self):
         path = QFileDialog.getOpenFileName(self.mainWindow, "Submit Project", "", "exe (*.exe)")
-        #TODO: FIX BUG
+        # TODO: FIX BUG
 
     def refreshHistory(self):
         transactions = self.loginManager.currentUser.get_transaction_history()
@@ -801,7 +811,6 @@ class Core():
     def refreshTeam(self):
         # clear all content
         self.mainWindow.rightPanel.page9.tableWidget.setRowCount(0)
-        self.mainWindow.rightPanel.page9.tableWidget_2.setRowCount(0)
 
         self.teamManager.read(self.loginManager.currentUser)
 
@@ -822,19 +831,24 @@ class Core():
             self.mainWindow.rightPanel.page9.tableWidget.setItem(rowPosition, 5,
                                                                  QTableWidgetItem(str(member[4])))
 
-        for project in self.loginManager.currentUser.current_indiv_projects():
-            rowPosition = self.mainWindow.rightPanel.page9.tableWidget_2.rowCount()
-            self.mainWindow.rightPanel.page9.tableWidget_2.insertRow(rowPosition)
-            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 0,
-                                                                   QTableWidgetItem(project[0]))
-            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 1,
-                                                                   (QTableWidgetItem(project[1])))
-            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 2,
-                                                                   QTableWidgetItem(project[9]))
-            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 4,
-                                                                   QTableWidgetItem(str(project[11])))
-            self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 5,
-                                                                   QTableWidgetItem(str(project[5])))
+    def refreshteamcurrentprojct(self):
+        try:
+            self.mainWindow.rightPanel.page9.tableWidget_2.setRowCount(0)
+            for project in self.teamManager.project(self.mainWindow.rightPanel.page9.tableWidget.currentItem().row()):
+                rowPosition = self.mainWindow.rightPanel.page9.tableWidget_2.rowCount()
+                self.mainWindow.rightPanel.page9.tableWidget_2.insertRow(rowPosition)
+                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 0,
+                                                                       QTableWidgetItem(project[0]))
+                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 1,
+                                                                       (QTableWidgetItem(project[1])))
+                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 2,
+                                                                       QTableWidgetItem(project[9]))
+                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 4,
+                                                                       QTableWidgetItem(str(project[11])))
+                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 5,
+                                                                       QTableWidgetItem(str(project[5])))
+        except IndexError:
+            pass
 
     def jointeam(self):
         text, okPressed = QInputDialog.getText(self.mainWindow, "Password", "Password:", QLineEdit.Normal, "")

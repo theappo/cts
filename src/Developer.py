@@ -12,6 +12,9 @@ class Developer(User):
     def finished_indiv_projects(self):
         return self.db.get_devs_finished_projects(self.user_id)
 
+    def finished_team_projects(self):
+        return self.db.get_devs_finished_team_projects(self.user_id)
+
     def get_dev_pending_client_reviews(self):
         return self.db.get_dev_pending_client_reviews(self.user_id)
 
@@ -23,5 +26,8 @@ class Developer(User):
 
     def join_team(self, team_id):
         self.db.add_to_team(team_id, self.user_id)
+
+    def leave_team(self, team_id):
+        self.db.remove_from_team(team_id, self.user_id)
 
 #print(Developer("testuser4").get_team())

@@ -258,9 +258,6 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
-    # get blacklist reason
-
-
     # get user's address
     def get_user_address(self, user_id):
         if (not self.user_exists(user_id)):
@@ -1428,5 +1425,5 @@ class GateWay(object):
             traceback.print_exc(e)
         return True
 
-db = GateWay()
-print(db.create_project_review("testcurrentproject", "testuser2", "testuser4", 3))
+#db = GateWay()
+#print(db.finish_individual_project(1))
