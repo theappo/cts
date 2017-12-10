@@ -22,9 +22,12 @@ class TeamManager():
         for team in dev.get_team():
             self.teams.append(Team(team[0]))
 
-    def project(self, i):
+    def current_project(self, i):
         return self.teams[i].get_current_projects()
+
+    def finished_project(self, i):
+        return self.teams[i].get_history_projects()
 
 #t = TeamManager()
 #t.read(Developer("testuser4"))
-#print(t.project(0))
+#print(t.finished_project(0))

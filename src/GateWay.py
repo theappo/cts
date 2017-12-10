@@ -1029,9 +1029,10 @@ class GateWay(object):
         user = self.get_user_type(sender)
         try:
             self.conn.connect()
+            # Todo: fix 'PROCEDURE cts.updateUserRating does not exist'
             self.cursor.execute(make_project_review, (project_id, sender, receiver, message, rating))
             print('review made')
-            if (user == 1 and rating > 2 and type == 'Individual'):
+            if (user == '1' and rating > '2' and type == 'Individual'):
                 self.cursor.execute(transferfunds2, project_id)
                 self.cursor.execute(canceltransfer, project_id)
             self.conn.commit()
@@ -1039,7 +1040,7 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
 
-        if (self.get_user_type(sender) == 1 and rating > 2 and type == 'Individual'):
+        if (self.get_user_type(sender) == '1' and rating > '2' and type == 'Individual'):
             self.update_user_balance(sender, Decimal(self.get_user_balance(sender)) - bid / 20)
             self.update_user_balance(receiver, Decimal(self.get_user_balance(receiver)) + bid - bid / 20)
         return True
@@ -1254,12 +1255,12 @@ class GateWay(object):
         return data
 
     # gets all of users projectreviews
-    def get_projectreviews(self, user_id):
-        if (not self.user_exists(user_id)):
+    def get_projectreviews(self, sender_id, receiver_id):
+        if (not self.user_exists(sender_id)):
             return False
         try:
             self.conn.connect()
-            self.cursor.execute(get_user_reviews, user_id)
+            self.cursor.execute(get_user_reviews, (sender_id, receiver_id))
             self.conn.close()
         except Exception as e:
             traceback.print_exc(e)
@@ -1428,4 +1429,4 @@ class GateWay(object):
         return True
 
 #db = GateWay()
-#print(db.finish_individual_project(1))
+#print(db.get_team_finished_projects("testteam1"))

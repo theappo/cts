@@ -69,6 +69,8 @@ class Core():
         self.team_bid = ()
         self.current_indiv_projects = ()
         self.current_team_projects = ()
+        self.submited_indiv_projects = ()
+        self.submited_team_projects = ()
 
         self.devCurrProj = ()
         self.needReview = ()
@@ -171,7 +173,7 @@ class Core():
         # connect team page join team button
         self.mainWindow.rightPanel.page9.pushButton.clicked.connect(self.jointeam)
         # connect team page create team button
-        self.mainWindow.rightPanel.page9.pushButton_2.clicked.connect(self.createteam)
+        self.mainWindow.rightPanel.page9.pushButton_5.clicked.connect(self.createteam)
         # connect team page submit project button
         self.mainWindow.rightPanel.page9.pushButton_4.clicked.connect(self.submitteamProj)
 
@@ -455,6 +457,7 @@ class Core():
         # clear all content
         self.mainWindow.rightPanel.page6.tableWidget.setRowCount(0)
         self.mainWindow.rightPanel.page6.tableWidget_4.setRowCount(0)
+        self.mainWindow.rightPanel.page6.tableWidget_5.setRowCount(0)
 
         self.pendingprojects = self.loginManager.currentUser.pending_projects()
 
@@ -490,6 +493,29 @@ class Core():
             self.mainWindow.rightPanel.page6.tableWidget_4.setItem(rowPosition, 3,
                                                                    (QTableWidgetItem(project[2])))
 
+        self.submited_indiv_projects = self.loginManager.currentUser.finished_indiv_projects()
+
+        for project in self.submited_indiv_projects:
+            rowPosition = self.mainWindow.rightPanel.page6.tableWidget_5.rowCount()
+            self.mainWindow.rightPanel.page6.tableWidget_5.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page6.tableWidget_5.setItem(rowPosition, 0,
+                                                                   QTableWidgetItem(project[0]))
+            self.mainWindow.rightPanel.page6.tableWidget_5.setItem(rowPosition, 1,
+                                                                   (QTableWidgetItem(project[8])))
+            self.mainWindow.rightPanel.page6.tableWidget_5.setItem(rowPosition, 3,
+                                                                   (QTableWidgetItem(project[2])))
+
+        self.submited_team_projects = self.loginManager.currentUser.finished_team_projects()
+        for project in self.submited_team_projects:
+            rowPosition = self.mainWindow.rightPanel.page6.tableWidget_5.rowCount()
+            self.mainWindow.rightPanel.page6.tableWidget_5.insertRow(rowPosition)
+            self.mainWindow.rightPanel.page6.tableWidget_5.setItem(rowPosition, 0,
+                                                                   QTableWidgetItem(project[0]))
+            self.mainWindow.rightPanel.page6.tableWidget_5.setItem(rowPosition, 2,
+                                                                   (QTableWidgetItem(project[8])))
+            self.mainWindow.rightPanel.page6.tableWidget_5.setItem(rowPosition, 3,
+                                                                   (QTableWidgetItem(project[2])))
+
     def refreshDevProject(self):
         self.mainWindow.rightPanel.page7.tableWidget.setRowCount(0)
         self.mainWindow.rightPanel.page7.tableWidget_2.setRowCount(0)
@@ -502,10 +528,12 @@ class Core():
             self.mainWindow.rightPanel.page7.tableWidget.insertRow(rowPosition)
             self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 0,
                                                                  QTableWidgetItem(project[0]))
-            self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 2,
+            self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 3,
                                                                  (QTableWidgetItem(project[2])))
             self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 1,
                                                                  (QTableWidgetItem(str(project[9]))))
+            self.mainWindow.rightPanel.page7.tableWidget.setItem(rowPosition, 2,
+                                                                 (QTableWidgetItem(str(project[5]))))
 
         self.needReview = self.loginManager.currentUser.get_dev_pending_client_reviews()
 
@@ -609,34 +637,46 @@ class Core():
     def clientReview(self):
         download = QFileDialog.getSaveFileName(self.mainWindow, "Download Project", "", "exe (*.exe)")
         try:
-            copyfile("../resources/projects/" + self.current_indiv_projects[
-                self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0] + ".exe", download[0])
-            self.rating.show()
-        except TypeError:
+            dev = self.submited_indiv_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][1]
+            if dev != None:
+                copyfile("../resources/projects/" + self.submited_indiv_projects[
+                    self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0] + ".exe", download[0])
+                self.rating.show()
+            else:
+                copyfile("../resources/projects/" + self.submited_team_projects[
+                    self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0] + ".exe", download[0])
+                self.rating.show()
+        except TypeError or FileNotFoundError:
             QMessageBox.about(self.mainWindow, "Error", "Project not yet uploaded")
+        except IndexError:
+            QMessageBox.about(self.mainWindow, "Error", "This is a test data! System crash!")
         except AttributeError:
             pass
 
     def createReview(self):
+        # todo: more
         rating = self.rating.comboBox.currentText()
-        project = self.current_indiv_projects[
-            self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][0]
-        dev = self.current_indiv_projects[
-            self.mainWindow.rightPanel.page6.tableWidget_4.currentItem().row()][8]
+        dev = self.submited_indiv_projects[
+            self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][8]
         message = self.rating.textEdit.toPlainText()
-        print(rating)
-        print(project)
-        print(dev)
-        print(message)
+        if dev == None:
+            dev = self.submited_team_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][8]
+            project = self.submited_team_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0]
+            self.loginManager.currentUser.create_project_review(project, dev, rating, message)
+        else:
+            project = self.submited_indiv_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0]
+            self.loginManager.currentUser.create_team_project_review(project, dev, rating, message)
 
-        self.loginManager.currentUser.create_project_review(project, dev, rating, message)
         self.refreshClientProject()
 
     def devReview(self):
         self.rating.show()
 
     def lowrating(self):
-        # TODO: FIX BUG
         if int(self.rating.comboBox.currentText()) < 3 and len(self.rating.textEdit.toPlainText()) == 0:
             QMessageBox.about(self.mainWindow, "Error", "You must leave a review")
         else:
@@ -679,8 +719,8 @@ class Core():
             copyfile(path[0], "../resources/projects/" + project + ".exe")
             self.loginManager.currentUser.new_message(self.db.get_project_info(project)[1],
                                                       "Your project" + project + "is up")
-            # TODO: fix finish project bug
             self.db.finish_individual_project(project)
+            self.refreshDevProject()
         except AttributeError:
             QMessageBox.about(self.mainWindow, "Error", "Please select a project")
         except shutil.SameFileError:
@@ -690,7 +730,21 @@ class Core():
 
     def submitteamProj(self):
         path = QFileDialog.getOpenFileName(self.mainWindow, "Submit Project", "", "exe (*.exe)")
-        # TODO: FIX BUG
+        i = self.mainWindow.rightPanel.page9.tableWidget_2.currentItem().row()
+        project = self.mainWindow.rightPanel.page9.tableWidget_2.itemAt(i, 0).text()
+        try:
+            copyfile(path[0], "../resources/projects/" + project + ".exe")
+            self.loginManager.currentUser.new_message(self.db.get_project_info(project)[1],
+                                                      "Your project" + project + "is up")
+            self.db.finish_team_project(project)
+            self.teamManager.read(self.loginManager.currentUser)
+            self.refreshTeam()
+        except AttributeError:
+            QMessageBox.about(self.mainWindow, "Error", "Please select a project")
+        except shutil.SameFileError:
+            QMessageBox.about(self.mainWindow, "Error", "This Project already submited")
+        except FileNotFoundError:
+            QMessageBox.about(self.mainWindow, "Error", "Project not found")
 
     def refreshHistory(self):
         transactions = self.loginManager.currentUser.get_transaction_history()
@@ -834,7 +888,11 @@ class Core():
     def refreshteamcurrentprojct(self):
         try:
             self.mainWindow.rightPanel.page9.tableWidget_2.setRowCount(0)
-            for project in self.teamManager.project(self.mainWindow.rightPanel.page9.tableWidget.currentItem().row()):
+            self.mainWindow.rightPanel.page9.tableWidget_3.setRowCount(0)
+
+            i = self.mainWindow.rightPanel.page9.tableWidget.currentItem().row()
+
+            for project in self.teamManager.current_project(i):
                 rowPosition = self.mainWindow.rightPanel.page9.tableWidget_2.rowCount()
                 self.mainWindow.rightPanel.page9.tableWidget_2.insertRow(rowPosition)
                 self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 0,
@@ -842,11 +900,25 @@ class Core():
                 self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 1,
                                                                        (QTableWidgetItem(project[1])))
                 self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 2,
-                                                                       QTableWidgetItem(project[9]))
-                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 4,
-                                                                       QTableWidgetItem(str(project[11])))
-                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 5,
+                                                                       QTableWidgetItem(str(project[9])))
+                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 3,
                                                                        QTableWidgetItem(str(project[5])))
+                self.mainWindow.rightPanel.page9.tableWidget_2.setItem(rowPosition, 4,
+                                                                       QTableWidgetItem(project[2]))
+
+            for project in self.teamManager.finished_project(i):
+                rowPosition = self.mainWindow.rightPanel.page9.tableWidget_3.rowCount()
+                self.mainWindow.rightPanel.page9.tableWidget_3.insertRow(rowPosition)
+                self.mainWindow.rightPanel.page9.tableWidget_3.setItem(rowPosition, 0,
+                                                                       QTableWidgetItem(project[0]))
+                self.mainWindow.rightPanel.page9.tableWidget_3.setItem(rowPosition, 1,
+                                                                       (QTableWidgetItem(project[1])))
+                self.mainWindow.rightPanel.page9.tableWidget_3.setItem(rowPosition, 2,
+                                                                       QTableWidgetItem(str(project[11])))
+                self.mainWindow.rightPanel.page9.tableWidget_3.setItem(rowPosition, 3,
+                                                                       QTableWidgetItem(str(project[5])))
+                self.mainWindow.rightPanel.page9.tableWidget_3.setItem(rowPosition, 4,
+                                                                       QTableWidgetItem(project[2]))
         except IndexError:
             pass
 

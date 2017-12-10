@@ -203,7 +203,7 @@ search_indiv_finished_projects = "SELECT fip.project_id, client_id, description,
 get_project_teamdevs = "SELECT dev1, dev2, dev3, dev4, dev5 FROM TeamHistory WHERE team_id = %s AND time_formed < %s ORDER BY time_formed DESC LIMIT 1"
 get_project_teamdevs2 = "SELECT dev1, dev2, dev3, dev4, dev5 FROM TeamHistory WHERE team_id = %s AND time_formed < NOW() ORDER BY time_formed DESC LIMIT 1"
 get_project_team = "SELECT th.dev1, th.dev2, th.dev3, th.dev4, th.dev5 FROM TeamHistory th INNER JOIN Finished_Team_Project ftp ON th.team_id = ftp.team_id where ftp.project_id = %s AND th.time_formed < ftp.date_submit ORDER BY th.time_formed DESC LIMIT 1"
-get_user_reviews = "SELECT * FROM ProjectReviews WHERE receiver_id = %s"
+get_user_reviews = "SELECT * FROM ProjectReviews WHERE receiver_id = %s or sender_id = %s"
 get_teamhistory = "SELECT * FROM Finished_Team_Project WHERE team_id = %s"
 get_users_teams = "SELECT team_id FROM teams WHERE dev1 = %s OR dev2 = %s OR dev3 = %s OR dev4 = %s OR dev5 = %s"
 get_teams_users = "SELECT dev1, dev2, dev3, dev4, dev5 FROM teams WHERE team_id = %s"
@@ -220,7 +220,7 @@ get_dev_finished_projects = "SELECT * FROM Projects p INNER JOIN Finished_Indivi
 get_dev_finished_team_projects = "SELECT p.*, ftp.* FROM (Projects p INNER JOIN Finished_Team_Project ftp ON p.project_id = ftp.project_id) INNER JOIN TeamHistory th ON th.team_id = ftp.team_id WHERE %s IN (th.dev1, th.dev2, th.dev3, th.dev4, th.dev5) AND th.time_formed < ftp.date_submit ORDER BY th.time_formed DESC LIMIT 1"
 get_team_bids = "SELECT * FROM Projects p INNER JOIN Team_Bid_Project tbp ON p.project_id = tbp.project_id WHERE tbp.team_id = %s"
 get_team_current_projects = "SELECT * FROM Projects p INNER JOIN Current_Team_Project ctp ON p.project_id = ctp.project_id WHERE ctp.team_id = %s"
-get_team_finished_projects = "SELECT * FROM Projects p INNER JOIN Finished_Team_Project ftp ON p.project_id = ftp.project_id WHERE ftp.project_id = %s"
+get_team_finished_projects = "SELECT * FROM Projects p INNER JOIN Finished_Team_Project ftp ON p.project_id = ftp.project_id WHERE ftp.team_id = %s"
 
 
 

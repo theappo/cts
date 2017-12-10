@@ -62,7 +62,7 @@ class User():
             return None
 
     def get_review(self):
-        return self.db.get_projectreviews(self.user_id)
+        return self.db.get_projectreviews(self.user_id, self.user_id)
 
     def check_application(self):
         return self.db.check_application(self.user_id)

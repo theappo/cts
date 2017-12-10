@@ -17,5 +17,5 @@ class Team():
     def get_history_projects(self):
         return self.db.get_team_finished_projects(self.team_id)
 
-#print((Team("testteam1").get_team_members()))
+#print((Team("testteam1").get_history_projects()))
 

@@ -21,7 +21,7 @@ class DevProjs(QTabWidget):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tableWidget = QtWidgets.QTableWidget(self.widget_2)
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(3)
+        self.tableWidget.setColumnCount(4)
         self.tableWidget.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
@@ -29,6 +29,8 @@ class DevProjs(QTabWidget):
         self.tableWidget.setHorizontalHeaderItem(1, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(3, item)
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.verticalLayout_2.addWidget(self.tableWidget)
         self.pushButton = QtWidgets.QPushButton(self.widget_2)
@@ -102,7 +104,7 @@ class DevProjs(QTabWidget):
         QTabWidget.addTab(self.tab, "")
 
         self.retranslateUi(QTabWidget)
-        QTabWidget.setCurrentIndex(1)
+        QTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(QTabWidget)
 
     def retranslateUi(self, QTabWidget):
@@ -113,6 +115,8 @@ class DevProjs(QTabWidget):
         item = self.tableWidget.horizontalHeaderItem(1)
         item.setText(_translate("QTabWidget", "Price"))
         item = self.tableWidget.horizontalHeaderItem(2)
+        item.setText(_translate("QTabWidget", "Due Date"))
+        item = self.tableWidget.horizontalHeaderItem(3)
         item.setText(_translate("QTabWidget", "Detail"))
         self.pushButton.setText(_translate("QTabWidget", "Submit Project"))
         item = self.tableWidget_2.horizontalHeaderItem(0)
