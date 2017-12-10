@@ -926,7 +926,7 @@ class GateWay(object):
     def get_current_indiv_project(self, project_id):
         if (
                 not (
-                        (self.get_project_status(project_id) == "Current")(
+                        (self.get_project_status(project_id) == "Current") and(
                                 self.get_project_type(project_id) == "Individual"))):
             return False
         try:
@@ -936,7 +936,7 @@ class GateWay(object):
         except Exception as e:
             traceback.print_exc(e)
         data = self.cursor.fetchall()
-        return data
+        return data[0]
 
     # gets all from finished team project record
     def get_finished_team_project(self, project_id):
@@ -999,8 +999,8 @@ class GateWay(object):
         data = self.get_current_indiv_project(project_id)
         try:
             self.conn.connect()
-            self.cursor.execute(individual_finished, (data[0][0], data[0][1], data[0][2]))
-            self.cursor.execute(transferfunds1, (data[2] / 2, dev_id, project_id, project_id))
+            self.cursor.execute(indiv_finished, (data[0], data[1], data[2]))
+            self.cursor.execute(transferfunds1, (data[2] / 2, data[1], project_id, project_id))
             self.conn.commit()
             self.conn.close()
         except Exception as e:
@@ -1134,14 +1134,15 @@ class GateWay(object):
     def worked_on_project(self, dev_id, project_id):
         if (self.get_project_status(project_id) != 'Finished'):
             return False
-        if (self.get_project_type(project_id) != 'Team'):
-            return False
         client = self.get_project_info(project_id)[1]
         if (client == dev_id):
             return True
-        devs = self.get_project_teamdevs(project_id)
-        if (dev_id == devs[0] or dev_id == devs[1] or dev_id == devs[2] or dev_id == devs[3] or dev_id == devs[4]):
-            return True
+        if(self.get_project_type(project_id) == 'Team'):
+            devs = self.get_project_teamdevs(project_id)
+            if (dev_id == devs[0] or dev_id == devs[1] or dev_id == devs[2] or dev_id == devs[3] or dev_id == devs[4]):
+                return True
+        elif(self.get_project_type(project_id) == 'Individual'):
+            return (self.get_finished_indiv_project(project_id)[1] == dev_id)
         return False
 
     def get_inbox_message(self, user_id):
@@ -1387,20 +1388,21 @@ class GateWay(object):
         data = []
         if (self.get_review(project_id, user_id, project_info[1]) == False):
             data = data + [[project_id, project_info[1]]]
-        size = 5
-        if (devs[1] == None):
-            size = 1
-        elif (devs[2] == None):
-            size = 2
-        elif (devs[3] == None):
-            size = 3
-        elif (devs[4] == None):
-            size = 4
-        for i in range(size):
-            if (devs[i] == user_id):
-                continue
-            if (self.get_review(project_id, user_id, devs[i]) == False):
-                data = data + [[project_id, devs[i]]]
+        if(self.get_project_type(project_id) == 'Team'):
+            size = 5
+            if (devs[1] == None):
+                size = 1
+            elif (devs[2] == None):
+                size = 2
+            elif (devs[3] == None):
+                size = 3
+            elif (devs[4] == None):
+                size = 4
+            for i in range(size):
+                if (devs[i] == user_id):
+                    continue
+                if (self.get_review(project_id, user_id, devs[i]) == False):
+                    data = data + [[project_id, devs[i]]]
         return data
 
     # gets specific review
