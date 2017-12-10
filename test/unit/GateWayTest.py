@@ -90,6 +90,19 @@ def main():
 
 	print('Done testing project 2...\n\n')
 
+	# tests an individual project
+	print('Testing project 3 (individual)\n\n')
+	testAndPrint(Manager.delete_project('testproject3'), True)
+	testAndPrint(Manager.create_new_project('testproject3', 'testuser5', 'indiv project', '2017-12-30', 5000, '2017-12-20'), True)
+	testAndPrint(Manager.place_individual_bid('testproject3', 'testuser6', 300.00), True)
+	testAndPrint(Manager.choose_dev('testproject3', 'testuser6', 300.00), True)
+	testAndPrint(Manager.finish_individual_project('testproject3'), True)
+	testAndPrint(Manager.create_project_review('testproject3', 'testuser5', 'testuser6', 4, 'Good review'), True)
+	testAndPrint(Manager.get_dev_pending_reviews('testuser6', 'testproject3'), 'user\'s pending reviews')
+	testAndPrint(Manager.create_project_review('testproject3', 'testuser6', 'testuser5', 3, 'good review'), True)
+	print('Finished testing project3 (Individual project)\n\n')
+
+
 	testAndPrint(Manager.get_lowest_bid('4'), 'No bids')
 
 
