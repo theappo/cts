@@ -330,9 +330,15 @@ class Core():
             self.mainWindow.rightPanel.page3.tableWidget.setItem(rowPosition, 2, QTableWidgetItem(str(user.rating())))
 
         for team in self.searchEngine.teams:
+            memberlist = team.get_team_members()
             rowPosition = self.mainWindow.rightPanel.page3.tableWidget_2.rowCount()
             self.mainWindow.rightPanel.page3.tableWidget_2.insertRow(rowPosition)
             self.mainWindow.rightPanel.page3.tableWidget_2.setItem(rowPosition, 0, QTableWidgetItem(team.team_id))
+            self.mainWindow.rightPanel.page3.tableWidget_2.setItem(rowPosition, 1, QTableWidgetItem(str(memberlist[0])))
+            self.mainWindow.rightPanel.page3.tableWidget_2.setItem(rowPosition, 2, QTableWidgetItem(str(memberlist[1])))
+            self.mainWindow.rightPanel.page3.tableWidget_2.setItem(rowPosition, 3, QTableWidgetItem(str(memberlist[2])))
+            self.mainWindow.rightPanel.page3.tableWidget_2.setItem(rowPosition, 4, QTableWidgetItem(str(memberlist[3])))
+            self.mainWindow.rightPanel.page3.tableWidget_2.setItem(rowPosition, 5, QTableWidgetItem(str(memberlist[4])))
 
         for i in range(len(self.searchEngine.idprojs)):
             rowPosition = self.mainWindow.rightPanel.page3.tableWidget_3.rowCount()
@@ -407,8 +413,17 @@ class Core():
             pass
 
     def viewTeamInfo(self):
+        team = self.searchEngine.teams[self.mainWindow.rightPanel.page3.tableWidget_2.currentItem().row()]
         try:
-            # TODO: set team history projects
+            for project in team.get_history_projects():
+                print(project)
+                rowPosition = self.teamInfo.tableWidget.rowCount()
+                self.teamInfo.tableWidget.insertRow(rowPosition)
+                self.teamInfo.tableWidget.setItem(rowPosition, 0, QTableWidgetItem(project[0]))
+                self.teamInfo.tableWidget.setItem(rowPosition, 1, (QTableWidgetItem(project[1])))
+                self.teamInfo.tableWidget.setItem(rowPosition, 2, QTableWidgetItem(project[10]))
+                self.teamInfo.tableWidget.setItem(rowPosition, 3, QTableWidgetItem(str(project[8])))
+                self.teamInfo.tableWidget.setItem(rowPosition, 4, QTableWidgetItem(project[2]))
             self.teamInfo.show()
         except AttributeError:
             pass
@@ -655,7 +670,6 @@ class Core():
             pass
 
     def createReview(self):
-        # todo: more
         rating = self.rating.comboBox.currentText()
         dev = self.submited_indiv_projects[
             self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][8]
@@ -940,7 +954,6 @@ class Core():
             self.refreshTeam()
 
     def personalInfo(self):
-        # TODO:add detail
         self.info.show()
 
     def deleteAcount(self):

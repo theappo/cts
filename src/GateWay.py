@@ -439,7 +439,7 @@ class GateWay(object):
     def average_rating(self, user_id):
         try:
             self.conn.connect()
-            self.cursor.execute(get_user_reviews, user_id)
+            self.cursor.execute(get_user_reviews, (user_id, user_id))
             self.conn.commit()
             self.conn.close()
         except Exception as e:

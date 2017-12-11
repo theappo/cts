@@ -66,6 +66,3 @@ class User():
 
     def check_application(self):
         return self.db.check_application(self.user_id)
-
-#u = User("123456")
-#print(u.get)
