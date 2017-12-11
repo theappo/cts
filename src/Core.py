@@ -654,13 +654,13 @@ class Core():
         try:
             dev = self.submited_indiv_projects[
                 self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][1]
+            proj = self.submited_indiv_projects[
+                    self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0]
             if dev != None:
-                copyfile("../resources/projects/" + self.submited_indiv_projects[
-                    self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0] + ".exe", download[0])
+                copyfile("../resources/projects/" + proj + ".exe", download[0])
                 self.rating.show()
             else:
-                copyfile("../resources/projects/" + self.submited_team_projects[
-                    self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0] + ".exe", download[0])
+                copyfile("../resources/projects/" + proj + ".exe", download[0])
                 self.rating.show()
         except TypeError or FileNotFoundError:
             QMessageBox.about(self.mainWindow, "Error", "Project not yet uploaded")
@@ -679,11 +679,11 @@ class Core():
                 self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][8]
             project = self.submited_team_projects[
                 self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0]
-            self.loginManager.currentUser.create_project_review(project, dev, rating, message)
+            self.loginManager.currentUser.create_team_project_review(project, dev, rating, message)
         else:
             project = self.submited_indiv_projects[
                 self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0]
-            self.loginManager.currentUser.create_team_project_review(project, dev, rating, message)
+            self.loginManager.currentUser.create_project_review(project, dev, rating, message)
 
         self.refreshClientProject()
 

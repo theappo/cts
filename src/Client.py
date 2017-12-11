@@ -22,3 +22,6 @@ class Client(User):
 
     def create_project_review(self, project_id, receiver, rating, message='NULL'):
         return self.db.create_project_review(project_id, self.user_id, receiver, rating, message)
+
+    def create_team_project_review(self, project_id, rating, message):
+        return self.db.create_team_project_review(project_id, rating, message)
