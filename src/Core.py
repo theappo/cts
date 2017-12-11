@@ -651,21 +651,18 @@ class Core():
 
     def clientReview(self):
         download = QFileDialog.getSaveFileName(self.mainWindow, "Download Project", "", "exe (*.exe)")
+        i = self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()
+        print(i)
+        print(self.submited_indiv_projects[i][0])
         try:
-            dev = self.submited_indiv_projects[
-                self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][1]
-            if dev != None:
-                copyfile("../resources/projects/" + self.submited_indiv_projects[
-                    self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0] + ".exe", download[0])
-                self.rating.show()
-            else:
-                copyfile("../resources/projects/" + self.submited_team_projects[
-                    self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0] + ".exe", download[0])
-                self.rating.show()
+            copyfile("../resources/projects/" + self.submited_indiv_projects[i][0] + ".exe", download[0])
+            self.rating.show()
         except TypeError or FileNotFoundError:
             QMessageBox.about(self.mainWindow, "Error", "Project not yet uploaded")
         except IndexError:
-            QMessageBox.about(self.mainWindow, "Error", "This is a test data! System crash!")
+            copyfile("../resources/projects/" + self.submited_team_projects[
+                self.mainWindow.rightPanel.page6.tableWidget_5.currentItem().row()][0] + ".exe", download[0])
+            self.rating.show()
         except AttributeError:
             pass
 
