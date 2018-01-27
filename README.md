@@ -58,4 +58,4 @@ A desktop code trading application demo, group project for CCNY CSC322 software 
 
 7. System Statistic:
 
-![](img/Grandstatistic.png)
+![](img/GrandStatistic.png)
