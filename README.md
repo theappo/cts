@@ -2,6 +2,12 @@
 
 A desktop code trading application demo, group project for CCNY CSC322 software engineering.
 
+## Environment
+
+- Language: Python 3
+- Database: MySQL
+- Library: PyQT5
+
 ## How to run
 
 1. Clone this repo
